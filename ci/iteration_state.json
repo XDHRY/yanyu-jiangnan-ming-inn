@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round2-spatial-read",
+  "current_phase": "diagnostic-round3-material-response",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -40,5 +40,10 @@
     "10_canal_arrival"
   ],
   "promotion_rule": "No expensive final render until two consecutive diagnostic rounds have no P0 failures.",
-  "known_blocker": "Resolved: repository is public and run 18 produced the first successful hosted diagnostic artifact."
+  "known_blocker": "Resolved: repository is public; main run 25 produced the merged spatial-read diagnostic artifact.",
+  "round3_focus": [
+    "Wet black tile response: broad highlight, less plastic striping",
+    "Wet blue limestone/paving response: cool blue-gray, controlled sheen",
+    "Warm wood, lacquer, aged brass and celadon roughness response"
+  ]
 }

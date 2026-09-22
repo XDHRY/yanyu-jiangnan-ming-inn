@@ -12,9 +12,15 @@ def write_glb(path,payload,texture_dir,colors):
  for d in payload:
   k=d['material'];tx=d['texture']
   if k not in material_ids:
-   factor=[1,1,1,1] if tx else [v/255 for v in bytes.fromhex(colors[k])]+[1]
-   rough={'wood':.36,'woodlight':.40,'fabric':.80,'lotus':.42,'lacquer':.28,'metal':.34,'paper':.76,'tile':.30,'paving':.38,'brass':.32}.get(k,.65)
-   metallic=.78 if k=='brass' else .72 if k=='metal' else 0.
+   # Keep the GLB export contract aligned with refine_ming.py. These values
+   # deliberately use broad wet-surface highlights instead of mirror-like bands.
+   tint={'tile':[220/255,228/255,235/255,1],
+         'paving':[208/255,222/255,230/255,1]}
+   factor=tint.get(k,[1,1,1,1]) if tx else [v/255 for v in bytes.fromhex(colors[k])]+[1]
+   rough={'wood':.43,'woodlight':.45,'fabric':.80,'lotus':.42,'lacquer':.31,
+          'metal':.38,'paper':.76,'tile':.34,'paving':.44,'brass':.38,
+          'celadon':.24,'stone':.58}.get(k,.65)
+   metallic=.74 if k=='brass' else .72 if k=='metal' else 0.
    pbr={'baseColorFactor':factor,'metallicFactor':metallic,'roughnessFactor':rough}
    if tx:
     if tx not in texture_ids:

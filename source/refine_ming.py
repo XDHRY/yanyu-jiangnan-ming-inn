@@ -27,13 +27,19 @@ source={k:Image.open(P/'textures'/v).convert('RGB') for k,v in {
  'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png',
  'plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png',
  'lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}.items()}
+# Wet architectural surfaces use broad, restrained highlights rather than mirror-like bands.
+# The cool factors keep the stone/tile family blue-black without washing to neutral gray.
+base_factors={
+ 'tile':[220,228,235,255],
+ 'paving':[208,222,230,255],
+}
 for k,im in source.items():
- b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=[255,255,255,255],
-  roughnessFactor={'wood':.36,'woodlight':.40,'fabric':.8,'lotus':.42,'lacquer':.28,'metal':.34,'paper':.76,'tile':.30,'paving':.38}.get(k,.73),
+ b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=base_factors.get(k,[255,255,255,255]),
+  roughnessFactor={'wood':.43,'woodlight':.45,'fabric':.8,'lotus':.42,'lacquer':.31,'metal':.38,'paper':.76,'tile':.34,'paving':.44}.get(k,.73),
   metallicFactor=.72 if k=='metal' else 0)
 b.COL['lotus']='875324';b.COL['brass']='b39a59';b.COL['celadon']='92bab0'
-b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[179,154,89,255],roughnessFactor=.32,metallicFactor=.78)
-b.M['celadon']=PBRMaterial(name='celadon',baseColorFactor=[146,186,176,255],roughnessFactor=.2,metallicFactor=0)
+b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[179,154,89,255],roughnessFactor=.38,metallicFactor=.74)
+b.M['celadon']=PBRMaterial(name='celadon',baseColorFactor=[146,186,176,255],roughnessFactor=.24,metallicFactor=0)
 
 # Remove draft chair parts, tea counters and window sticks before inserting fitted joinery.
 # Keep the exact source room boundaries, existing actual skywell and stair cutout.
