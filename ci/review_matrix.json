@@ -24,12 +24,16 @@
         "entrance hierarchy",
         "lacquer plaque scale",
         "dougong rhythm",
-        "primary door clearance"
+        "primary door clearance",
+        "paper-screen framing",
+        "primary-arrival clearance"
       ],
       "fail_if": [
         "plaque competes with roof",
         "dougong floats from wall plate",
-        "entrance loses readable center"
+        "entrance loses readable center",
+        "paper screen intrudes into door clearance",
+        "paper surface reads as modern opaque panel"
       ]
     },
     {
@@ -125,12 +129,14 @@
       "inspect": [
         "roof-wall-plate seam",
         "gable baseline",
-        "tile overhang"
+        "tile overhang",
+        "wet black-tile material response"
       ],
       "fail_if": [
         "wide black gap returns",
         "eave appears unsupported",
-        "overhang feels modern/heavy"
+        "overhang feels modern/heavy",
+        "wet tile becomes mirror-like or plastic"
       ]
     },
     {
@@ -140,12 +146,14 @@
         "dock approach",
         "rain-chain silhouette",
         "quay wet material",
-        "arrival composition"
+        "arrival composition",
+        "wet blue-limestone response"
       ],
       "fail_if": [
         "dock lacks contact",
         "rain chain intersects circulation",
-        "foreground overwhelms inn"
+        "foreground overwhelms inn",
+        "wet paving reads uniformly glossy without material breakup"
       ]
     }
   ],
@@ -157,6 +165,7 @@
       "material response",
       "detail density"
     ],
-    "expensive_final_render": "only after two consecutive diagnostic rounds have no P0 failures"
+    "expensive_final_render": "only after two consecutive diagnostic rounds have no P0 failures",
+    "material_gate": "paper, wet tile, wet limestone, lacquer and aged brass must all survive GLB embedding"
   }
 }
