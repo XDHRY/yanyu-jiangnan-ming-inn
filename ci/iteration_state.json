@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round13-waterline-contact",
+  "current_phase": "diagnostic-round14-bridge-abutment-brass",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -90,5 +90,11 @@
     "Add one low elliptical waterline ripple around the existing wupeng boat",
     "Keep boat scale, dock contact, bridge geometry and all fixed P0 views unchanged",
     "Recheck 05 / 10 first, then 02 / 03 / 06 / 08 / 09 for regressions"
+  ],
+  "round14_focus": [
+    "Add low limestone abutments and wet caps at both bridge-to-bank contacts",
+    "Deepen aged-brass response without changing paper or lacquer surfaces",
+    "Keep boat waterline, dock, bridge deck and all fixed P0 views unchanged",
+    "Recheck 05 / 10 first, then 02 / 03 / 06 / 08 / 09"
   ]
 }

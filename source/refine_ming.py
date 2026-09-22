@@ -35,10 +35,11 @@ base_factors={
 }
 for k,im in source.items():
  b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=base_factors.get(k,[255,255,255,255]),
-  roughnessFactor={'wood':.43,'woodlight':.45,'fabric':.8,'lotus':.42,'lacquer':.31,'metal':.38,'paper':.76,'tile':.34,'paving':.42}.get(k,.73),
-  metallicFactor=.72 if k=='metal' else 0)
+  roughnessFactor={'wood':.43,'woodlight':.45,'fabric':.8,'lotus':.42,'lacquer':.31,'metal':.41,'paper':.76,'tile':.34,'paving':.42}.get(k,.73),
+  metallicFactor=.68 if k=='metal' else 0)
 b.COL['lotus']='875324';b.COL['brass']='b39a59';b.COL['celadon']='92bab0'
-b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[179,154,89,255],roughnessFactor=.38,metallicFactor=.74)
+# A slightly deeper aged-brass response keeps gold marks separate from pale paper and plaster.
+b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[158,121,57,255],roughnessFactor=.40,metallicFactor=.70)
 b.M['celadon']=PBRMaterial(name='celadon',baseColorFactor=[146,186,176,255],roughnessFactor=.24,metallicFactor=0)
 
 # Remove draft chair parts, tea counters and window sticks before inserting fitted joinery.

@@ -357,6 +357,10 @@ for xx in [x-1.06,x+1.06]:
   if i<10:
    u=(i+1)/10
    for h in [.28,.87]:beam('bridge_rail',(xx,yy,bz(t)+h),(xx,ya+(yb-ya)*u,bz(u)+h),.055,'stone')
+# Low, broad limestone abutments make both bridge-to-bank contacts read clearly in the waterfront view.
+for yy in [ya-.18,yb+.18]:
+ box('bridge_abutment',(x,yy,.02),(2.45,.42,.42),'stone')
+ box('bridge_abutment_cap',(x,yy,.25),(2.55,.50,.08),'paving')
 # Save portable geometry and authoritative object index.
 G=S.copy();G.apply_transform(trimesh.transformations.rotation_matrix(-math.pi/2,[1,0,0]));(P/'scene.glb').write_bytes(G.export(file_type='glb'))
 (P/'scene_objects.json').write_text(json.dumps({'units':'metres','up':'Z','seed':27,'objects':records},ensure_ascii=False,indent=2))
