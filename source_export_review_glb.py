@@ -14,7 +14,7 @@ def write_glb(path,payload,texture_dir,colors):
   if k not in material_ids:
    # Keep the GLB export contract aligned with refine_ming.py. These values
    # deliberately use broad wet-surface highlights instead of mirror-like bands.
-   tint={'tile':[220/255,228/255,235/255,1],
+   tint={'tile':[185/255,198/255,208/255,1],
          'paving':[208/255,222/255,230/255,1]}
    factor=tint.get(k,[1,1,1,1]) if tx else [v/255 for v in bytes.fromhex(colors[k])]+[1]
    rough={'wood':.43,'woodlight':.45,'fabric':.80,'lotus':.42,'lacquer':.31,
