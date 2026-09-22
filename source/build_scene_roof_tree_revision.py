@@ -329,6 +329,8 @@ for j in range(3):
 mesh('hollow_boat_hull',V,F,'woodlight');box('boat_floor',(cx,cy,-.77),(3.5,.6,.06),'wood')
 # A low elliptical waterline makes the hull contact legible without adding a heavy wake.
 water_ripple('boat_waterline',(cx,cy,-.765),(2.58,.86))
+# A fainter outer contour adds a little water-surface breakup without a heavy wake.
+water_ripple('boat_waterline_outer',(cx,cy,-.778),(3.15,1.04))
 for xx in [7.7,10.3]:box('boat_seat',(xx,cy,-.51),(.3,1.0,.09),'woodlight')
 for xx in np.arange(8.05,10.05,.25):
  for i in range(10):
