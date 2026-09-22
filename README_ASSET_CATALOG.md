@@ -15,6 +15,8 @@
 
 `asset_library/` 是可直接在 GitHub 中浏览的轻量预览目录（384 px JPEG），保持 65 个一一对应的文件名；原始 PNG 在本地工程 `generated_assets/` 中保留。
 
+`asset_library_hires/` 另存 65 张 768 px JPEG 交付版，适合下载后继续做贴图设计或作为建模参考；两套目录均按 props / architecture / environment / textures 分类。
+
 ## 生成与费用边界
 
 本批次使用 OpenAI 内置 imagegen 生成参考图；没有提交任何付费 Meshy 任务，也没有消耗 Meshy credits。`props.json` 只保留后续可选的 Meshy-5 资产合同与护栏，真正的 Image-to-3D 提交需在 Form gate 前单独确认预算。

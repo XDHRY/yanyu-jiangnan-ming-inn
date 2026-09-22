@@ -5,6 +5,13 @@
   "generatedAt": "2026-09-22",
   "assetCount": 65,
   "status": "generated_for_review",
+  "delivery": {
+    "githubPreviewRoot": "asset_library",
+    "githubHiresRoot": "asset_library_hires",
+    "previewLongEdgePixels": 384,
+    "hiresLongEdgePixels": 768,
+    "hiresCount": 65
+  },
   "qualityPolicy": {
     "props": "single isolated uncropped three-quarter studio reference, physically plausible Ming joinery, no room/people/text/watermark",
     "architecture": "isolated mesh-ready construction component, readable load path and contact surfaces, no fused geometry",
