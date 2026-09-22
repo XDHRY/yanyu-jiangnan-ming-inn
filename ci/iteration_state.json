@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round6-wet-tile-contrast",
+  "current_phase": "diagnostic-round7-organic-tree-bed",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -60,5 +60,10 @@
     "Reduce raised black-tile roll contrast so wet roof reads dark and controlled",
     "Preserve wet-tile roughness contract (<=0.35) and embedded texture payload",
     "Keep wall-plate joint, paper screens, courtyard hierarchy unchanged"
+  ],
+  "round7_focus": [
+    "Replace the rectangular courtyard tree bed with a low organic soil mound",
+    "Keep moss stones, jar, wet paving and tree clearance unchanged",
+    "Recheck 03 first, then 02 / 06 / 08 / 09 / 10 for regressions"
   ]
 }
