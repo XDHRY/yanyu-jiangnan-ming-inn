@@ -78,6 +78,9 @@ jobs:
       - name: Render ten low-cost diagnostic views
         run: xvfb-run -a blender --background --python ci/blender_diagnostic.py -- --input .ci_work/ming_review.glb --output diagnostics
 
+      - name: Build diagnostic contact sheet and iteration index
+        run: python ci/make_contact_sheet.py diagnostics
+
       - name: Validate diagnostic outputs
         run: python ci/validate_diagnostics.py diagnostics
 
@@ -94,5 +97,6 @@ jobs:
             .ci_work/review/ci-contract.json
             .ci_work/ci-input-manifest.json
             ci/review_matrix.json
+            ci/iteration_state.json
           if-no-files-found: warn
           retention-days: 14
