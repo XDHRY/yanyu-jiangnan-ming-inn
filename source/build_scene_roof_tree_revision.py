@@ -129,10 +129,10 @@ def tree(x,y,z,s=1):
   for j,off in enumerate([-.12,.16]):
    px=end[0]+math.cos(ang+off)*.22*s;py=end[1]+math.sin(ang+off)*.22*s;pz=end[2]+(.12 if j else -.04)*s
    mat='leaf2' if (i+j)%3==0 else 'leaf'
-   sphere('tree_leaf_cluster',(px,py,pz),(.34*s,.28*s,.31*s),mat,1)
+   sphere('tree_leaf_cluster',(px,py,pz),(.24*s,.18*s,.22*s),mat,1)
  # Small upright crown keeps the tree legible in the open skywell and avoids a
  # flat ring of equal-sized blobs.
- sphere('tree_leaf_crown',(x+.02*s,y-.01*s,z+2.56*s),(.42*s,.34*s,.35*s),'leaf2',1)
+ sphere('tree_leaf_crown',(x+.02*s,y-.01*s,z+2.56*s),(.30*s,.24*s,.25*s),'leaf2',1)
 
 def dougong(x,y,z,axis='x'):
  # Compact, readable Ming-style bracket cluster: stacked bearing blocks first,
@@ -258,8 +258,10 @@ layer='ornament'
 for xx in [1.2,5.4,12.6,16.8]:dougong(xx,-.02,5.18,'x')
 for xx in [4.7,7.6,10.5,13.3]:
  dougong(xx,5.35,5.10,'x');dougong(xx,8.65,5.10,'x')
-hanging_plaque(9,-.34,2.43)
-paper_screen(6.7,.55,.22,.9,1.95);paper_screen(11.3,.55,.22,.9,1.95)
+hanging_plaque(9,-.34,2.50)
+# Keep the paired paper screens just outside the 2.4 m arrival clearance so they frame,
+# rather than invade, the central passage in the south diagnostic view.
+paper_screen(7.0,.58,.22,.72,1.78);paper_screen(11.0,.58,.22,.72,1.78)
 for xx in [.55,17.45]:rain_chain(xx,-.28,5.34)
 
 # Moon gate in the west side garden: actual hole through a thick wall.

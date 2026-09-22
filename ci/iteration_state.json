@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "public-render-ready",
+  "current_phase": "diagnostic-round2-spatial-read",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -40,5 +40,5 @@
     "10_canal_arrival"
   ],
   "promotion_rule": "No expensive final render until two consecutive diagnostic rounds have no P0 failures.",
-  "known_blocker": "Repository visibility must become public before hosted runner work begins."
+  "known_blocker": "Resolved: repository is public and run 18 produced the first successful hosted diagnostic artifact."
 }

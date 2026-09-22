@@ -86,6 +86,15 @@ def screen_leaf(x,y,z,w=.78,h=2.26):
   box('screen_hinge',(x+w/2-.012,y-.057,zz),(.045,.016,.105),'brass')
   rod('hinge_pin',(x+w/2+.007,y-.062,zz-.063),(x+w/2+.007,y-.062,zz+.063),.008,'brass')
 
+def plaque_glyphs(x,y,z):
+ # Three restrained seal-script-like marks keep the lacquer plaque legible at 720 px
+ # without pretending to be a text renderer or adding a modern signboard.
+ for dx in [-.58, 0.0, .58]:
+  rod('plaque_glyph_stroke',(x+dx-.07,y-.064,z-.18),(x+dx+.06,y-.064,z+.18),.014,'brass',8)
+  rod('plaque_glyph_cross',(x+dx-.13,y-.064,z+.015),(x+dx+.13,y-.064,z+.015),.012,'brass',8)
+  rod('plaque_glyph_base',(x+dx-.09,y-.064,z-.20),(x+dx+.09,y-.064,z-.20),.010,'brass',8)
+ ring('plaque_seal',(x,y-.066,z+.12),.06,.010,'brass')
+
 def chair(x,y,z,angle=0):
  start=len(b.records)
  box('chair_seat',(0,0,z+.46),(.55,.49,.055))
@@ -122,6 +131,8 @@ def tea_set(x,y,z):
  b.lathe('bronze_incense_burner',(x+.48,y,z+.825),[(0,0),(.012,.05),(.055,.075),(.10,.07),(.125,.045),(.13,0)],'metal',32)
  for ang in [0,math.pi]:
   rod('incense_burner_handle',(x+.48+math.cos(ang)*.055,y+math.sin(ang)*.055,z+.90),(x+.48+math.cos(ang)*.11,y+math.sin(ang)*.11,z+.94),.012,'metal',12)
+
+plaque_glyphs(9,-.34,2.50)
 
 for level,filename in enumerate(['ground.json','upper.json']):
  b.layer='ground' if level==0 else 'upper';z=.2+level*2.7
