@@ -26,10 +26,11 @@ P=Path(__file__).resolve().parent
 source={k:Image.open(P/'textures'/v).convert('RGB') for k,v in {
  'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png',
  'plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone.png',
- 'lotus':'lotus_panel.png'}.items()}
+ 'lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png'}.items()}
 for k,im in source.items():
  b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=[255,255,255,255],
-  roughnessFactor={'wood':.36,'woodlight':.40,'fabric':.8,'lotus':.42}.get(k,.73),metallicFactor=0)
+  roughnessFactor={'wood':.36,'woodlight':.40,'fabric':.8,'lotus':.42,'lacquer':.28,'metal':.34}.get(k,.73),
+  metallicFactor=.72 if k=='metal' else 0)
 b.COL['lotus']='875324';b.COL['brass']='b39a59';b.COL['celadon']='92bab0'
 b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[179,154,89,255],roughnessFactor=.32,metallicFactor=.78)
 b.M['celadon']=PBRMaterial(name='celadon',baseColorFactor=[146,186,176,255],roughnessFactor=.2,metallicFactor=0)
@@ -140,7 +141,7 @@ for level,filename in enumerate(['ground.json','upper.json']):
 
 print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.
-payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone.png','lotus':'lotus_panel.png'}
+payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png'}
 for rec in b.records:
  m=b.S.geometry[rec['name']];v=m.vertices[m.faces].reshape(-1,3);n=np.repeat(m.face_normals,3,axis=0);k=rec['material'];ext=np.ptp(v,axis=0);axis=int(np.argmax(ext))
  uv=np.empty((len(v),2));normaxis=np.argmax(abs(n),axis=1)

@@ -26,8 +26,10 @@ else:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("view_count") != 10:
         errors.append("render manifest view_count != 10")
-    if manifest.get("augmented_count", 0) < 20:
-        errors.append("expected diagnostic augmentation objects")
+    counts = manifest.get("component_counts", {})
+    for key, minimum in {"dougong": 20, "hanging_plaque": 5, "rain_chain": 10}.items():
+        if counts.get(key, 0) < minimum:
+            errors.append(f"{key}: expected >= {minimum}, got {counts.get(key, 0)}")
 
 blend = out / "jiangnan_diagnostic.blend"
 if not blend.exists() or blend.stat().st_size < 1024 * 1024:

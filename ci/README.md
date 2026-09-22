@@ -11,8 +11,8 @@ Pipeline:
 3. Reapply Ming refinement and embedded textures.
 4. Validate GLB structure and geometry.
 5. Import the GLB into native Blender.
-6. Add a reversible diagnostic augmentation layer (dougong clusters, entrance plaque, paper screens and rain-chain proxies).
+6. Verify authoritative scene components (dougong clusters, lacquered entrance plaque and rain chains) survived rebuild, material binding and GLB import.
 7. Render ten 720x480 Eevee viewpoints.
 8. Validate nonblank outputs and upload PNGs plus the packed `.blend` as a GitHub Actions artifact.
 
-The diagnostic augmentation is deliberately separated from the authoritative generator. Once a render round proves that a component helps composition and scale, move that component into the authoritative procedural scene source.
+High-leverage components now live in the authoritative procedural generator. The diagnostic layer no longer duplicates them; it verifies their presence and renders them from ten spatial viewpoints.

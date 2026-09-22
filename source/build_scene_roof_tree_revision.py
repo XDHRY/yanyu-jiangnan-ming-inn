@@ -7,7 +7,7 @@ from trimesh.visual.material import PBRMaterial
 P=Path(__file__).resolve().parent
 random.seed(27)
 S=trimesh.Scene(); records=[]; layer='site'
-COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943'}
+COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943','lacquer':'171411'}
 M={k:PBRMaterial(name=k,baseColorFactor=[*bytes.fromhex(v),255],roughnessFactor=.23 if k in ['water','tile','paving'] else .76,metallicFactor=0,emissiveFactor=[.5,.23,.06] if k=='glow' else [0,0,0],doubleSided=True) for k,v in COL.items()}
 def add(name,m,mat):
  m.update_faces(m.nondegenerate_faces());m.remove_unreferenced_vertices();m.visual=trimesh.visual.TextureVisuals(material=M[mat]); n=f'{layer}/{name}_{len(records):05d}'; S.add_geometry(m,node_name=n,geom_name=n);records.append({'name':n,'layer':layer,'material':mat,'bounds':m.bounds.round(4).tolist(),'vertices':len(m.vertices),'triangles':len(m.faces)})
@@ -134,6 +134,30 @@ def tree(x,y,z,s=1):
  # flat ring of equal-sized blobs.
  sphere('tree_leaf_crown',(x+.02*s,y-.01*s,z+2.56*s),(.42*s,.34*s,.35*s),'leaf2',1)
 
+def dougong(x,y,z,axis='x'):
+ # Compact, readable Ming-style bracket cluster: stacked bearing blocks first,
+ # ornament second. Kept intentionally economical so silhouette does the work.
+ major=(.72,.24,.10) if axis=='x' else (.24,.72,.10)
+ cross=(.26,.48,.09) if axis=='x' else (.48,.26,.09)
+ cap=(.96,.18,.08) if axis=='x' else (.18,.96,.08)
+ box('dougong_base',(x,y,z),major,'wood')
+ box('dougong_cross',(x,y,z+.105),cross,'woodlight')
+ box('dougong_cap',(x,y,z+.205),cap,'wood')
+ for side in [-1,1]:
+  if axis=='x':box('dougong_arm',(x+side*.32,y,z+.29),(.22,.34,.08),'wood')
+  else:box('dougong_arm',(x,y+side*.32,z+.29),(.34,.22,.08),'wood')
+
+def hanging_plaque(x,y,z):
+ box('hanging_plaque_body',(x,y,z),(2.2,.10,.58),'lacquer')
+ for dx in [-1.02,1.02]:box('hanging_plaque_trim_v',(x+dx,y-.055,z),(.035,.018,.52),'metal')
+ for dz in [-.25,.25]:box('hanging_plaque_trim_h',(x,y-.055,z+dz),(2.02,.018,.035),'metal')
+ for dx in [-.68,.68]:beam('hanging_plaque_chain',(x+dx,y,z+.29),(x+dx,y,z+.62),.012,'metal',6)
+
+def rain_chain(x,y,z_top,count=10,step=.24):
+ for i in range(count):
+  z1=z_top-i*step;z2=z1-step*.72
+  beam('rain_chain_link',(x,y,z1),(x,y,z2),.012,'metal',6)
+
 # Site and water. Main facade faces south (negative Y).
 box('north_bank',(8,7,-.48),(32,18,.96),'soil');box('south_bank',(8,-10,-.48),(32,4,.96),'soil')
 box('canal',(8,-5,-.81),(32,6,.06),'water')
@@ -221,6 +245,14 @@ for x0,x1,y0,y1,axis in [(4,14,4,5.45,'south'),(4,14,8.55,10,'north'),(4,5.45,5.
   for xx in np.arange(x0,x1,.22):beam('veranda_tiles',(xx,y0,hz(xx,y0)+.03),(xx,y1,hz(xx,y1)+.03),.042,'tile',6)
  else:
   for yy in np.arange(y0,y1,.22):beam('veranda_tiles',(x0,yy,hz(x0,yy)+.03),(x1,yy,hz(x1,yy)+.03),.042,'tile',6)
+# High-leverage ornament pass: real scene geometry, not diagnostic overlays.
+layer='ornament'
+for xx in [1.2,5.4,12.6,16.8]:dougong(xx,-.02,5.18,'x')
+for xx in [4.7,7.6,10.5,13.3]:
+ dougong(xx,5.35,5.10,'x');dougong(xx,8.65,5.10,'x')
+hanging_plaque(9,-.34,2.43)
+for xx in [.55,17.45]:rain_chain(xx,-.28,5.34)
+
 # Moon gate in the west side garden: actual hole through a thick wall.
 layer='garden'
 x=-2;y0=3.3;cz=1.35;r=1.25;V=[];F=[];N=72
