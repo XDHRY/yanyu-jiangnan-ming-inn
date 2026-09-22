@@ -168,6 +168,10 @@ def rain_chain(x,y,z_top,count=10,step=.24):
   z1=z_top-i*step;z2=z1-step*.72
   beam('rain_chain_link',(x,y,z1),(x,y,z2),.012,'metal',6)
 
+def water_ripple(name,c,scale):
+ m=trimesh.creation.torus(major_radius=1.0,minor_radius=.012,major_sections=48,minor_sections=6)
+ m.apply_scale([scale[0],scale[1],1.0]);m.apply_translation(c);return add(name,m,'water')
+
 # Site and water. Main facade faces south (negative Y).
 box('north_bank',(8,7,-.48),(32,18,.96),'soil');box('south_bank',(8,-10,-.48),(32,4,.96),'soil')
 box('canal',(8,-5,-.81),(32,6,.06),'water')
@@ -323,6 +327,8 @@ for j in range(3):
  for i in range(N):
   k=(i+1)%N;a=j*N+i;b=j*N+k;c=(j+1)*N+k;d=(j+1)*N+i;F.extend([[a,b,c],[a,c,d]])
 mesh('hollow_boat_hull',V,F,'woodlight');box('boat_floor',(cx,cy,-.77),(3.5,.6,.06),'wood')
+# A low elliptical waterline makes the hull contact legible without adding a heavy wake.
+water_ripple('boat_waterline',(cx,cy,-.765),(2.58,.86))
 for xx in [7.7,10.3]:box('boat_seat',(xx,cy,-.51),(.3,1.0,.09),'woodlight')
 for xx in np.arange(8.05,10.05,.25):
  for i in range(10):
