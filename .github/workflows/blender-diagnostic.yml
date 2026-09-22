@@ -89,5 +89,6 @@ jobs:
             .ci_work/review/report.json
             .ci_work/review/validation.json
             .ci_work/ci-input-manifest.json
+            ci/review_matrix.json
           if-no-files-found: warn
           retention-days: 14
