@@ -25,11 +25,11 @@ print('Loaded existing geometry',len(b.records),flush=True)
 P=Path(__file__).resolve().parent
 source={k:Image.open(P/'textures'/v).convert('RGB') for k,v in {
  'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png',
- 'plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone.png',
- 'lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png'}.items()}
+ 'plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png',
+ 'lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}.items()}
 for k,im in source.items():
  b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=[255,255,255,255],
-  roughnessFactor={'wood':.36,'woodlight':.40,'fabric':.8,'lotus':.42,'lacquer':.28,'metal':.34}.get(k,.73),
+  roughnessFactor={'wood':.36,'woodlight':.40,'fabric':.8,'lotus':.42,'lacquer':.28,'metal':.34,'paper':.76,'tile':.30,'paving':.38}.get(k,.73),
   metallicFactor=.72 if k=='metal' else 0)
 b.COL['lotus']='875324';b.COL['brass']='b39a59';b.COL['celadon']='92bab0'
 b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[179,154,89,255],roughnessFactor=.32,metallicFactor=.78)
@@ -118,6 +118,10 @@ def tea_set(x,y,z):
  ring('teapot_handle',(x-.095,y,z+.91),.052,.01,'celadon')
  for dx,dy in [(-.22,-.11),(.22,-.11),(.22,.11),(-.22,.11)]:
   b.lathe('celadon_cup',(x+dx,y+dy,z+.825),[(0,0),(.008,.028),(.047,.036),(.047,.03),(.012,.024)],'celadon',32)
+ # Small aged-brass incense burner: a near-field material anchor with negligible scene cost.
+ b.lathe('bronze_incense_burner',(x+.48,y,z+.825),[(0,0),(.012,.05),(.055,.075),(.10,.07),(.125,.045),(.13,0)],'metal',32)
+ for ang in [0,math.pi]:
+  rod('incense_burner_handle',(x+.48+math.cos(ang)*.055,y+math.sin(ang)*.055,z+.90),(x+.48+math.cos(ang)*.11,y+math.sin(ang)*.11,z+.94),.012,'metal',12)
 
 for level,filename in enumerate(['ground.json','upper.json']):
  b.layer='ground' if level==0 else 'upper';z=.2+level*2.7
@@ -141,14 +145,14 @@ for level,filename in enumerate(['ground.json','upper.json']):
 
 print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.
-payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png'}
+payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}
 for rec in b.records:
  m=b.S.geometry[rec['name']];v=m.vertices[m.faces].reshape(-1,3);n=np.repeat(m.face_normals,3,axis=0);k=rec['material'];ext=np.ptp(v,axis=0);axis=int(np.argmax(ext))
  uv=np.empty((len(v),2));normaxis=np.argmax(abs(n),axis=1)
  for ax in range(3):
   ids=normaxis==ax;axes=[i for i in range(3) if i!=ax]
   if k in ['wood','woodlight'] and axis in axes:axes=[i for i in axes if i!=axis]+[axis]
-  uv[ids]=v[ids][:,axes]/({'wood':1.0,'woodlight':1.,'fabric':.65,'plaster':1.5,'stone':1.,'paving':1.}.get(k,1.))
+  uv[ids]=v[ids][:,axes]/({'wood':1.0,'woodlight':1.,'fabric':.65,'plaster':1.5,'stone':1.,'paving':1.,'tile':.7,'paper':.8}.get(k,1.))
  if k=='lotus':
   horizontal=int(np.argmax(ext[:2]));uv[:,0]=(v[:,horizontal]-v[:,horizontal].min())/max(ext[horizontal],1e-6);uv[:,1]=(v[:,2]-v[:,2].min())/max(ext[2],1e-6)
  mm=trimesh.Trimesh(vertices=v,faces=np.arange(len(v)).reshape(-1,3),process=False)
