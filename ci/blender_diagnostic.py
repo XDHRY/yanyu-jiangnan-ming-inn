@@ -42,6 +42,16 @@ def world_bounds(obj):
             min(p.y for p in pts), max(p.y for p in pts),
             min(p.z for p in pts), max(p.z for p in pts))
 
+entry_steps = [o for o in mesh_objects if "entry_step" in o.name.lower()]
+if len(entry_steps) < 2:
+    raise SystemExit("Coordinate-frame anchor missing: expected two entry steps")
+entry_centers = []
+for obj in entry_steps:
+    x0,x1,y0,y1,z0,z1 = world_bounds(obj)
+    entry_centers.append(((x0+x1)/2,(y0+y1)/2,(z0+z1)/2))
+if not all(abs(x-9.0) < .35 and y < -.25 and -.1 < z < .35 for x,y,z in entry_centers):
+    raise SystemExit(f"Unexpected Blender coordinate frame at entry steps: {entry_centers}")
+
 clearance_violations = []
 for obj in mesh_objects:
     if "paper_screen" not in obj.name.lower():
@@ -156,6 +166,7 @@ manifest = {
     "mesh_objects_after_import": len([o for o in scene.objects if o.type == "MESH"]),
     "component_counts": component_counts,
     "primary_arrival_clear": not clearance_violations,
+    "coordinate_anchor_entry_steps": entry_centers,
     "input_glb": str(INPUT),
     "blend": str(blend_path),
 }
