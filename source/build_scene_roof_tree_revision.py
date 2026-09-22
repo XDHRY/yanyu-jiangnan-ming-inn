@@ -232,10 +232,16 @@ for y in [2.35,3.45]:
 # Entry steps.
 for i in range(2):box('entry_step',(9,-.75+i*.3,.05+i*.1),(2.8,.6,.1),'stone')
 # Central planted sky well; tree entirely within the open 7.2 x 3.2 m aperture.
+# Tighten the soil island and pull the jar/rocks into one readable courtyard
+# rhythm: tree as primary, wet stone as connector, jar as secondary anchor.
 layer='courtyard'
-box('courtyard_paving',(9,7,.025),(7.2,3.2,.05),'paving');box('tree_bed',(8.4,7,.08),(2.2,2,.16),'soil');tree(8.4,7,.15,.9)
-lathe('stone_water_jar',(11.4,7.5,.05),[(0,0),(.05,.38),(.3,.5),(.65,.47),(.75,.43),(.75,.34),(.18,.3)],'stone')
-for x,y in [(6,6),(12,8),(11,6)]:
+box('courtyard_paving',(9,7,.025),(7.2,3.2,.05),'paving')
+box('tree_bed',(8.4,7,.08),(1.75,1.55,.16),'soil')
+tree(8.4,7,.15,.9)
+lathe('stone_water_jar',(10.65,7.45,.05),[(0,0),(.05,.38),(.3,.5),(.65,.47),(.75,.43),(.75,.34),(.18,.3)],'stone')
+sphere('moss_stone',(9.72,7.72,.16),(.31,.24,.17),'stone',1)
+sphere('moss_stone',(9.98,7.88,.11),(.16,.13,.11),'stone',1)
+for x,y in [(6.3,6.5),(11.1,8.05),(10.95,6.25)]:
  lathe('terracotta_pot',(x,y,.05),[(0,0),(.03,.2),(.38,.32),(.43,.34),(.43,.27),(.1,.15)],'red',16)
  for i in range(7):sphere('pot_leaves',(x+random.uniform(-.15,.15),y+random.uniform(-.15,.15),.55+random.random()*.3),(.18,.18,.27),'leaf',1)
 # Roofs: four compact wings, central courtyard remains open. The 0.25m
@@ -259,9 +265,10 @@ for xx in [1.2,5.4,12.6,16.8]:dougong(xx,-.02,5.18,'x')
 for xx in [4.7,7.6,10.5,13.3]:
  dougong(xx,5.35,5.10,'x');dougong(xx,8.65,5.10,'x')
 hanging_plaque(9,-.34,2.50)
-# Keep the paired paper screens just outside the 2.4 m arrival clearance so they frame,
-# rather than invade, the central passage in the south diagnostic view.
-paper_screen(7.0,.58,.22,.72,1.78);paper_screen(11.0,.58,.22,.72,1.78)
+# Bring the paired paper screens to the facade edge so the south arrival
+# reads as a layered threshold; their x positions remain outside the 2.4 m
+# clear passage tested by the Blender diagnostic.
+paper_screen(7.0,-.08,.22,.72,1.78);paper_screen(11.0,-.08,.22,.72,1.78)
 for xx in [.55,17.45]:rain_chain(xx,-.28,5.34)
 
 # Moon gate in the west side garden: actual hole through a thick wall.

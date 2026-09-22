@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round3-material-response",
+  "current_phase": "diagnostic-round4-courtyard-composition",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -45,5 +45,10 @@
     "Wet black tile response: broad highlight, less plastic striping",
     "Wet blue limestone/paving response: cool blue-gray, controlled sheen",
     "Warm wood, lacquer, aged brass and celadon roughness response"
+  ],
+  "round4_focus": [
+    "Courtyard primary-secondary rhythm: pruned tree, jar, moss stones, wet paving",
+    "South arrival threshold: expose paired paper screens without entering clearance",
+    "Keep round-three material export contract unchanged"
   ]
 }
