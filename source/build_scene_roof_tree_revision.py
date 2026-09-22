@@ -129,10 +129,10 @@ def tree(x,y,z,s=1):
   for j,off in enumerate([-.12,.16]):
    px=end[0]+math.cos(ang+off)*.22*s;py=end[1]+math.sin(ang+off)*.22*s;pz=end[2]+(.12 if j else -.04)*s
    mat='leaf2' if (i+j)%3==0 else 'leaf'
-   sphere('tree_leaf_cluster',(px,py,pz),(.34*s,.28*s,.31*s),mat,1)
+   sphere('tree_leaf_cluster',(px,py,pz),(.24*s,.18*s,.22*s),mat,1)
  # Small upright crown keeps the tree legible in the open skywell and avoids a
  # flat ring of equal-sized blobs.
- sphere('tree_leaf_crown',(x+.02*s,y-.01*s,z+2.56*s),(.42*s,.34*s,.35*s),'leaf2',1)
+ sphere('tree_leaf_crown',(x+.02*s,y-.01*s,z+2.56*s),(.30*s,.24*s,.25*s),'leaf2',1)
 
 def dougong(x,y,z,axis='x'):
  # Compact, readable Ming-style bracket cluster: stacked bearing blocks first,
