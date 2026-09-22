@@ -22,79 +22,16 @@ scene = bpy.context.scene
 scene.unit_settings.system = "METRIC"
 scene.unit_settings.scale_length = 1.0
 
-def image_material(name, relpath, roughness=0.45, metallic=0.0):
-    mat = bpy.data.materials.new(name)
-    mat.use_nodes = True
-    nodes = mat.node_tree.nodes
-    links = mat.node_tree.links
-    bsdf = nodes.get("Principled BSDF")
-    img_path = ROOT / relpath
-    if img_path.exists():
-        tex = nodes.new("ShaderNodeTexImage")
-        tex.image = bpy.data.images.load(str(img_path))
-        tex.interpolation = "Linear"
-        links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
-    bsdf.inputs["Roughness"].default_value = roughness
-    bsdf.inputs["Metallic"].default_value = metallic
-    return mat
-
-wood = image_material("CI_Huanghuali", "asset_library_hires/textures/tex_huanghuali_warm.jpg", 0.36)
-lacquer = image_material("CI_BlackGold", "asset_library_hires/textures/tex_lacquer_black_gold.jpg", 0.30)
-brass = image_material("CI_AgedBrass", "asset_library_hires/textures/tex_brass_aged.jpg", 0.32, 0.65)
-paper = image_material("CI_Paper", "asset_library_hires/textures/tex_paper_screen.jpg", 0.72)
-
-augmented = []
-
-def add_box(name, loc, scale, mat):
-    bpy.ops.mesh.primitive_cube_add(location=loc)
-    obj = bpy.context.object
-    obj.name = name
-    obj.dimensions = scale
-    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    obj.data.materials.append(mat)
-    augmented.append(name)
-    return obj
-
-def bracket_cluster(x, y, z, rot=0.0):
-    parts = [
-        ((0, 0, 0), (0.72, 0.28, 0.11)),
-        ((0, 0, 0.12), (0.46, 0.46, 0.10)),
-        ((0, 0, 0.23), (0.92, 0.18, 0.09)),
-        ((-0.28, 0, 0.31), (0.20, 0.34, 0.08)),
-        ((0.28, 0, 0.31), (0.20, 0.34, 0.08)),
-    ]
-    for i, (off, dims) in enumerate(parts):
-        ox, oy, oz = off
-        c, s = math.cos(rot), math.sin(rot)
-        rx, ry = ox * c - oy * s, ox * s + oy * c
-        o = add_box(f"CI_Dougong_{x:.2f}_{y:.2f}_{i}", (x + rx, y + ry, z + oz), dims, wood)
-        o.rotation_euler[2] = rot
-
-for x in (4.7, 7.6, 10.5, 13.3):
-    bracket_cluster(x, 5.35, 5.12, 0)
-    bracket_cluster(x, 8.65, 5.12, math.pi)
-
-# South-arrival plaque: deliberately simple, readable silhouette first.
-plaque = add_box("CI_HangingPlaque", (9.0, -0.38, 2.43), (2.25, 0.10, 0.62), lacquer)
-for dx in (-1.03, 1.03):
-    add_box(f"CI_PlaqueTrimV_{dx}", (9.0 + dx, -0.445, 2.43), (0.035, 0.025, 0.56), brass)
-for dz in (-0.27, 0.27):
-    add_box(f"CI_PlaqueTrimH_{dz}", (9.0, -0.445, 2.43 + dz), (2.08, 0.025, 0.035), brass)
-
-# Two translucent paper panels flank the entrance without blocking circulation.
-for x in (7.05, 10.95):
-    add_box(f"CI_PaperScreen_{x}", (x, -0.10, 1.35), (1.10, 0.035, 2.10), paper)
-
-# Low-cost rain-chain proxies at the two south eave corners.
-for x in (0.55, 17.45):
-    for i in range(10):
-        z = 5.35 - i * 0.24
-        bpy.ops.mesh.primitive_torus_add(major_radius=0.055, minor_radius=0.010, major_segments=12, minor_segments=6,
-                                        location=(x, -0.28, z), rotation=(math.pi/2, 0, (i % 2) * math.pi/2))
-        obj = bpy.context.object
-        obj.name = f"CI_RainChain_{x}_{i}"
-        obj.data.materials.append(brass)
-        augmented.append(obj.name)
+mesh_objects = [o for o in scene.objects if o.type == "MESH"]
+component_counts = {
+    "dougong": sum("dougong_" in o.name.lower() for o in mesh_objects),
+    "hanging_plaque": sum("hanging_plaque" in o.name.lower() for o in mesh_objects),
+    "rain_chain": sum("rain_chain" in o.name.lower() for o in mesh_objects),
+}
+required = {"dougong": 20, "hanging_plaque": 5, "rain_chain": 10}
+missing = {k: (component_counts[k], v) for k, v in required.items() if component_counts[k] < v}
+if missing:
+    raise SystemExit(f"Authoritative components missing after GLB import: {missing}")
 
 # Lighting: blue-hour ambient + warm entrance/courtyard accents.
 world = bpy.data.worlds.new("CI_BlueHour")
@@ -175,7 +112,6 @@ views = [
     ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
 ]
 
-mesh_objects = [o for o in scene.objects if o.type == "MESH"]
 for name, loc, target, lens, hide_tokens in views:
     for obj in mesh_objects:
         low = obj.name.lower()
@@ -197,9 +133,8 @@ manifest = {
     "resolution": [scene.render.resolution_x, scene.render.resolution_y],
     "views": [v[0] for v in views],
     "view_count": len(views),
-    "mesh_objects_after_import_and_augmentation": len([o for o in scene.objects if o.type == "MESH"]),
-    "augmented_objects": augmented,
-    "augmented_count": len(augmented),
+    "mesh_objects_after_import": len([o for o in scene.objects if o.type == "MESH"]),
+    "component_counts": component_counts,
     "input_glb": str(INPUT),
     "blend": str(blend_path),
 }
