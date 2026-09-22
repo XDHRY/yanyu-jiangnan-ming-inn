@@ -13,7 +13,9 @@ def write_glb(path,payload,texture_dir,colors):
   k=d['material'];tx=d['texture']
   if k not in material_ids:
    factor=[1,1,1,1] if tx else [v/255 for v in bytes.fromhex(colors[k])]+[1]
-   pbr={'baseColorFactor':factor,'metallicFactor':.78 if k=='brass' else 0.,'roughnessFactor':.36 if k in ['wood','woodlight','brass'] else .65}
+   rough={'wood':.36,'woodlight':.40,'fabric':.80,'lotus':.42,'lacquer':.28,'metal':.34,'paper':.76,'tile':.30,'paving':.38,'brass':.32}.get(k,.65)
+   metallic=.78 if k=='brass' else .72 if k=='metal' else 0.
+   pbr={'baseColorFactor':factor,'metallicFactor':metallic,'roughnessFactor':rough}
    if tx:
     if tx not in texture_ids:
      v=append((texture_dir/tx).read_bytes());im=len(j['images']);j['images'].append({'name':tx,'bufferView':v,'mimeType':'image/png'})
