@@ -26,6 +26,9 @@ else:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("view_count") != 10:
         errors.append("render manifest view_count != 10")
+    version = manifest.get("blender_version_tuple", [0,0,0])
+    if tuple(version[:3]) < (4,0,0):
+        errors.append(f"Blender runtime too old: {version}")
     counts = manifest.get("component_counts", {})
     for key, minimum in {"dougong": 20, "hanging_plaque": 5, "rain_chain": 10, "paper_screen": 10, "incense_burner": 2}.items():
         if counts.get(key, 0) < minimum:
