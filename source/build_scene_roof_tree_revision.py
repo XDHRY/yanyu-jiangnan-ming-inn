@@ -258,8 +258,10 @@ layer='ornament'
 for xx in [1.2,5.4,12.6,16.8]:dougong(xx,-.02,5.18,'x')
 for xx in [4.7,7.6,10.5,13.3]:
  dougong(xx,5.35,5.10,'x');dougong(xx,8.65,5.10,'x')
-hanging_plaque(9,-.34,2.43)
-paper_screen(6.7,.55,.22,.9,1.95);paper_screen(11.3,.55,.22,.9,1.95)
+hanging_plaque(9,-.34,2.50)
+# Keep the paired paper screens just outside the 2.4 m arrival clearance so they frame,
+# rather than invade, the central passage in the south diagnostic view.
+paper_screen(7.0,.58,.22,.72,1.78);paper_screen(11.0,.58,.22,.72,1.78)
 for xx in [.55,17.45]:rain_chain(xx,-.28,5.34)
 
 # Moon gate in the west side garden: actual hole through a thick wall.
