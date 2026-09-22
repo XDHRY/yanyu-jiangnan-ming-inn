@@ -1,0 +1,68 @@
+[
+  {
+    "file": "textures/blue_limestone.png",
+    "width": 1254,
+    "height": 1254,
+    "generator": "built-in image_gen",
+    "kind": "AI-generated base color / ornament source",
+    "modified_pixels": false,
+    "seamless_verified": false,
+    "measured_PBR": false,
+    "sha256": "addc7804b820a5d1096c30a1d02ffac671dda0ac4c78380ab4097d73a88148c7"
+  },
+  {
+    "file": "textures/huanghuali.png",
+    "width": 1254,
+    "height": 1254,
+    "generator": "built-in image_gen",
+    "kind": "AI-generated base color / ornament source",
+    "modified_pixels": false,
+    "seamless_verified": false,
+    "measured_PBR": false,
+    "sha256": "50b897c3550ab10952cbebe01d4dd2cb3cf292919f178f4846005bf37a8d6e19"
+  },
+  {
+    "file": "textures/lacquer_gold_trim.png",
+    "width": 2172,
+    "height": 724,
+    "generator": "built-in image_gen",
+    "kind": "AI-generated base color / ornament source",
+    "modified_pixels": false,
+    "seamless_verified": false,
+    "measured_PBR": false,
+    "sha256": "d664b69cf90b16fb226f2cc78d167f7866492cee20c31e07ed1730f25ae91f13"
+  },
+  {
+    "file": "textures/lime_plaster.png",
+    "width": 1254,
+    "height": 1254,
+    "generator": "built-in image_gen",
+    "kind": "AI-generated base color / ornament source",
+    "modified_pixels": false,
+    "seamless_verified": false,
+    "measured_PBR": false,
+    "sha256": "d52ec322d412b8e700eb1c05121c2a679475f31127be678c0436aca9e95709cd"
+  },
+  {
+    "file": "textures/lotus_panel.png",
+    "width": 1774,
+    "height": 887,
+    "generator": "built-in image_gen",
+    "kind": "AI-generated base color / ornament source",
+    "modified_pixels": false,
+    "seamless_verified": false,
+    "measured_PBR": false,
+    "sha256": "85e768a95e4d4bea1e7275e124098873aaf2939f8b9d92bfe0faa5d5e319e3ca"
+  },
+  {
+    "file": "textures/teal_brocade.png",
+    "width": 1254,
+    "height": 1254,
+    "generator": "built-in image_gen",
+    "kind": "AI-generated base color / ornament source",
+    "modified_pixels": false,
+    "seamless_verified": false,
+    "measured_PBR": false,
+    "sha256": "5ce029609bfb8c6203565afc0fc53766e79d93c0baf0932df77abf1aa96f9213"
+  }
+]

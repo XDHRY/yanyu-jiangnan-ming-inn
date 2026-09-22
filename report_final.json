@@ -1,0 +1,70 @@
+{
+  "schema": "game-room.room-final-report.v1",
+  "roomId": "jiangnan-waterfront-inn",
+  "gates": {
+    "function": false,
+    "form": false,
+    "runtime": false
+  },
+  "formChecks": {
+    "floorPlanParity": false,
+    "primaryArrival": true,
+    "symmetry": false,
+    "shell": false,
+    "manifold": false,
+    "booleans": false,
+    "collisions": false,
+    "support": false,
+    "attachmentOrientation": false,
+    "ceilingAttachmentOrientation": false,
+    "seatingOrientation": false,
+    "focalDistribution": false,
+    "heroClearance": false,
+    "colonnades": false,
+    "screenClearance": false,
+    "scale": true,
+    "camera": false,
+    "ceilingCoverage": false,
+    "environmentCoverage": false,
+    "provenance": true
+  },
+  "reviewRenders": {
+    "corners": [
+      "overview.png",
+      "courtyard.png",
+      "moon_gate.png",
+      "bridge_boat.png"
+    ],
+    "ceiling": [],
+    "environment": {}
+  },
+  "runtimeChecks": {
+    "vlow": false,
+    "textureTiers": false,
+    "lightmap": false,
+    "lightingManifest": false,
+    "performance": false,
+    "browserCapture": "",
+    "errors": []
+  },
+  "postmortem": {
+    "observations": [
+      "Online quality checker reports no measurable shortfalls on both floors.",
+      "Actual mesh rasterized from five viewpoints."
+    ],
+    "corrections": [
+      "Independent north guest-room doors",
+      "Widened windows",
+      "Furniture clashes cleared",
+      "Bank corrected to canal edge",
+      "Stair landing guard obstruction removed"
+    ],
+    "remainingRisks": [
+      "Native Blender unavailable; prepared script is not executed",
+      "Browser download failed; no browser interaction certification",
+      "Formal plugin gates incomplete; draft only",
+      "PBR art direction and full collision audit pending"
+    ]
+  },
+  "proposedLessons": []
+}

@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "checks": [
+    "glb header and buffer bounds",
+    "finite geometry and UVs",
+    "unit normals",
+    "nondegenerate triangles",
+    "embedded PNG signatures",
+    "unique object names",
+    "report parity"
+  ],
+  "objects": 9340,
+  "triangles": 254096,
+  "embedded_images": 5,
+  "not_checked": [
+    "full-scene collision",
+    "historical accuracy",
+    "seamless tiling",
+    "Blender render",
+    "browser execution (local navigation blocked by browser policy)"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "glb_roundtrip_meshes": 5512,
+    "finite_and_nondegenerate": true,
+    "moon_gate_center_clear": true,
+    "upper_floor_courtyard_clear": true,
+    "stair_hole_clear": true,
+    "pngs_nonblank": true
+  },
+  "errors": [],
+  "pass": true,
+  "not_tested": [
+    "Full-scene BVH collision",
+    "Blender execution",
+    "Browser interaction",
+    "Formal Function/Form/Runtime approvals"
+  ]
+}

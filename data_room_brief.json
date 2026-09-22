@@ -1,0 +1,79 @@
+{
+  "schema": "game-room.room-brief.v1",
+  "roomId": "jiangnan-waterfront-inn",
+  "family": "custom",
+  "purpose": "江南临水客栈场景结构审阅与Blender编辑初版",
+  "runtimeSurface": "offline WebGL geometry viewer; GLB for Blender",
+  "boundsMeters": [
+    32,
+    28,
+    8.5
+  ],
+  "hero": {
+    "id": "inn",
+    "role": "courtyard inn",
+    "reservedBoundsMeters": [
+      18,
+      14,
+      7.2
+    ]
+  },
+  "symmetry": {
+    "mode": "bilateral",
+    "order": 2,
+    "appliesTo": [
+      "courtyard ring",
+      "roof wings"
+    ],
+    "exceptions": [
+      "east bridge",
+      "west moon gate",
+      "southeast stair",
+      "tree placement"
+    ]
+  },
+  "circulation": {
+    "description": "south reception to continuous courtyard veranda, all guest rooms independently accessible, southeast stair",
+    "minimumClearanceMeters": 1.2
+  },
+  "productionCamera": {
+    "viewport": [
+      1600,
+      1100
+    ],
+    "location": [
+      34,
+      -33,
+      28
+    ],
+    "target": [
+      8,
+      2,
+      2
+    ],
+    "verticalFovDegrees": 45
+  },
+  "performanceBudget": {
+    "maxSceneTriangles": 200000,
+    "maxVLowBytes": 20000000,
+    "maxHighTextureBytes": 0
+  },
+  "creditBudget": {
+    "maximumCredits": 0,
+    "approvalRequired": true
+  },
+  "environment": {
+    "type": "none",
+    "identity": "",
+    "source": "",
+    "assignmentKey": ""
+  },
+  "artifacts": {
+    "floorPlan": "ground_plan.png",
+    "reflectedCeilingPlan": "",
+    "planMetadata": "plan-metadata.json",
+    "wallElevations": [],
+    "visualTarget": "",
+    "openingContactSheet": ""
+  }
+}
