@@ -1,0 +1,79 @@
+name: Blender diagnostic loop
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "source/**"
+      - "source_*.py"
+      - "data_*.json"
+      - "texture_*.png"
+      - "asset_library_hires/**"
+      - "ci/**"
+      - ".github/workflows/blender-diagnostic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: blender-diagnostic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install Python geometry dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy trimesh pillow
+
+      - name: Prepare reproducible CI workspace
+        run: python ci/prepare_workspace.py
+
+      - name: Build latest procedural scene
+        run: python .ci_work/build_scene.py
+
+      - name: Refine Ming materials and joinery
+        run: python .ci_work/refine_ming.py
+
+      - name: Validate generated GLB
+        run: python .ci_work/validate_ming.py
+
+      - name: Install Blender and virtual display
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender xvfb
+          blender --version
+
+      - name: Render ten low-cost diagnostic views
+        run: |
+          xvfb-run -a blender --background             --python ci/blender_diagnostic.py --             --input .ci_work/ming_review.glb             --output diagnostics
+
+      - name: Validate diagnostic outputs
+        run: python ci/validate_diagnostics.py diagnostics
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-diagnostic-${{ github.run_number }}
+          path: |
+            diagnostics/
+            .ci_work/build-report.json
+            .ci_work/review/report.json
+            .ci_work/review/validation.json
+            .ci_work/ci-input-manifest.json
+          if-no-files-found: warn
+          retention-days: 14
