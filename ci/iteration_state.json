@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round9-waterfront-rain-chain",
+  "current_phase": "diagnostic-round10-wet-limestone-response",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -75,5 +75,10 @@
     "Expose one restrained south-eave rain chain in 10_canal_arrival",
     "Keep dock, boat, wet blue-limestone response and all P0 views unchanged",
     "Recheck 10 first, then 02 / 03 / 06 / 08 / 09 for regressions"
+  ],
+  "round10_focus": [
+    "Deepen cool wet-limestone/paving tint modestly without mirror-like response",
+    "Lower paving roughness from 0.44 to 0.42, staying inside the <=0.45 material contract",
+    "Recheck 10 / 05 first, then 02 / 03 / 06 / 08 / 09 for spatial regressions"
   ]
 }
