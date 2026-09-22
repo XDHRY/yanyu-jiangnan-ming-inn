@@ -35,7 +35,7 @@ base_factors={
 }
 for k,im in source.items():
  b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=base_factors.get(k,[255,255,255,255]),
-  roughnessFactor={'wood':.43,'woodlight':.45,'fabric':.8,'lotus':.42,'lacquer':.31,'metal':.38,'paper':.76,'tile':.41,'paving':.46}.get(k,.73),
+  roughnessFactor={'wood':.43,'woodlight':.45,'fabric':.8,'lotus':.42,'lacquer':.31,'metal':.38,'paper':.76,'tile':.34,'paving':.44}.get(k,.73),
   metallicFactor=.72 if k=='metal' else 0)
 b.COL['lotus']='875324';b.COL['brass']='b39a59';b.COL['celadon']='92bab0'
 b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[179,154,89,255],roughnessFactor=.38,metallicFactor=.74)
