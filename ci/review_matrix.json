@@ -1,0 +1,162 @@
+{
+  "schema": "jiangnan.blender-review-matrix.v1",
+  "purpose": "low-cost spatial and material review before expensive final rendering",
+  "views": [
+    {
+      "id": "01_overview",
+      "priority": "P0",
+      "inspect": [
+        "overall massing",
+        "roof silhouette",
+        "courtyard openness",
+        "ornament density"
+      ],
+      "fail_if": [
+        "roof dominates facade",
+        "hero tree blocks primary massing",
+        "ornament reads noisy at distance"
+      ]
+    },
+    {
+      "id": "02_south_arrival",
+      "priority": "P0",
+      "inspect": [
+        "entrance hierarchy",
+        "lacquer plaque scale",
+        "dougong rhythm",
+        "primary door clearance"
+      ],
+      "fail_if": [
+        "plaque competes with roof",
+        "dougong floats from wall plate",
+        "entrance loses readable center"
+      ]
+    },
+    {
+      "id": "03_courtyard",
+      "priority": "P0",
+      "inspect": [
+        "tree negative space",
+        "veranda rhythm",
+        "furniture circulation",
+        "upper/lower visual relation"
+      ],
+      "fail_if": [
+        "tree becomes foliage blob",
+        "branches obscure major openings",
+        "veranda feels cramped"
+      ]
+    },
+    {
+      "id": "04_moon_gate",
+      "priority": "P1",
+      "inspect": [
+        "moon-gate framing",
+        "garden depth",
+        "path alignment"
+      ],
+      "fail_if": [
+        "opening blocked",
+        "ring appears detached",
+        "view terminates on clutter"
+      ]
+    },
+    {
+      "id": "05_bridge_waterfront",
+      "priority": "P1",
+      "inspect": [
+        "bridge-bank contact",
+        "boat scale",
+        "waterfront hierarchy"
+      ],
+      "fail_if": [
+        "bridge floats",
+        "boat intersects quay",
+        "waterline breaks hull reading"
+      ]
+    },
+    {
+      "id": "06_tree_clearance",
+      "priority": "P0",
+      "inspect": [
+        "branch-to-eave clearance",
+        "leaf scale",
+        "trunk taper",
+        "skywell visibility"
+      ],
+      "fail_if": [
+        "foliage clips roof",
+        "leaf clusters read spherical",
+        "tree erases upper facade"
+      ]
+    },
+    {
+      "id": "07_upper_veranda",
+      "priority": "P1",
+      "inspect": [
+        "balustrade height",
+        "column spacing",
+        "eave coverage",
+        "second-floor circulation"
+      ],
+      "fail_if": [
+        "rail blocks circulation",
+        "columns lose rhythm",
+        "roof edge detaches from supports"
+      ]
+    },
+    {
+      "id": "08_eave_column_plinth",
+      "priority": "P0",
+      "inspect": [
+        "eave-column-plinth load path",
+        "dougong contact",
+        "stone base scale"
+      ],
+      "fail_if": [
+        "bracket floats",
+        "column misses base",
+        "support chain is visually implausible"
+      ]
+    },
+    {
+      "id": "09_roof_wall_plate",
+      "priority": "P0",
+      "inspect": [
+        "roof-wall-plate seam",
+        "gable baseline",
+        "tile overhang"
+      ],
+      "fail_if": [
+        "wide black gap returns",
+        "eave appears unsupported",
+        "overhang feels modern/heavy"
+      ]
+    },
+    {
+      "id": "10_canal_arrival",
+      "priority": "P1",
+      "inspect": [
+        "dock approach",
+        "rain-chain silhouette",
+        "quay wet material",
+        "arrival composition"
+      ],
+      "fail_if": [
+        "dock lacks contact",
+        "rain chain intersects circulation",
+        "foreground overwhelms inn"
+      ]
+    }
+  ],
+  "iteration_rule": {
+    "order": [
+      "P0 geometry/contact",
+      "P0 silhouette/occlusion",
+      "P1 composition",
+      "material response",
+      "detail density"
+    ],
+    "expensive_final_render": "only after two consecutive diagnostic rounds have no P0 failures"
+  }
+}
