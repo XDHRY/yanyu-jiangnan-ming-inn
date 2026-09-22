@@ -83,8 +83,8 @@ def roof(x0,x1,y0,y1,along='x'):
   for a in np.arange(lo+.08,hi,.22):
    # one complete raised tile roll per row, eight curved segments
    for j in range(8):
-    p=pt(a,j/8,side);q=pt(a,(j+1)/8,side);p[2]+=.035;q[2]+=.035;beam('tile_roll',p,q,.046,'tile',6)
-  for t in np.linspace(.12,1,8):beam('tile_course',pt(lo,t,side),pt(hi,t,side),.016,'tile',5)
+    p=pt(a,j/8,side);q=pt(a,(j+1)/8,side);p[2]+=.035;q[2]+=.035;beam('tile_roll',p,q,.038,'tile',6)
+  for t in np.linspace(.12,1,8):beam('tile_course',pt(lo,t,side),pt(hi,t,side),.012,'tile',5)
   beam('eave_beam',pt(lo,1,side),pt(hi,1,side),.105,'wood')
   beam('roof_wall_plate',pt(lo,1,side),pt(hi,1,side),.072,'woodlight')
  beam('roof_ridge',pt(lo,0,1),pt(hi,0,1),.11,'tile')
@@ -260,9 +260,9 @@ for x0,x1,y0,y1,axis in [(4,14,4,5.45,'south'),(4,14,8.55,10,'north'),(4,5.45,5.
  vv=[[x0,y0,hz(x0,y0)],[x1,y0,hz(x1,y0)],[x1,y1,hz(x1,y1)],[x0,y1,hz(x0,y1)]]
  mesh('veranda_roof',vv,[[0,1,2],[0,2,3]],'tile')
  if axis in ['south','north']:
-  for xx in np.arange(x0,x1,.22):beam('veranda_tiles',(xx,y0,hz(xx,y0)+.03),(xx,y1,hz(xx,y1)+.03),.042,'tile',6)
+  for xx in np.arange(x0,x1,.22):beam('veranda_tiles',(xx,y0,hz(xx,y0)+.03),(xx,y1,hz(xx,y1)+.03),.034,'tile',6)
  else:
-  for yy in np.arange(y0,y1,.22):beam('veranda_tiles',(x0,yy,hz(x0,yy)+.03),(x1,yy,hz(x1,yy)+.03),.042,'tile',6)
+  for yy in np.arange(y0,y1,.22):beam('veranda_tiles',(x0,yy,hz(x0,yy)+.03),(x1,yy,hz(x1,yy)+.03),.034,'tile',6)
 # High-leverage ornament pass: real scene geometry, not diagnostic overlays.
 layer='ornament'
 for xx in [1.2,5.4,12.6,16.8]:dougong(xx,-.02,5.18,'x')
