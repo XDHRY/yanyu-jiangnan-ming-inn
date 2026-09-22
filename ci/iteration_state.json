@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round10-wet-limestone-response",
+  "current_phase": "diagnostic-round11-moon-gate-depth",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -80,5 +80,10 @@
     "Deepen cool wet-limestone/paving tint modestly without mirror-like response",
     "Lower paving roughness from 0.44 to 0.42, staying inside the <=0.45 material contract",
     "Recheck 10 / 05 first, then 02 / 03 / 06 / 08 / 09 for spatial regressions"
+  ],
+  "round11_focus": [
+    "Add one low garden lantern behind the moon gate as a restrained depth target",
+    "Keep moon-gate opening, moss stone, path alignment and all P0 views unchanged",
+    "Recheck 04 first, then 02 / 03 / 06 / 08 / 09 / 10 for regressions"
   ]
 }

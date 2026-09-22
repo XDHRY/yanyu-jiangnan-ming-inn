@@ -306,6 +306,8 @@ box('garden_enclosure',(-2,9,.95),(.3,7.4,1.9),'plaster');box('garden_end',(-1,1
 for y in np.arange(.8,12,.55):box('side_garden_path',(-1,y,.03),(1.5,.51,.06),'paving')
 sphere('moon_gate_moss_stone',(-1.0,3.52,.16),(.28,.22,.16),'stone',1)
 sphere('moon_gate_moss_cap',(-1.0,3.52,.29),(.20,.14,.05),'leaf2',1)
+# One low garden lantern gives the moon gate a restrained depth target without filling the opening.
+lantern(-.92,3.72,1.05)
 for xx,yy,s in [(-4.2,6,1.1),(-3.8,10,.8),(21,10,1.2),(21,13,.85)]:tree(xx,yy,0,s)
 # Dock and piles connected to quay; boat has a hollow hull and canopy.
 layer='waterfront'
