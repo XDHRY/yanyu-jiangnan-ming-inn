@@ -73,7 +73,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y blender xvfb
-          blender --version
+          mkdir -p diagnostics
+          blender --version | tee diagnostics/blender-version.txt
+          blender --background --python-expr "import bpy; assert bpy.app.version >= (4,0,0), bpy.app.version_string; print('BLENDER_RUNTIME_OK', bpy.app.version_string)"
 
       - name: Render ten low-cost diagnostic views
         run: xvfb-run -a blender --background --python ci/blender_diagnostic.py -- --input .ci_work/ming_review.glb --output diagnostics
