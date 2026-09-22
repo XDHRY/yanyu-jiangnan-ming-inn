@@ -85,6 +85,17 @@ area = bpy.data.objects.new("CI_SkyFill", area_data)
 scene.collection.objects.link(area)
 area.location = (8, -4, 18)
 
+# A neutral interior fill keeps the structural P0 views readable under the deep roof
+# without flattening the blue-hour contrast used by the arrival views.
+fill_data = bpy.data.lights.new("CI_StructureFill", "AREA")
+fill_data.energy = 900
+fill_data.shape = "DISK"
+fill_data.size = 5.5
+fill = bpy.data.objects.new("CI_StructureFill", fill_data)
+scene.collection.objects.link(fill)
+fill.location = (13.0, 6.2, 8.0)
+fill.rotation_euler = (Vector((13.0, 5.6, 2.8)) - fill.location).to_track_quat("-Z", "Y").to_euler()
+
 for idx, (x, y, z) in enumerate(((9, -1.2, 2.2), (6, 6.0, 3.0), (12, 8.0, 3.0))):
     ld = bpy.data.lights.new(f"CI_Warm_{idx}", "AREA")
     ld.energy = 180
@@ -132,13 +143,13 @@ def make_camera(name, loc, target, lens=48):
 views = [
     ("01_overview", (31, -29, 22), (9, 5.0, 2.6), 52, []),
     ("02_south_arrival", (9, -15, 4.2), (9, 0.5, 2.2), 52, []),
-    ("03_courtyard", (9, -3.5, 7.5), (9, 7.0, 2.2), 48, ["roof"]),
+    ("03_courtyard", (7.3, 5.7, 3.5), (8.8, 7.0, 1.15), 46, ["roof"]),
     ("04_moon_gate", (-10, 1.0, 4.8), (-1.2, 5.0, 1.7), 55, []),
     ("05_bridge_waterfront", (28, -16, 8.0), (15, -4.8, 1.1), 55, []),
-    ("06_tree_clearance", (17, 1.5, 5.5), (8.4, 7.0, 2.6), 58, ["roof"]),
+    ("06_tree_clearance", (11.7, 6.1, 3.8), (8.4, 7.0, 2.05), 50, ["roof"]),
     ("07_upper_veranda", (20, 1.0, 7.8), (10.5, 6.8, 4.7), 58, ["roof"]),
-    ("08_eave_column_plinth", (16.5, 3.0, 6.2), (13.3, 5.4, 4.7), 62, []),
-    ("09_roof_wall_plate", (23, -2.0, 8.4), (13.0, 1.5, 5.3), 60, []),
+    ("08_eave_column_plinth", (13.9, 7.0, 3.2), (13.3, 5.35, 2.7), 48, []),
+    ("09_roof_wall_plate", (20.5, -2.6, 5.9), (15.2, 0.25, 5.25), 58, []),
     ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
 ]
 
