@@ -30,7 +30,7 @@ source={k:Image.open(P/'textures'/v).convert('RGB') for k,v in {
 # Wet architectural surfaces use broad, restrained highlights rather than mirror-like bands.
 # The cool factors keep the stone/tile family blue-black without washing to neutral gray.
 base_factors={
- 'tile':[220,228,235,255],
+ 'tile':[185,198,208,255],
  'paving':[208,222,230,255],
 }
 for k,im in source.items():

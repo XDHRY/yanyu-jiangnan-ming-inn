@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round5-detail-focal-cues",
+  "current_phase": "diagnostic-round6-wet-tile-contrast",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -55,5 +55,10 @@
     "Paper screen 2 x 3 timber grid for legible threshold detail",
     "Tighten courtyard tree bed and expose moss-capped stone connector",
     "Lower/widen 09 roof-wall-plate framing and add one explicit plate tenon"
+  ],
+  "round6_focus": [
+    "Reduce raised black-tile roll contrast so wet roof reads dark and controlled",
+    "Preserve wet-tile roughness contract (<=0.35) and embedded texture payload",
+    "Keep wall-plate joint, paper screens, courtyard hierarchy unchanged"
   ]
 }
