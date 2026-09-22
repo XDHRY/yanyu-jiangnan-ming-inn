@@ -1,0 +1,44 @@
+{
+  "schema": "jiangnan.iteration-state.v1",
+  "current_phase": "public-render-ready",
+  "gates": {
+    "function": "approved",
+    "form": "pending-native-render-review",
+    "runtime": "pending"
+  },
+  "authoritative_sources": [
+    "source/build_scene_roof_tree_revision.py",
+    "source/refine_ming.py"
+  ],
+  "render_loop": {
+    "workflow": ".github/workflows/blender-diagnostic.yml",
+    "trigger_when_public": "public",
+    "views": 10,
+    "resolution": "720x480",
+    "renderer": "Blender Eevee",
+    "artifact_contents": [
+      "10 diagnostic PNGs",
+      "diagnostic_contact_sheet.jpg",
+      "diagnostic_index.json",
+      "jiangnan_diagnostic.blend",
+      "render_manifest.json",
+      "diagnostic-validation.json",
+      "GLB validation/material contract reports",
+      "review_matrix.json"
+    ]
+  },
+  "next_review_order": [
+    "02_south_arrival",
+    "03_courtyard",
+    "06_tree_clearance",
+    "08_eave_column_plinth",
+    "09_roof_wall_plate",
+    "01_overview",
+    "04_moon_gate",
+    "05_bridge_waterfront",
+    "07_upper_veranda",
+    "10_canal_arrival"
+  ],
+  "promotion_rule": "No expensive final render until two consecutive diagnostic rounds have no P0 failures.",
+  "known_blocker": "Repository visibility must become public before hosted runner work begins."
+}
