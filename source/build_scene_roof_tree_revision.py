@@ -284,6 +284,7 @@ hanging_plaque(9,-.34,2.50)
 # clear passage tested by the Blender diagnostic.
 paper_screen(7.0,-.08,.22,.72,1.78);paper_screen(11.0,-.08,.22,.72,1.78)
 for xx in [.55,17.45]:rain_chain(xx,-.28,5.34)
+rain_chain(3.40,-.28,5.34,count=14,step=.23)
 
 # Moon gate in the west side garden: actual hole through a thick wall.
 layer='garden'
