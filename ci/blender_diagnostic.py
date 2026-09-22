@@ -159,6 +159,8 @@ blend_path = OUT / "jiangnan_diagnostic.blend"
 bpy.ops.wm.save_as_mainfile(filepath=str(blend_path))
 
 manifest = {
+    "blender_version": bpy.app.version_string,
+    "blender_version_tuple": list(bpy.app.version),
     "engine": engine_set,
     "resolution": [scene.render.resolution_x, scene.render.resolution_y],
     "views": [v[0] for v in views],
