@@ -147,7 +147,7 @@ views = [
     ("04_moon_gate", (-10, 1.0, 4.8), (-1.2, 5.0, 1.7), 55, []),
     ("05_bridge_waterfront", (28, -16, 8.0), (15, -4.8, 1.1), 55, []),
     ("06_tree_clearance", (13.0, 5.5, 5.0), (8.4, 7.0, 2.4), 40, ["roof"]),
-    ("07_upper_veranda", (20, 1.0, 7.8), (10.5, 6.8, 4.7), 58, ["roof"]),
+    ("07_upper_veranda", (20, 1.0, 7.25), (10.5, 6.8, 4.55), 55, ["roof"]),
     ("08_eave_column_plinth", (7.0, 7.5, 2.9), (13.3, 5.35, 2.6), 24, ["roof_substrate", "tile_roll", "veranda_roof", "veranda_tiles", "balcony_rail", "baluster", "tree"]),
     ("09_roof_wall_plate", (20.5, -2.8, 5.55), (15.8, 0.15, 5.18), 54, []),
     ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
