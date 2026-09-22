@@ -275,9 +275,9 @@ for xx in [4.7,7.6,10.5,13.3]:
  dougong(xx,5.35,5.10,'x');dougong(xx,8.65,5.10,'x')
 # One restrained upper-veranda pot gives the ring a lived-in focal point without
 # competing with the structural bracket rhythm.
-lathe('upper_veranda_lotus_pot',(7.60,8.80,2.82),[(0,0),(.03,.15),(.28,.23),(.34,.24),(.34,.18),(.08,.11)],'red',16)
+lathe('upper_veranda_lotus_pot',(10.60,5.12,2.82),[(0,0),(.03,.15),(.28,.23),(.34,.24),(.34,.18),(.08,.11)],'red',16)
 for dx,dy,dz in [(-.14,0,.48),(.02,.04,.58),(.16,-.02,.46),(.04,-.12,.68)]:
- sphere('upper_veranda_lotus_leaf',(7.60+dx,8.80+dy,3.16+dz),(.13,.10,.18),'leaf',1)
+ sphere('upper_veranda_lotus_leaf',(10.60+dx,5.12+dy,3.16+dz),(.13,.10,.18),'leaf',1)
 hanging_plaque(9,-.34,2.50)
 # Bring the paired paper screens to the facade edge so the south arrival
 # reads as a layered threshold; their x positions remain outside the 2.4 m
