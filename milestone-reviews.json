@@ -1,0 +1,33 @@
+{
+  "schema": "game-room.milestone-reviews.v1",
+  "roomId": "jiangnan-waterfront-inn",
+  "function": {
+    "status": "approved",
+    "approvedBy": "Codex geometry audit + user-directed revision",
+    "approvedAt": "2026-09-22T14:55:00Z",
+    "evidence": [
+      "review/overview.png",
+      "review/courtyard.png",
+      "review/joinery.png",
+      "plans/visual_target.png"
+    ],
+    "strangestElement": "The pruned courtyard tree is the visual anchor; its layered branches preserve the central sightline.",
+    "notes": "Function review covers circulation shell, primary arrival, roof-wall-plate attachment, and asset-reference provenance. Form and Runtime remain pending until native mesh and browser gates are run."
+  },
+  "form": {
+    "status": "pending",
+    "approvedBy": "",
+    "approvedAt": "",
+    "evidence": [],
+    "strangestElement": "",
+    "notes": ""
+  },
+  "runtime": {
+    "status": "pending",
+    "approvedBy": "",
+    "approvedAt": "",
+    "evidence": [],
+    "strangestElement": "",
+    "notes": ""
+  }
+}

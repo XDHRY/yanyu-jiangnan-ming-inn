@@ -1,0 +1,257 @@
+{
+  "schema": "game-room.prop-manifest.v1",
+  "roomId": "jiangnan-waterfront-inn",
+  "generation": {
+    "provider": "meshy",
+    "apiModel": "meshy-5",
+    "pricingSource": "https://docs.meshy.ai/en/api/pricing",
+    "pricingVerifiedAt": "2026-09-22T14:50:00Z",
+    "creditsPerTexturedTask": 1,
+    "hardCreditCeiling": 10,
+    "maxChargedAttemptsPerAsset": 2,
+    "creditsConsumed": 0,
+    "executionPolicy": "reference-only batch; no paid Meshy submission was made"
+  },
+  "assets": [
+    {
+      "id": "huanghuali_tea_table_v2",
+      "function": "hero tea table for the south reception conversation vignette",
+      "description": "Ming huanghuali tea table with cloud-cut apron and curved feet.",
+      "class": "hero",
+      "dimensionsMeters": [1.8, 0.9, 0.78],
+      "attachmentFace": "floor",
+      "semanticFront": "negative-y",
+      "targetPolycount": 18000,
+      "rejectionCriteria": ["leg topology cannot float", "top must remain planar", "carving must not erase joinery"],
+      "intendedInstances": 1,
+      "image": {
+        "prompt": "Ming huanghuali tea table, isolated uncropped three-quarter studio reference, restrained cloud-cut apron and realistic oiled grain.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/props/prop_huanghuali_tea_table_v2.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "horseshoe_armchair_v2",
+      "function": "paired reception seating with clear circulation around the table",
+      "description": "Ming horseshoe-back huanghuali armchair with woven seat and continuous crest rail.",
+      "class": "hero",
+      "dimensionsMeters": [0.82, 0.72, 1.08],
+      "attachmentFace": "floor",
+      "semanticFront": "negative-y",
+      "targetPolycount": 22000,
+      "rejectionCriteria": ["crest rail must be continuous", "seat must not intersect frame", "front direction must be unambiguous"],
+      "intendedInstances": 2,
+      "image": {
+        "prompt": "Ming huanghuali horseshoe-back armchair, isolated full object, woven seat, refined Jiangnan proportions.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/props/prop_horseshoe_armchair_v2.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "four_panel_screen",
+      "function": "soft barrier and focal screen for the courtyard veranda",
+      "description": "Four-panel Ming folding screen with dark wood frame and translucent paper panels.",
+      "class": "reusable",
+      "dimensionsMeters": [2.6, 0.12, 1.9],
+      "attachmentFace": "floor",
+      "semanticFront": "negative-y",
+      "targetPolycount": 24000,
+      "rejectionCriteria": ["panels must hinge in one plane", "base must sit on the floor", "paper panels must remain non-opaque"],
+      "intendedInstances": 2,
+      "image": {
+        "prompt": "Four-panel Ming folding screen, dark huanghuali frame and translucent ink-wash paper panels, isolated studio reference.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/props/prop_four_panel_screen.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "courtyard_pruned_tree",
+      "function": "courtyard hero vegetation with layered branch rhythm and open sightlines",
+      "description": "Pruned Jiangnan courtyard tree with slim twisting trunk, layered branch pads and small glossy leaf clusters.",
+      "class": "hero",
+      "dimensionsMeters": [4.2, 3.8, 5.2],
+      "attachmentFace": "floor",
+      "semanticFront": "positive-y",
+      "targetPolycount": 48000,
+      "rejectionCriteria": ["trunk must taper continuously", "branch pads cannot be spherical blobs", "root flare must contact ground"],
+      "intendedInstances": 1,
+      "image": {
+        "prompt": "Refined Jiangnan courtyard tree, slim twisted trunk, layered asymmetrical branches and small glossy leaf clusters, isolated.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/environment/env_courtyard_pruned_tree.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "wupeng_boat",
+      "function": "waterfront arrival prop aligned to the canal edge",
+      "description": "Compact Jiangnan wupeng canal boat with black awning and dark timber hull.",
+      "class": "hero",
+      "dimensionsMeters": [5.2, 1.6, 1.8],
+      "attachmentFace": "freestanding",
+      "semanticFront": "positive-y",
+      "targetPolycount": 36000,
+      "rejectionCriteria": ["hull must be watertight in later mesh pass", "awning must clear hull", "bow and stern must read distinctly"],
+      "intendedInstances": 1,
+      "image": {
+        "prompt": "Single Jiangnan wupeng canal boat with black canopy and dark timber hull, isolated uncropped studio reference.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/props/prop_wupeng_boat.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "moon_gate_stone_ring",
+      "function": "western garden threshold and framed arrival view",
+      "description": "Pale blue limestone moon-gate ring with softly tooled edge.",
+      "class": "hero",
+      "dimensionsMeters": [3.1, 0.48, 3.4],
+      "attachmentFace": "floor",
+      "semanticFront": "positive-y",
+      "targetPolycount": 30000,
+      "rejectionCriteria": ["opening must be truly cut through", "ring must sit level", "stone edge must remain continuous"],
+      "intendedInstances": 0,
+      "image": {
+        "prompt": "Jiangnan moon-gate blue limestone ring, isolated freestanding architectural reference with softly tooled edge.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/architecture/arch_moon_gate_stone_ring.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "eave_bracket",
+      "function": "roof support ornament at the corrected wall-plate junction",
+      "description": "Layered Ming dougong eave bracket cluster with readable load path.",
+      "class": "reusable",
+      "dimensionsMeters": [1.4, 1.0, 0.95],
+      "attachmentFace": "ceiling",
+      "semanticFront": "negative-y",
+      "targetPolycount": 26000,
+      "rejectionCriteria": ["every bracket layer must bear on the next", "no piece may float", "wall-plate contact must be flat"],
+      "intendedInstances": 0,
+      "image": {
+        "prompt": "Ming dougong eave bracket cluster, layered dark timber joinery, isolated architectural reference.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/architecture/arch_eave_bracket.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "blue_limestone_step",
+      "function": "threshold step at the covered veranda edge",
+      "description": "Broad blue limestone threshold step with softened arris and rain sheen.",
+      "class": "reusable",
+      "dimensionsMeters": [2.4, 0.65, 0.22],
+      "attachmentFace": "floor",
+      "semanticFront": "negative-y",
+      "targetPolycount": 7000,
+      "rejectionCriteria": ["top must be level", "step must not float", "front arris must be readable"],
+      "intendedInstances": 0,
+      "image": {
+        "prompt": "Blue-gray limestone threshold step, isolated Jiangnan architectural component, subtle rain sheen.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/architecture/arch_blue_limestone_step.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "black_tile_wet",
+      "function": "roof tile material reference for the narrowed overhang revision",
+      "description": "Charcoal fired clay roofing material after rain with restrained handmade variation.",
+      "class": "reusable",
+      "dimensionsMeters": [1.0, 1.0, 0.04],
+      "attachmentFace": "ceiling",
+      "semanticFront": "positive-z",
+      "targetPolycount": 2500,
+      "rejectionCriteria": ["tile field must tile without visible seam", "wet response must remain matte-satin", "no modern glossy glaze"],
+      "intendedInstances": 0,
+      "image": {
+        "prompt": "Seamless charcoal-black fired clay roof tile material after rain, orthographic full-frame texture sheet.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/textures/tex_black_tile_wet.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "teal_brocade_cloud",
+      "function": "restrained textile accent for interior screens and cushions",
+      "description": "Deep teal Ming brocade with low-contrast gold cloud scrolls and visible woven fibers.",
+      "class": "reusable",
+      "dimensionsMeters": [1.0, 1.0, 0.01],
+      "attachmentFace": "freestanding",
+      "semanticFront": "positive-z",
+      "targetPolycount": 1200,
+      "rejectionCriteria": ["pattern must remain low contrast", "weave must not look plastic", "texture must tile cleanly"],
+      "intendedInstances": 0,
+      "image": {
+        "prompt": "Seamless deep teal Ming brocade with restrained gold cloud scrolls, orthographic material sheet.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/textures/tex_teal_brocade_cloud.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "paper_screen",
+      "function": "translucent rice-paper material for lattice windows and screens",
+      "description": "Warm rice paper with subtle long fibers and soft translucency.",
+      "class": "reusable",
+      "dimensionsMeters": [1.0, 1.0, 0.005],
+      "attachmentFace": "wall",
+      "semanticFront": "positive-z",
+      "targetPolycount": 600,
+      "rejectionCriteria": ["must remain translucent", "fiber scale must be fine", "no printed text or hard border"],
+      "intendedInstances": 0,
+      "image": {
+        "prompt": "Seamless warm rice paper material, subtle fibers and soft translucency, orthographic full-frame texture sheet.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/textures/tex_paper_screen.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    },
+    {
+      "id": "hanging_plaque",
+      "function": "blank entrance plaque for later approved lettering pass",
+      "description": "Dark huanghuali hanging plaque with carved blank field and aged brass chain.",
+      "class": "hero",
+      "dimensionsMeters": [1.4, 0.16, 0.62],
+      "attachmentFace": "ceiling",
+      "semanticFront": "negative-y",
+      "targetPolycount": 9000,
+      "rejectionCriteria": ["plaque must hang level", "blank field must contain no accidental glyphs", "chain must attach at two points"],
+      "intendedInstances": 0,
+      "image": {
+        "prompt": "Dark huanghuali hanging inn plaque with blank carved field and aged brass chain, isolated studio reference.",
+        "generator": "OpenAI built-in imagegen",
+        "source": "generated_assets/props/prop_hanging_plaque.png",
+        "approved": true,
+        "approvedBy": "user-directed batch 2026-09-22"
+      },
+      "attempts": []
+    }
+  ]
+}
