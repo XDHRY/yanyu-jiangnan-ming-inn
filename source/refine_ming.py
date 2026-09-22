@@ -32,6 +32,8 @@ source={k:Image.open(P/'textures'/v).convert('RGB') for k,v in {
 base_factors={
  'tile':[185,198,208,255],
  'paving':[198,214,224,255],
+ # Warm, slightly muted paper keeps the screen distinct from plaster without reading as opaque plastic.
+ 'paper':[248,242,232,255],
 }
 for k,im in source.items():
  b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=base_factors.get(k,[255,255,255,255]),
@@ -79,6 +81,17 @@ def lattice(x,y,z,w,h):
    cx=x-(w-.10)/2+(i+.5)*dx;cz=z+.05+(j+.5)*dz
    frame('step_pattern',cx,y-.004,cz-dz*.26,dx*.52,dz*.52,.014,.025)
    for side in [-1,1]:rod('pattern_attachment',(cx+side*dx*.26,y,cz),(cx+side*dx*.5,y,cz),.007)
+
+def lotus_motif(x,y,z,w,h):
+ # One restrained lotus medallion gives the central upper entrance window a
+ # period cue while keeping the surrounding lattice open.
+ cx=x;cy=y-.052;cz=z+h*.53
+ for side in [-1,1]:
+  dx=side*.19
+  curved('lotus_petal',[(cx,cy,cz),(cx+dx*.58,cy,cz+.105),(cx+dx,cy,cz),(cx+dx*.58,cy,cz-.105),(cx,cy,cz)],.010,'woodlight')
+ curved('lotus_center',[(cx,cy,cz-.02),(cx,cy,cz+.13),(cx,cy,cz+.24),(cx,cy,cz+.13),(cx,cy,cz-.02)],.011,'woodlight')
+ curved('lotus_cup',[(cx-.24,cy,cz-.09),(cx,cy,cz-.17),(cx+.24,cy,cz-.09)],.011,'woodlight')
+ ring('lotus_seed',(cx,cy-.006,cz+.015),.025,.006,'brass')
 
 def panel(x,y,z,w,h):
  box('lotus_panel_solid',(x,y,z+h/2),(w,.034,h),'lotus')
@@ -148,6 +161,8 @@ for level,filename in enumerate(['ground.json','upper.json']):
   if o['kind']!='window':continue
   w=next(w for w in data['walls'] if w['id']==o['wall']);a=np.array(w['from']);c=np.array(w['to']);u=(c-a)/np.linalg.norm(c-a)
   start=len(b.records);lattice(0,0,z+o['sillM']+.04,o['widthM']-.08,o['heightM']-.08)
+  if level==1 and abs(o['at'][0]-9)<.1 and abs(o['at'][1])<.1:
+   lotus_motif(0,0,z+o['sillM']+.04,o['widthM']-.08,o['heightM']-.08)
   T=trimesh.transformations.rotation_matrix(math.atan2(u[1],u[0]),[0,0,1]);T[:2,3]=o['at'];transform_new(start,T)
  for x in [1.2,1.98,2.76,3.54,4.32]:screen_leaf(x,3.78,z+.03)
  tea_set(2.75,2,z)
