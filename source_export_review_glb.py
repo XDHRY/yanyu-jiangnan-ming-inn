@@ -18,7 +18,7 @@ def write_glb(path,payload,texture_dir,colors):
          'paving':[208/255,222/255,230/255,1]}
    factor=tint.get(k,[1,1,1,1]) if tx else [v/255 for v in bytes.fromhex(colors[k])]+[1]
    rough={'wood':.43,'woodlight':.45,'fabric':.80,'lotus':.42,'lacquer':.31,
-          'metal':.38,'paper':.76,'tile':.41,'paving':.46,'brass':.38,
+          'metal':.38,'paper':.76,'tile':.34,'paving':.44,'brass':.38,
           'celadon':.24,'stone':.58}.get(k,.65)
    metallic=.74 if k=='brass' else .72 if k=='metal' else 0.
    pbr={'baseColorFactor':factor,'metallicFactor':metallic,'roughnessFactor':rough}
