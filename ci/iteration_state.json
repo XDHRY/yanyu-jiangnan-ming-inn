@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round11-moon-gate-depth",
+  "current_phase": "diagnostic-round13-waterline-contact",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -85,5 +85,10 @@
     "Add one low garden lantern behind the moon gate as a restrained depth target",
     "Keep moon-gate opening, moss stone, path alignment and all P0 views unchanged",
     "Recheck 04 first, then 02 / 03 / 06 / 08 / 09 / 10 for regressions"
+  ],
+  "round13_focus": [
+    "Add one low elliptical waterline ripple around the existing wupeng boat",
+    "Keep boat scale, dock contact, bridge geometry and all fixed P0 views unchanged",
+    "Recheck 05 / 10 first, then 02 / 03 / 06 / 08 / 09 for regressions"
   ]
 }
