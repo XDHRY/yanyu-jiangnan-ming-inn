@@ -237,6 +237,8 @@ for y in [2.35,3.45]:
  for i in range(0,17,2):beam('stair_spindle',(12.9+i*4.2/16,y,.2+i*2.7/16),(12.9+i*4.2/16,y,1.1+i*2.7/16),.023)
 # Entry steps.
 for i in range(2):box('entry_step',(9,-.75+i*.3,.05+i*.1),(2.8,.6,.1),'stone')
+# Thin wet limestone caps keep the entry threshold in the same material family as the canal paving.
+for i in range(2):box('entry_step_wet_cap',(9,-.75+i*.3,.1125+i*.1),(2.62,.50,.025),'paving')
 # Central planted sky well; tree entirely within the open 7.2 x 3.2 m aperture.
 # Tighten the soil island and pull the jar/rocks into one readable courtyard
 # rhythm: tree as primary, wet stone as connector, jar as secondary anchor.
