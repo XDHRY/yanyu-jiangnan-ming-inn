@@ -7,7 +7,7 @@ from trimesh.visual.material import PBRMaterial
 P=Path(__file__).resolve().parent
 random.seed(27)
 S=trimesh.Scene(); records=[]; layer='site'
-COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943','lacquer':'171411'}
+COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943','lacquer':'171411','paper':'d7cfb8'}
 M={k:PBRMaterial(name=k,baseColorFactor=[*bytes.fromhex(v),255],roughnessFactor=.23 if k in ['water','tile','paving'] else .76,metallicFactor=0,emissiveFactor=[.5,.23,.06] if k=='glow' else [0,0,0],doubleSided=True) for k,v in COL.items()}
 def add(name,m,mat):
  m.update_faces(m.nondegenerate_faces());m.remove_unreferenced_vertices();m.visual=trimesh.visual.TextureVisuals(material=M[mat]); n=f'{layer}/{name}_{len(records):05d}'; S.add_geometry(m,node_name=n,geom_name=n);records.append({'name':n,'layer':layer,'material':mat,'bounds':m.bounds.round(4).tolist(),'vertices':len(m.vertices),'triangles':len(m.faces)})
@@ -147,6 +147,14 @@ def dougong(x,y,z,axis='x'):
   if axis=='x':box('dougong_arm',(x+side*.32,y,z+.29),(.22,.34,.08),'wood')
   else:box('dougong_arm',(x,y+side*.32,z+.29),(.34,.22,.08),'wood')
 
+def paper_screen(x,y,z,w=.9,h=1.95):
+ # Low-cost high-impact screen: real paper plane with a restrained timber frame.
+ box('paper_screen_panel',(x,y,z+h/2),(w-.10,.018,h-.10),'paper')
+ for dx in [-w/2+.035,w/2-.035]:box('paper_screen_stile',(x+dx,y-.015,z+h/2),(.07,.055,h),'wood')
+ for zz in [z+.035,z+h-.035]:box('paper_screen_rail',(x,y-.015,zz),(w,.055,.07),'wood')
+ # One quiet central muntin prevents the panel from reading like a modern glass sheet.
+ box('paper_screen_muntin',(x,y-.035,z+h/2),(.026,.026,h-.14),'woodlight')
+
 def hanging_plaque(x,y,z):
  box('hanging_plaque_body',(x,y,z),(2.2,.10,.58),'lacquer')
  for dx in [-1.02,1.02]:box('hanging_plaque_trim_v',(x+dx,y-.055,z),(.035,.018,.52),'metal')
@@ -251,6 +259,7 @@ for xx in [1.2,5.4,12.6,16.8]:dougong(xx,-.02,5.18,'x')
 for xx in [4.7,7.6,10.5,13.3]:
  dougong(xx,5.35,5.10,'x');dougong(xx,8.65,5.10,'x')
 hanging_plaque(9,-.34,2.43)
+paper_screen(6.7,.55,.22,.9,1.95);paper_screen(11.3,.55,.22,.9,1.95)
 for xx in [.55,17.45]:rain_chain(xx,-.28,5.34)
 
 # Moon gate in the west side garden: actual hole through a thick wall.
