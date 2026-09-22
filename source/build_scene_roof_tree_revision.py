@@ -152,8 +152,10 @@ def paper_screen(x,y,z,w=.9,h=1.95):
  box('paper_screen_panel',(x,y,z+h/2),(w-.10,.018,h-.10),'paper')
  for dx in [-w/2+.035,w/2-.035]:box('paper_screen_stile',(x+dx,y-.015,z+h/2),(.07,.055,h),'wood')
  for zz in [z+.035,z+h-.035]:box('paper_screen_rail',(x,y-.015,zz),(w,.055,.07),'wood')
- # One quiet central muntin prevents the panel from reading like a modern glass sheet.
+ # A quiet 2 x 3 timber grid keeps the paper panel legible at diagnostic scale.
  box('paper_screen_muntin',(x,y-.035,z+h/2),(.026,.026,h-.14),'woodlight')
+ for zz in [z+h*.34,z+h*.66]:
+  box('paper_screen_muntin',(x,y-.035,zz),(w-.14,.026,.026),'woodlight')
 
 def hanging_plaque(x,y,z):
  box('hanging_plaque_body',(x,y,z),(2.2,.10,.58),'lacquer')
@@ -236,11 +238,13 @@ for i in range(2):box('entry_step',(9,-.75+i*.3,.05+i*.1),(2.8,.6,.1),'stone')
 # rhythm: tree as primary, wet stone as connector, jar as secondary anchor.
 layer='courtyard'
 box('courtyard_paving',(9,7,.025),(7.2,3.2,.05),'paving')
-box('tree_bed',(8.4,7,.08),(1.75,1.55,.16),'soil')
+box('tree_bed',(8.4,7,.08),(1.42,1.18,.16),'soil')
 tree(8.4,7,.15,.9)
 lathe('stone_water_jar',(10.65,7.45,.05),[(0,0),(.05,.38),(.3,.5),(.65,.47),(.75,.43),(.75,.34),(.18,.3)],'stone')
-sphere('moss_stone',(9.72,7.72,.16),(.31,.24,.17),'stone',1)
-sphere('moss_stone',(9.98,7.88,.11),(.16,.13,.11),'stone',1)
+# Bring a small moss-capped stone pair into the sightline between tree and jar.
+sphere('moss_stone',(9.52,7.05,.16),(.30,.22,.16),'stone',1)
+sphere('moss_cap',(9.52,7.05,.30),(.22,.16,.05),'leaf2',1)
+sphere('moss_stone',(9.92,7.20,.11),(.16,.12,.10),'stone',1)
 for x,y in [(6.3,6.5),(11.1,8.05),(10.95,6.25)]:
  lathe('terracotta_pot',(x,y,.05),[(0,0),(.03,.2),(.38,.32),(.43,.34),(.43,.27),(.1,.15)],'red',16)
  for i in range(7):sphere('pot_leaves',(x+random.uniform(-.15,.15),y+random.uniform(-.15,.15),.55+random.random()*.3),(.18,.18,.27),'leaf',1)
@@ -262,6 +266,10 @@ for x0,x1,y0,y1,axis in [(4,14,4,5.45,'south'),(4,14,8.55,10,'north'),(4,5.45,5.
 # High-leverage ornament pass: real scene geometry, not diagnostic overlays.
 layer='ornament'
 for xx in [1.2,5.4,12.6,16.8]:dougong(xx,-.02,5.18,'x')
+# One explicit wall-plate tenon is kept in the 09 focal bay so the eave-to-frame
+# relationship reads as joinery rather than as one continuous brown strip.
+box('wall_plate_joint',(16.8,-.04,5.43),(.18,.28,.20),'woodlight')
+box('wall_plate_tenon',(16.8,-.20,5.34),(.30,.10,.08),'wood')
 for xx in [4.7,7.6,10.5,13.3]:
  dougong(xx,5.35,5.10,'x');dougong(xx,8.65,5.10,'x')
 hanging_plaque(9,-.34,2.50)

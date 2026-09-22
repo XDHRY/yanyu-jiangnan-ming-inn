@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round4-courtyard-composition",
+  "current_phase": "diagnostic-round5-detail-focal-cues",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -50,5 +50,10 @@
     "Courtyard primary-secondary rhythm: pruned tree, jar, moss stones, wet paving",
     "South arrival threshold: expose paired paper screens without entering clearance",
     "Keep round-three material export contract unchanged"
+  ],
+  "round5_focus": [
+    "Paper screen 2 x 3 timber grid for legible threshold detail",
+    "Tighten courtyard tree bed and expose moss-capped stone connector",
+    "Lower/widen 09 roof-wall-plate framing and add one explicit plate tenon"
   ]
 }
