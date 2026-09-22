@@ -1,6 +1,19 @@
 name: Blender diagnostic loop
 
 on:
+  push:
+    branches:
+      - main
+      - feat/blender-diagnostic-loop
+    paths:
+      - "source/**"
+      - "source_*.py"
+      - "data_*.json"
+      - "texture_*.png"
+      - "asset_library_hires/**"
+      - "ci/**"
+      - "requirements-ci.txt"
+      - ".github/workflows/blender-diagnostic.yml"
   pull_request:
     branches: [main]
     paths:
@@ -10,6 +23,7 @@ on:
       - "texture_*.png"
       - "asset_library_hires/**"
       - "ci/**"
+      - "requirements-ci.txt"
       - ".github/workflows/blender-diagnostic.yml"
   workflow_dispatch:
 
@@ -33,11 +47,12 @@ jobs:
         with:
           python-version: "3.12"
           cache: "pip"
+          cache-dependency-path: requirements-ci.txt
 
       - name: Install Python geometry dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install numpy trimesh pillow
+          python -m pip install -r requirements-ci.txt
 
       - name: Prepare reproducible CI workspace
         run: python ci/prepare_workspace.py
@@ -58,8 +73,7 @@ jobs:
           blender --version
 
       - name: Render ten low-cost diagnostic views
-        run: |
-          xvfb-run -a blender --background             --python ci/blender_diagnostic.py --             --input .ci_work/ming_review.glb             --output diagnostics
+        run: xvfb-run -a blender --background --python ci/blender_diagnostic.py -- --input .ci_work/ming_review.glb --output diagnostics
 
       - name: Validate diagnostic outputs
         run: python ci/validate_diagnostics.py diagnostics
