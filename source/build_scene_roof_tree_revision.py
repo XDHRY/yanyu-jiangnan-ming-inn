@@ -238,7 +238,8 @@ for i in range(2):box('entry_step',(9,-.75+i*.3,.05+i*.1),(2.8,.6,.1),'stone')
 # rhythm: tree as primary, wet stone as connector, jar as secondary anchor.
 layer='courtyard'
 box('courtyard_paving',(9,7,.025),(7.2,3.2,.05),'paving')
-box('tree_bed',(8.4,7,.08),(1.42,1.18,.16),'soil')
+# A low organic mound avoids a rectangular slab reading in the courtyard view.
+lathe('tree_bed',(8.4,7,.02),[(0,0),(.02,.48),(.08,.62),(.14,.52),(.14,0)],'soil',24)
 tree(8.4,7,.15,.9)
 lathe('stone_water_jar',(10.65,7.45,.05),[(0,0),(.05,.38),(.3,.5),(.65,.47),(.75,.43),(.75,.34),(.18,.3)],'stone')
 # Bring a small moss-capped stone pair into the sightline between tree and jar.
