@@ -66,6 +66,9 @@ jobs:
       - name: Validate generated GLB
         run: python .ci_work/validate_ming.py
 
+      - name: Validate expanded material contract
+        run: python ci/validate_review_contract.py
+
       - name: Install Blender and virtual display
         run: |
           sudo apt-get update
@@ -88,6 +91,7 @@ jobs:
             .ci_work/build-report.json
             .ci_work/review/report.json
             .ci_work/review/validation.json
+            .ci_work/review/ci-contract.json
             .ci_work/ci-input-manifest.json
             ci/review_matrix.json
           if-no-files-found: warn
