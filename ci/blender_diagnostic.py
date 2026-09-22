@@ -27,11 +27,31 @@ component_counts = {
     "dougong": sum("dougong_" in o.name.lower() for o in mesh_objects),
     "hanging_plaque": sum("hanging_plaque" in o.name.lower() for o in mesh_objects),
     "rain_chain": sum("rain_chain" in o.name.lower() for o in mesh_objects),
+    "paper_screen": sum("paper_screen" in o.name.lower() for o in mesh_objects),
+    "incense_burner": sum("incense_burner" in o.name.lower() for o in mesh_objects),
 }
-required = {"dougong": 20, "hanging_plaque": 5, "rain_chain": 10}
+required = {"dougong": 20, "hanging_plaque": 5, "rain_chain": 10, "paper_screen": 10, "incense_burner": 2}
 missing = {k: (component_counts[k], v) for k, v in required.items() if component_counts[k] < v}
 if missing:
     raise SystemExit(f"Authoritative components missing after GLB import: {missing}")
+
+# Main south-arrival corridor must remain visually and physically open.
+def world_bounds(obj):
+    pts = [obj.matrix_world @ Vector(corner) for corner in obj.bound_box]
+    return (min(p.x for p in pts), max(p.x for p in pts),
+            min(p.y for p in pts), max(p.y for p in pts),
+            min(p.z for p in pts), max(p.z for p in pts))
+
+clearance_violations = []
+for obj in mesh_objects:
+    if "paper_screen" not in obj.name.lower():
+        continue
+    x0, x1, y0, y1, z0, z1 = world_bounds(obj)
+    intersects_entry = x1 > 7.55 and x0 < 10.45 and y1 > -0.20 and y0 < 1.20 and z1 > 0.0 and z0 < 2.6
+    if intersects_entry:
+        clearance_violations.append({"object": obj.name, "bounds": [x0,x1,y0,y1,z0,z1]})
+if clearance_violations:
+    raise SystemExit(f"Paper screens intrude into primary arrival clearance: {clearance_violations}")
 
 # Lighting: blue-hour ambient + warm entrance/courtyard accents.
 world = bpy.data.worlds.new("CI_BlueHour")
@@ -135,6 +155,7 @@ manifest = {
     "view_count": len(views),
     "mesh_objects_after_import": len([o for o in scene.objects if o.type == "MESH"]),
     "component_counts": component_counts,
+    "primary_arrival_clear": not clearance_violations,
     "input_glb": str(INPUT),
     "blend": str(blend_path),
 }
