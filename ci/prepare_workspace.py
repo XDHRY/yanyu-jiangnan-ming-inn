@@ -25,6 +25,9 @@ copies = {
 derived = {
     "asset_library_hires/textures/tex_lacquer_black_gold.jpg": "textures/lacquer_black_gold.png",
     "asset_library_hires/textures/tex_brass_aged.jpg": "textures/brass_aged.png",
+    "asset_library_hires/textures/tex_paper_screen.jpg": "textures/paper_screen.png",
+    "asset_library_hires/textures/tex_black_tile_wet.jpg": "textures/black_tile_wet.png",
+    "asset_library_hires/textures/tex_blue_limestone_wet.jpg": "textures/blue_limestone_wet.png",
 }
 
 missing = [src for src in list(copies) + list(derived) if not (ROOT / src).exists()]
