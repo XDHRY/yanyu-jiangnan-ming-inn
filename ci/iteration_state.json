@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round8-garden-veranda-detail",
+  "current_phase": "diagnostic-round9-waterfront-rain-chain",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -70,5 +70,10 @@
     "Add one moss-capped stone depth cue behind the moon gate",
     "Add one restrained upper-veranda lotus pot and slightly lower 07 framing",
     "Keep P0 views, material contract, and main arrival clearance unchanged"
+  ],
+  "round9_focus": [
+    "Expose one restrained south-eave rain chain in 10_canal_arrival",
+    "Keep dock, boat, wet blue-limestone response and all P0 views unchanged",
+    "Recheck 10 first, then 02 / 03 / 06 / 08 / 09 for regressions"
   ]
 }
