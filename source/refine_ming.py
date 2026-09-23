@@ -173,8 +173,31 @@ for level,filename in enumerate(['ground.json','upper.json']):
   start=len(b.records);w=f['widthM'];d=f['depthM'];h=1.8 if f['kind']=='wardrobe' else .8
   for xx in [-w*.25,w*.25]:
    panel(xx,-d/2-.02,z+.14,w*.46,min(.42,h-.25))
-   if h>1:frame('cabinet_raised_panel',xx,-d/2-.03,z+.65,w*.46,.99,.024,.022)
+  if h>1:frame('cabinet_raised_panel',xx,-d/2-.03,z+.65,w*.46,.99,.024,.022)
   T=trimesh.transformations.rotation_matrix(math.radians(f['rotDeg']),[0,0,1]);T[:2,3]=f['at'];transform_new(start,T)
+
+# Integrate manufactured Ming components from component_factory
+import component_factory as cf
+bridge = cf.ComponentBuilderBridge(b, layer='ornament')
+
+# 1. Altar table with scholar rock & porcelain vase in the tea room
+b.layer = 'ornament'
+cf.build_altar_table(bridge, x=2.75, y=3.68, z=0.22, rotDeg=0, length=2.0, width=0.46, height=0.84)
+cf.build_scholar_rock(bridge, x=2.35, y=3.68, z=0.22 + 0.84, scale=0.85)
+cf.build_porcelain_vase(bridge, x=3.15, y=3.68, z=0.22 + 0.84, scale=0.85)
+
+# 2. Four-panel folding screen providing atmospheric division in reception area
+cf.build_four_panel_screen(bridge, x=4.85, y=2.0, z=0.22, rotDeg=90, angle_deg=8, width=2.1, height=1.85)
+
+# 3. Jiangnan bamboo clusters framing garden walls and moon gate
+b.layer = 'garden'
+cf.build_bamboo_cluster(bridge, x=-2.8, y=2.6, z=0.0, count=5, height=2.8, seed=42)
+cf.build_bamboo_cluster(bridge, x=-2.8, y=5.4, z=0.0, count=5, height=3.0, seed=108)
+
+# 4. Upper veranda Meirengkao balustrade
+b.layer = 'upper'
+cf.build_veranda_balustrade(bridge, x0=5.4, x1=7.6, y=5.35, z=2.92)
+cf.build_veranda_balustrade(bridge, x0=10.5, x1=12.6, y=5.35, z=2.92)
 
 print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.

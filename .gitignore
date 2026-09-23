@@ -1,0 +1,5 @@
+.ci_work/
+diagnostics/
+__pycache__/
+*.pyc
+*.blend1

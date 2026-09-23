@@ -1,0 +1,156 @@
+{
+  "schema": "jiangnan.component-catalog.v1",
+  "generated_by": "source/component_factory.py",
+  "components": [
+    {
+      "id": "prop_four_panel_screen",
+      "name": "Four-Panel Ming Folding Screen",
+      "file": "generated_assets\\models\\prop_four_panel_screen.glb",
+      "objects": 57,
+      "triangles": 684,
+      "vertices": 456,
+      "bounds": [
+        [
+          -1.1,
+          -0.0449,
+          0.0
+        ],
+        [
+          1.1,
+          0.0449,
+          1.85
+        ]
+      ],
+      "dimensions": [
+        2.2,
+        0.0898,
+        1.85
+      ]
+    },
+    {
+      "id": "prop_altar_table",
+      "name": "Ming Upturned Altar Table",
+      "file": "generated_assets\\models\\prop_altar_table.glb",
+      "objects": 19,
+      "triangles": 524,
+      "vertices": 300,
+      "bounds": [
+        [
+          -1.012,
+          -0.24,
+          -0.0013
+        ],
+        [
+          1.012,
+          0.24,
+          0.932
+        ]
+      ],
+      "dimensions": [
+        2.024,
+        0.48,
+        0.9333
+      ]
+    },
+    {
+      "id": "prop_scholar_rock",
+      "name": "Sculpted Scholar Rock with Stand",
+      "file": "generated_assets\\models\\prop_scholar_rock.glb",
+      "objects": 6,
+      "triangles": 592,
+      "vertices": 354,
+      "bounds": [
+        [
+          -0.16,
+          -0.16,
+          0.0
+        ],
+        [
+          0.16,
+          0.16,
+          0.51
+        ]
+      ],
+      "dimensions": [
+        0.32,
+        0.32,
+        0.51
+      ]
+    },
+    {
+      "id": "prop_porcelain_vase",
+      "name": "Celadon Plum Blossom Vase",
+      "file": "generated_assets\\models\\prop_porcelain_vase.glb",
+      "objects": 6,
+      "triangles": 872,
+      "vertices": 510,
+      "bounds": [
+        [
+          -0.118,
+          -0.118,
+          0.0
+        ],
+        [
+          0.138,
+          0.118,
+          0.758
+        ]
+      ],
+      "dimensions": [
+        0.256,
+        0.236,
+        0.758
+      ]
+    },
+    {
+      "id": "env_bamboo_cluster",
+      "name": "Jiangnan Garden Bamboo Cluster",
+      "file": "generated_assets\\models\\env_bamboo_cluster.glb",
+      "objects": 225,
+      "triangles": 26616,
+      "vertices": 13678,
+      "bounds": [
+        [
+          -0.4856,
+          -0.7524,
+          -0.0005
+        ],
+        [
+          0.8177,
+          0.7275,
+          3.0593
+        ]
+      ],
+      "dimensions": [
+        1.3033,
+        1.4799,
+        3.0598
+      ]
+    },
+    {
+      "id": "arch_veranda_balustrade",
+      "name": "Ming Meirengkao Veranda Balustrade",
+      "file": "generated_assets\\models\\arch_veranda_balustrade.glb",
+      "objects": 36,
+      "triangles": 1128,
+      "vertices": 636,
+      "bounds": [
+        [
+          -1.2,
+          -0.178,
+          0.08
+        ],
+        [
+          1.2,
+          0.15,
+          0.958
+        ]
+      ],
+      "dimensions": [
+        2.4,
+        0.328,
+        0.878
+      ]
+    }
+  ]
+}

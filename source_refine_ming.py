@@ -25,14 +25,24 @@ print('Loaded existing geometry',len(b.records),flush=True)
 P=Path(__file__).resolve().parent
 source={k:Image.open(P/'textures'/v).convert('RGB') for k,v in {
  'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png',
- 'plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone.png',
- 'lotus':'lotus_panel.png'}.items()}
+ 'plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png',
+ 'lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}.items()}
+# Wet architectural surfaces use broad, restrained highlights rather than mirror-like bands.
+# The cool factors keep the stone/tile family blue-black without washing to neutral gray.
+base_factors={
+ 'tile':[185,198,208,255],
+ 'paving':[198,214,224,255],
+ # Warm, slightly muted paper keeps the screen distinct from plaster without reading as opaque plastic.
+ 'paper':[248,242,232,255],
+}
 for k,im in source.items():
- b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=[255,255,255,255],
-  roughnessFactor={'wood':.36,'woodlight':.40,'fabric':.8,'lotus':.42}.get(k,.73),metallicFactor=0)
+ b.M[k]=PBRMaterial(name=k,baseColorTexture=im,baseColorFactor=base_factors.get(k,[255,255,255,255]),
+  roughnessFactor={'wood':.43,'woodlight':.45,'fabric':.8,'lotus':.42,'lacquer':.31,'metal':.41,'paper':.76,'tile':.34,'paving':.42}.get(k,.73),
+  metallicFactor=.68 if k=='metal' else 0)
 b.COL['lotus']='875324';b.COL['brass']='b39a59';b.COL['celadon']='92bab0'
-b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[179,154,89,255],roughnessFactor=.32,metallicFactor=.78)
-b.M['celadon']=PBRMaterial(name='celadon',baseColorFactor=[146,186,176,255],roughnessFactor=.2,metallicFactor=0)
+# A slightly deeper aged-brass response keeps gold marks separate from pale paper and plaster.
+b.M['brass']=PBRMaterial(name='brass',baseColorFactor=[158,121,57,255],roughnessFactor=.40,metallicFactor=.70)
+b.M['celadon']=PBRMaterial(name='celadon',baseColorFactor=[146,186,176,255],roughnessFactor=.24,metallicFactor=0)
 
 # Remove draft chair parts, tea counters and window sticks before inserting fitted joinery.
 # Keep the exact source room boundaries, existing actual skywell and stair cutout.
@@ -72,6 +82,17 @@ def lattice(x,y,z,w,h):
    frame('step_pattern',cx,y-.004,cz-dz*.26,dx*.52,dz*.52,.014,.025)
    for side in [-1,1]:rod('pattern_attachment',(cx+side*dx*.26,y,cz),(cx+side*dx*.5,y,cz),.007)
 
+def lotus_motif(x,y,z,w,h):
+ # One restrained lotus medallion gives the central upper entrance window a
+ # period cue while keeping the surrounding lattice open.
+ cx=x;cy=y-.052;cz=z+h*.53
+ for side in [-1,1]:
+  dx=side*.19
+  curved('lotus_petal',[(cx,cy,cz),(cx+dx*.58,cy,cz+.105),(cx+dx,cy,cz),(cx+dx*.58,cy,cz-.105),(cx,cy,cz)],.010,'woodlight')
+ curved('lotus_center',[(cx,cy,cz-.02),(cx,cy,cz+.13),(cx,cy,cz+.24),(cx,cy,cz+.13),(cx,cy,cz-.02)],.011,'woodlight')
+ curved('lotus_cup',[(cx-.24,cy,cz-.09),(cx,cy,cz-.17),(cx+.24,cy,cz-.09)],.011,'woodlight')
+ ring('lotus_seed',(cx,cy-.006,cz+.015),.025,.006,'brass')
+
 def panel(x,y,z,w,h):
  box('lotus_panel_solid',(x,y,z+h/2),(w,.034,h),'lotus')
  frame('panel_molding',x,y-.019,z,w,h,.025,.025)
@@ -84,6 +105,15 @@ def screen_leaf(x,y,z,w=.78,h=2.26):
  for zz in [z+.4,z+1.85]:
   box('screen_hinge',(x+w/2-.012,y-.057,zz),(.045,.016,.105),'brass')
   rod('hinge_pin',(x+w/2+.007,y-.062,zz-.063),(x+w/2+.007,y-.062,zz+.063),.008,'brass')
+
+def plaque_glyphs(x,y,z):
+ # Three restrained seal-script-like marks keep the lacquer plaque legible at 720 px
+ # without pretending to be a text renderer or adding a modern signboard.
+ for dx in [-.58, 0.0, .58]:
+  rod('plaque_glyph_stroke',(x+dx-.07,y-.064,z-.18),(x+dx+.06,y-.064,z+.18),.014,'brass',8)
+  rod('plaque_glyph_cross',(x+dx-.13,y-.064,z+.015),(x+dx+.13,y-.064,z+.015),.012,'brass',8)
+  rod('plaque_glyph_base',(x+dx-.09,y-.064,z-.20),(x+dx+.09,y-.064,z-.20),.010,'brass',8)
+ ring('plaque_seal',(x,y-.066,z+.12),.06,.010,'brass')
 
 def chair(x,y,z,angle=0):
  start=len(b.records)
@@ -117,6 +147,12 @@ def tea_set(x,y,z):
  ring('teapot_handle',(x-.095,y,z+.91),.052,.01,'celadon')
  for dx,dy in [(-.22,-.11),(.22,-.11),(.22,.11),(-.22,.11)]:
   b.lathe('celadon_cup',(x+dx,y+dy,z+.825),[(0,0),(.008,.028),(.047,.036),(.047,.03),(.012,.024)],'celadon',32)
+ # Small aged-brass incense burner: a near-field material anchor with negligible scene cost.
+ b.lathe('bronze_incense_burner',(x+.48,y,z+.825),[(0,0),(.012,.05),(.055,.075),(.10,.07),(.125,.045),(.13,0)],'metal',32)
+ for ang in [0,math.pi]:
+  rod('incense_burner_handle',(x+.48+math.cos(ang)*.055,y+math.sin(ang)*.055,z+.90),(x+.48+math.cos(ang)*.11,y+math.sin(ang)*.11,z+.94),.012,'metal',12)
+
+plaque_glyphs(9,-.34,2.50)
 
 for level,filename in enumerate(['ground.json','upper.json']):
  b.layer='ground' if level==0 else 'upper';z=.2+level*2.7
@@ -125,6 +161,8 @@ for level,filename in enumerate(['ground.json','upper.json']):
   if o['kind']!='window':continue
   w=next(w for w in data['walls'] if w['id']==o['wall']);a=np.array(w['from']);c=np.array(w['to']);u=(c-a)/np.linalg.norm(c-a)
   start=len(b.records);lattice(0,0,z+o['sillM']+.04,o['widthM']-.08,o['heightM']-.08)
+  if level==1 and abs(o['at'][0]-9)<.1 and abs(o['at'][1])<.1:
+   lotus_motif(0,0,z+o['sillM']+.04,o['widthM']-.08,o['heightM']-.08)
   T=trimesh.transformations.rotation_matrix(math.atan2(u[1],u[0]),[0,0,1]);T[:2,3]=o['at'];transform_new(start,T)
  for x in [1.2,1.98,2.76,3.54,4.32]:screen_leaf(x,3.78,z+.03)
  tea_set(2.75,2,z)
@@ -135,19 +173,42 @@ for level,filename in enumerate(['ground.json','upper.json']):
   start=len(b.records);w=f['widthM'];d=f['depthM'];h=1.8 if f['kind']=='wardrobe' else .8
   for xx in [-w*.25,w*.25]:
    panel(xx,-d/2-.02,z+.14,w*.46,min(.42,h-.25))
-   if h>1:frame('cabinet_raised_panel',xx,-d/2-.03,z+.65,w*.46,.99,.024,.022)
+  if h>1:frame('cabinet_raised_panel',xx,-d/2-.03,z+.65,w*.46,.99,.024,.022)
   T=trimesh.transformations.rotation_matrix(math.radians(f['rotDeg']),[0,0,1]);T[:2,3]=f['at'];transform_new(start,T)
+
+# Integrate manufactured Ming components from component_factory
+import component_factory as cf
+bridge = cf.ComponentBuilderBridge(b, layer='ornament')
+
+# 1. Altar table with scholar rock & porcelain vase in the tea room
+b.layer = 'ornament'
+cf.build_altar_table(bridge, x=2.75, y=3.68, z=0.22, rotDeg=0, length=2.0, width=0.46, height=0.84)
+cf.build_scholar_rock(bridge, x=2.35, y=3.68, z=0.22 + 0.84, scale=0.85)
+cf.build_porcelain_vase(bridge, x=3.15, y=3.68, z=0.22 + 0.84, scale=0.85)
+
+# 2. Four-panel folding screen providing atmospheric division in reception area
+cf.build_four_panel_screen(bridge, x=4.85, y=2.0, z=0.22, rotDeg=90, angle_deg=8, width=2.1, height=1.85)
+
+# 3. Jiangnan bamboo clusters framing garden walls and moon gate
+b.layer = 'garden'
+cf.build_bamboo_cluster(bridge, x=-2.8, y=2.6, z=0.0, count=5, height=2.8, seed=42)
+cf.build_bamboo_cluster(bridge, x=-2.8, y=5.4, z=0.0, count=5, height=3.0, seed=108)
+
+# 4. Upper veranda Meirengkao balustrade
+b.layer = 'upper'
+cf.build_veranda_balustrade(bridge, x0=5.4, x1=7.6, y=5.35, z=2.92)
+cf.build_veranda_balustrade(bridge, x0=10.5, x1=12.6, y=5.35, z=2.92)
 
 print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.
-payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone.png','lotus':'lotus_panel.png'}
+payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}
 for rec in b.records:
  m=b.S.geometry[rec['name']];v=m.vertices[m.faces].reshape(-1,3);n=np.repeat(m.face_normals,3,axis=0);k=rec['material'];ext=np.ptp(v,axis=0);axis=int(np.argmax(ext))
  uv=np.empty((len(v),2));normaxis=np.argmax(abs(n),axis=1)
  for ax in range(3):
   ids=normaxis==ax;axes=[i for i in range(3) if i!=ax]
   if k in ['wood','woodlight'] and axis in axes:axes=[i for i in axes if i!=axis]+[axis]
-  uv[ids]=v[ids][:,axes]/({'wood':1.0,'woodlight':1.,'fabric':.65,'plaster':1.5,'stone':1.,'paving':1.}.get(k,1.))
+  uv[ids]=v[ids][:,axes]/({'wood':1.0,'woodlight':1.,'fabric':.65,'plaster':1.5,'stone':1.,'paving':1.,'tile':.7,'paper':.8}.get(k,1.))
  if k=='lotus':
   horizontal=int(np.argmax(ext[:2]));uv[:,0]=(v[:,horizontal]-v[:,horizontal].min())/max(ext[horizontal],1e-6);uv[:,1]=(v[:,2]-v[:,2].min())/max(ext[2],1e-6)
  mm=trimesh.Trimesh(vertices=v,faces=np.arange(len(v)).reshape(-1,3),process=False)
