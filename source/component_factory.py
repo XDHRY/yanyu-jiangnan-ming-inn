@@ -798,6 +798,458 @@ def build_lotus_pot(builder, x=0, y=0, z=0, scale=1.0):
             rec['bounds'] = m.bounds.round(4).tolist()
 
 
+# ==============================================================================
+# Component 13: Scholar Large Painting Desk (明式文房大画案)
+# ==============================================================================
+def build_scholar_desk(builder, x=0, y=0, z=0, rotDeg=0, length=1.85, width=0.82, height=0.82):
+    """
+    Ming huanghuali large painting desk (画案/书案).
+    Wide flat top with ice-plate edge, straight legs with inward horsehoof feet,
+    recessed apron, and giant-arm s-curved stretchers (霸王枨).
+    """
+    start_idx = len(builder.records)
+    t_top = 0.055
+    top_z = height - t_top / 2
+
+    # Thick huanghuali desk top
+    builder.box('desk_top', (0, 0, top_z), (length, width, t_top), 'wood')
+
+    # Straight sturdy legs with inward horsehoof feet (直腿马蹄足)
+    leg_x_inset = 0.14 * length
+    leg_y_inset = width / 2 - 0.075
+    leg_h = height - t_top
+    for sx in [-1, 1]:
+        lx = sx * (length / 2 - leg_x_inset)
+        for sy in [-1, 1]:
+            ly = sy * leg_y_inset
+            builder.beam('desk_leg', (lx, ly, 0.04), (lx, ly, leg_h), 0.042, 'wood', 12)
+            builder.box('desk_horsehoof_foot', (lx, ly, 0.02), (0.095, 0.095, 0.04), 'wood')
+            # Giant-arm S-curved stretcher (霸王枨) connecting leg to desk bottom
+            b_mid = (lx - sx * 0.12, ly - sy * 0.10, leg_h * 0.55)
+            b_top = (lx - sx * 0.28, ly - sy * 0.22, leg_h)
+            builder.beam('desk_spandrel_arm', (lx, ly, leg_h * 0.65), b_mid, 0.016, 'woodlight', 8)
+            builder.beam('desk_spandrel_arm_top', b_mid, b_top, 0.016, 'woodlight', 8)
+
+    # Recessed waist and apron (束腰与牙板)
+    apron_h = 0.075
+    for sy in [-1, 1]:
+        builder.box('desk_apron_front', (0, sy * (width / 2 - 0.035), height - t_top - apron_h / 2),
+                    (length - leg_x_inset * 1.5, 0.03, apron_h), 'wood')
+    for sx in [-1, 1]:
+        builder.box('desk_apron_side', (sx * (length / 2 - leg_x_inset * 0.75), 0, height - t_top - apron_h / 2),
+                    (0.03, width - 0.18, apron_h), 'wood')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 14: Huanghuali Compound Wardrobe with Top Chest (明式黄花梨顶箱大立柜)
+# ==============================================================================
+def build_huanghuali_cabinet(builder, x=0, y=0, z=0, rotDeg=0, width=1.1, depth=0.55, height=2.05):
+    """
+    Ming compound wardrobe with upper top chest (顶箱大立柜/四件柜).
+    Split into lower large wardrobe and upper top chest, with large circular brass mounts.
+    """
+    start_idx = len(builder.records)
+    h_top_chest = 0.65
+    h_base_cab = height - h_top_chest
+
+    # Lower main wardrobe body
+    builder.box('cabinet_main_body', (0, 0, h_base_cab / 2), (width, depth, h_base_cab), 'wood')
+    # Upper top chest body
+    builder.box('cabinet_top_chest', (0, 0, h_base_cab + h_top_chest / 2), (width, depth, h_top_chest), 'wood')
+
+    # Front door floating relief panels (浮雕心板)
+    for level_z, sec_h in [(h_base_cab * 0.52, h_base_cab * 0.78), (h_base_cab + h_top_chest * 0.5, h_top_chest * 0.72)]:
+        for sx in [-width * 0.25, width * 0.25]:
+            builder.box('cabinet_door_panel', (sx, -depth / 2 - 0.012, level_z),
+                        (width * 0.44, 0.018, sec_h), 'lotus')
+            builder.frame('cabinet_panel_molding', sx, -depth / 2 - 0.015, level_z - sec_h / 2,
+                          width * 0.44, sec_h, 0.024, 0.02, 'woodlight')
+
+    # Central circular brass faceplates with padlock pins (大圆形面叶与钮头)
+    for cz in [h_base_cab * 0.55, h_base_cab + h_top_chest * 0.5]:
+        builder.lathe('cabinet_brass_faceplate', (0, -depth / 2 - 0.018, cz),
+                      [(0, 0), (0.005, 0.085), (0.005, 0)], 'brass', 32)
+        builder.box('cabinet_padlock_hasp', (0, -depth / 2 - 0.025, cz - 0.02),
+                    (0.022, 0.012, 0.075), 'brass')
+
+    # Heavy corner brass hinges on door stiles
+    for cz in [0.25, h_base_cab - 0.25, h_base_cab + 0.15, height - 0.15]:
+        for sx in [-width / 2 + 0.02, width / 2 - 0.02]:
+            builder.box('cabinet_brass_hinge', (sx, -depth / 2 - 0.012, cz),
+                        (0.045, 0.016, 0.065), 'brass')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 15: Ming Footstool Roller Bench (明式方几滚凳脚踏)
+# ==============================================================================
+def build_footstool(builder, x=0, y=0, z=0, rotDeg=0, length=0.62, width=0.32, height=0.22):
+    """
+    Ming wooden footstool with rolling massage cylinders (滚凳/脚踏).
+    Low bench frame with arched apron, cabriole legs, and 3 rolling timber rollers.
+    """
+    start_idx = len(builder.records)
+    t = 0.035
+
+    # Outer wooden border frame
+    builder.frame('footstool_frame', 0, 0, height - t, length, width, t, t, 'wood')
+
+    # 3 Revolving wooden roller cylinders inside frame (滚棍)
+    r_roller = 0.022
+    for rx in [-length * 0.26, 0, length * 0.26]:
+        builder.beam('footstool_roller',
+                     (rx, -width / 2 + t + 0.01, height - t / 2),
+                     (rx, width / 2 - t - 0.01, height - t / 2),
+                     r_roller, 'woodlight', 12)
+
+    # 4 Curved cabriole legs with inward-turned feet
+    for sx in [-1, 1]:
+        lx = sx * (length / 2 - 0.045)
+        for sy in [-1, 1]:
+            ly = sy * (width / 2 - 0.045)
+            builder.beam('footstool_leg', (lx + sx * 0.015, ly + sy * 0.015, 0),
+                         (lx, ly, height - t), 0.024, 'wood', 8)
+
+    # Arched cloud aprons beneath frame
+    apron_h = 0.04
+    for sy in [-1, 1]:
+        builder.box('footstool_apron_long', (0, sy * (width / 2 - 0.015), height - t - apron_h / 2),
+                    (length - 0.12, 0.018, apron_h), 'wood')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 16: Moon Shadow Garden Stone Lantern (月影庭院石灯笼)
+# ==============================================================================
+def build_moon_lamp(builder, x=0, y=0, z=0, scale=1.0):
+    """
+    Ming hexagonal stone courtyard lantern (月影石灯笼).
+    Lotus pedestal, square pillar stem, hexagonal lamp house with lattice, umbrella roof.
+    """
+    start_idx = len(builder.records)
+    # Hexagonal tiered pedestal base (莲花须弥座)
+    builder.lathe('moon_lamp_base', (0, 0, 0),
+                  [(0, 0), (0.04 * scale, 0.28 * scale), (0.10 * scale, 0.22 * scale),
+                   (0.18 * scale, 0.24 * scale), (0.24 * scale, 0.15 * scale), (0.24 * scale, 0)],
+                  'stone', 6)
+
+    # Pillar stem
+    builder.beam('moon_lamp_pillar', (0, 0, 0.24 * scale), (0, 0, 0.65 * scale),
+                 0.08 * scale, 'stone', 6)
+
+    # Middle plate (中台)
+    builder.lathe('moon_lamp_mid_plinth', (0, 0, 0.65 * scale),
+                  [(0, 0), (0.05 * scale, 0.25 * scale), (0.08 * scale, 0.22 * scale), (0.08 * scale, 0)],
+                  'stone', 6)
+
+    # Lamp chamber with hollow windows (六角火袋)
+    h_house = 0.32 * scale
+    for i in range(6):
+        ang = i * math.tau / 6
+        px = math.cos(ang) * (0.18 * scale)
+        py = math.sin(ang) * (0.18 * scale)
+        builder.beam('lamp_post', (px, py, 0.73 * scale), (px, py, 0.73 * scale + h_house),
+                     0.02 * scale, 'stone', 6)
+
+    # Luminous warm core inside lamp chamber
+    builder.sphere('lamp_warm_core', (0, 0, 0.73 * scale + h_house / 2),
+                   (0.09 * scale, 0.09 * scale, 0.11 * scale), 'glow', 1)
+
+    # Hexagonal umbrella roof and jewel finial (伞盖与宝珠)
+    builder.lathe('moon_lamp_umbrella_roof', (0, 0, 0.73 * scale + h_house),
+                  [(0, 0), (0.06 * scale, 0.32 * scale), (0.14 * scale, 0.12 * scale),
+                   (0.20 * scale, 0.04 * scale), (0.20 * scale, 0)],
+                  'stone', 6)
+    builder.sphere('moon_lamp_finial_jewel', (0, 0, 0.73 * scale + h_house + 0.24 * scale),
+                   (0.045 * scale, 0.045 * scale, 0.065 * scale), 'stone', 1)
+
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 17: Literati Silk Hand Fan (泥金沉香骨团扇)
+# ==============================================================================
+def build_hand_fan(builder, x=0, y=0, z=0, rotDeg=0, scale=1.0):
+    """
+    Ming literati round silk/paper hand fan (团扇/合欢扇).
+    Circular parchment surface with bamboo/wood hoop, dark wood handle, and silk tassel.
+    """
+    start_idx = len(builder.records)
+    r_fan = 0.15 * scale
+
+    # Circular paper/silk screen face
+    builder.lathe('fan_face', (0, 0, r_fan + 0.12 * scale),
+                  [(0, 0), (0.005 * scale, r_fan - 0.008 * scale), (0.005 * scale, 0)], 'paper', 32)
+    # Outer bamboo hoop binding
+    builder.ring('fan_outer_hoop', (0, 0, r_fan + 0.12 * scale),
+                 r_fan, 0.006 * scale, 'wood')
+
+    # Central spine and handle (扇柄)
+    builder.beam('fan_spine', (0, 0, 0.05 * scale), (0, 0, r_fan * 2 + 0.10 * scale),
+                 0.005 * scale, 'wood', 8)
+    builder.beam('fan_handle', (0, 0, -0.08 * scale), (0, 0, 0.05 * scale),
+                 0.008 * scale, 'wood', 8)
+    # Tassel loop and silk fringe (流苏)
+    builder.ring('fan_tassel_ring', (0, 0, -0.09 * scale), 0.012 * scale, 0.003 * scale, 'brass')
+    builder.beam('fan_silk_tassel', (0, 0, -0.19 * scale), (0, 0, -0.09 * scale),
+                 0.008 * scale, 'fabric', 6)
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 18: Four-Leaf Lattice Partition Door (明式步步锦格扇门)
+# ==============================================================================
+def build_lattice_door(builder, x=0, y=0, z=0, rotDeg=0, width=1.8, height=2.4):
+    """
+    Ming traditional four-leaf partition door (格扇门/隔扇门组).
+    Upper two-thirds step-lattice windows, middle waist board, lower carved solid apron.
+    """
+    start_idx = len(builder.records)
+    num_leaves = 4
+    leaf_w = width / num_leaves
+    leaf_h = height
+    t_frame = 0.04
+    d_frame = 0.05
+
+    cur_x = -width / 2 + leaf_w / 2
+    for i in range(num_leaves):
+        lx = cur_x
+        # Outer leaf stiles
+        for side in [-1, 1]:
+            builder.box('door_stile', (lx + side * (leaf_w / 2 - t_frame / 2), 0, leaf_h / 2),
+                        (t_frame, d_frame, leaf_h), 'wood')
+
+        # Dividing rails: top, upper lattice bottom, waist rail, bottom apron rail
+        h_apron = 0.65
+        h_waist = 0.22
+        z_waist = h_apron
+        z_lattice = h_apron + h_waist
+
+        for rz in [t_frame / 2, h_apron, z_lattice, leaf_h - t_frame / 2]:
+            builder.box('door_rail', (lx, 0, rz), (leaf_w - 2 * t_frame, d_frame, t_frame), 'wood')
+
+        # Upper lattice window field
+        lattice_h = leaf_h - z_lattice - t_frame
+        # Fine muntin lattice
+        cols = 3
+        for c in range(1, cols):
+            mx = lx - (leaf_w - 2 * t_frame) / 2 + c * ((leaf_w - 2 * t_frame) / cols)
+            builder.beam('door_muntin_v', (mx, 0, z_lattice), (mx, 0, leaf_h - t_frame),
+                         0.010, 'woodlight', 6)
+        rows = 6
+        for r in range(1, rows):
+            mz = z_lattice + r * (lattice_h / rows)
+            builder.beam('door_muntin_h', (lx - leaf_w / 2 + t_frame, 0, mz), (lx + leaf_w / 2 - t_frame, 0, mz),
+                         0.010, 'woodlight', 6)
+
+        # Middle waist board (绦环板)
+        builder.box('door_waist_panel', (lx, 0, z_waist + h_waist / 2),
+                    (leaf_w - 2 * t_frame - 0.02, 0.02, h_waist - 0.03), 'woodlight')
+
+        # Lower solid carved skirt apron (裙板)
+        builder.box('door_apron_panel', (lx, 0, t_frame + (h_apron - t_frame) / 2),
+                    (leaf_w - 2 * t_frame - 0.02, 0.024, h_apron - t_frame - 0.02), 'lotus')
+
+        # Brass hinges on stiles
+        if i < num_leaves - 1:
+            hx = lx + leaf_w / 2
+            for hz in [0.45, 1.25, 2.05]:
+                builder.box('door_brass_hinge', (hx, 0, hz), (0.024, 0.035, 0.05), 'brass')
+
+        cur_x += leaf_w
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 19: Carved Cloud Timber Bracket Corbel (梁头卷草雕花雀替)
+# ==============================================================================
+def build_carved_beam_end(builder, x=0, y=0, z=0, rotDeg=0, scale=1.0):
+    """
+    Ming carved cloud timber bracket / corbel (雀替/梁头角花).
+    Supports beam-column junction with curved cloud openwork.
+    """
+    start_idx = len(builder.records)
+    L = 0.42 * scale
+    H = 0.32 * scale
+    th = 0.065 * scale
+
+    # S-curved cloud brackets connecting horizontal beam to vertical post
+    pts = [
+        (0, 0, 0),
+        (0.08 * scale, 0, -0.06 * scale),
+        (0.22 * scale, 0, -0.16 * scale),
+        (0.35 * scale, 0, -0.28 * scale),
+        (L, 0, -H)
+    ]
+    for p_a, p_b in zip(pts[:-1], pts[1:]):
+        builder.beam('corbel_cloud_body', p_a, p_b, 0.032 * scale, 'wood', 8)
+
+    # Cloud scroll curled center
+    builder.ring('corbel_cloud_curl', (0.16 * scale, 0, -0.12 * scale),
+                 0.045 * scale, 0.015 * scale, 'woodlight')
+    # Timber back mounting plate
+    builder.box('corbel_back_plate', (L / 2, 0, -H / 2), (L, th, H), 'wood')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 20: Waterfront Mooring Bollard Stone Cap (码头系缆桩青石莲花座帽)
+# ==============================================================================
+def build_dock_pile_cap(builder, x=0, y=0, z=0, scale=1.0):
+    """
+    Heavy timber mooring pile topped with carved blue limestone lotus cap (系缆桩帽).
+    """
+    start_idx = len(builder.records)
+    r_pile = 0.12 * scale
+    h_pile = 0.85 * scale
+
+    # Wooden piling stem
+    builder.beam('dock_bollard_stem', (0, 0, 0), (0, 0, h_pile), r_pile, 'wood', 12)
+
+    # Carved octagonal limestone lotus petal cap (莲花石帽)
+    profile = [
+        (0, 0),
+        (0.02 * scale, r_pile * 1.05),
+        (0.08 * scale, r_pile * 1.35),
+        (0.16 * scale, r_pile * 1.45),
+        (0.24 * scale, r_pile * 1.15),
+        (0.30 * scale, r_pile * 0.4),
+        (0.30 * scale, 0)
+    ]
+    builder.lathe('dock_bollard_stone_cap', (0, 0, h_pile), profile, 'stone', 8)
+
+    # Thick hemp rope wrapped around pile (系缆粗绳)
+    for z_rope in [h_pile * 0.35, h_pile * 0.45, h_pile * 0.55]:
+        builder.ring('mooring_rope_loop', (0, 0, z_rope), r_pile * 1.08, 0.016 * scale, 'fabric')
+
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 21: Waterfront Reeds Bundle (水岸滩渚芦苇丛)
+# ==============================================================================
+def build_reed_bundle(builder, x=0, y=0, z=0, count=14, height=1.9, seed=33):
+    """
+    Clustered Jiangnan water reeds (滩渚芦苇丛).
+    Slender jointed reed stalks, swaying feather plume plumes, and long blade leaves.
+    """
+    start_idx = len(builder.records)
+    rng = random.Random(seed)
+
+    for i in range(count):
+        rx = rng.uniform(-0.35, 0.35)
+        ry = rng.uniform(-0.35, 0.35)
+        h = height * rng.uniform(0.75, 1.25)
+        sway_x = rng.uniform(-0.18, 0.18)
+        sway_y = rng.uniform(-0.18, 0.18)
+
+        # Reed stalk
+        p0 = (rx, ry, 0)
+        p1 = (rx + sway_x * 0.5, ry + sway_y * 0.5, h * 0.6)
+        p2 = (rx + sway_x, ry + sway_y, h)
+        builder.beam('reed_stalk_lo', p0, p1, 0.007, 'leaf', 6)
+        builder.beam('reed_stalk_hi', p1, p2, 0.005, 'leaf', 6)
+
+        # Swaying fluffy plume flower head at tip (芦花穗)
+        builder.sphere('reed_feather_plume', (rx + sway_x, ry + sway_y, h + 0.12),
+                       (0.045, 0.045, 0.16), 'woodlight', 1)
+
+        # Slender blade leaf branching off
+        p_leaf = (rx + sway_x * 0.4 + rng.uniform(-0.15, 0.15),
+                  ry + sway_y * 0.4 + rng.uniform(-0.15, 0.15),
+                  h * 0.45)
+        builder.beam('reed_leaf_blade', p1, p_leaf, 0.004, 'leaf2', 6)
+
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 22: Garden Rain Puddle Ripple (庭院青石积水涟漪)
+# ==============================================================================
+def build_rain_puddle(builder, x=0, y=0, z=0, rx=0.75, ry=0.48):
+    """
+    Thin reflective rainwater puddle on wet limestone paving with subtle ripple ring.
+    """
+    start_idx = len(builder.records)
+    # Thin reflective water sheet
+    m = trimesh.creation.cylinder(radius=1.0, height=0.008, sections=36)
+    m.apply_scale([rx, ry, 1.0])
+    m.apply_translation((0, 0, 0.004))
+    builder.add('rain_water_puddle', m, 'water')
+
+    # Water ripple ring
+    builder.ring('puddle_ripple_ring', (0, 0, 0.006), rx * 0.65, 0.008, 'water')
+
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
 
 # ==============================================================================
 # Standalone Export and Catalog Production
@@ -840,7 +1292,27 @@ def manufacture_standalone_assets(output_dir=None):
         ('arch_roof_ridge_cap', 'Roof Ridge Chiwen Ornament',
          lambda b: build_roof_ridge_cap(b, 0, 0, 0, scale=1.0)),
         ('env_lotus_pot', 'Waterfront Stone Lotus Basin',
-         lambda b: build_lotus_pot(b, 0, 0, 0, scale=1.0))
+         lambda b: build_lotus_pot(b, 0, 0, 0, scale=1.0)),
+        ('prop_scholar_desk', 'Scholar Large Painting Desk',
+         lambda b: build_scholar_desk(b, 0, 0, 0, length=1.85, width=0.82, height=0.82)),
+        ('prop_huanghuali_cabinet', 'Huanghuali Compound Wardrobe with Top Chest',
+         lambda b: build_huanghuali_cabinet(b, 0, 0, 0, width=1.1, depth=0.55, height=2.05)),
+        ('prop_footstool', 'Ming Footstool Roller Bench',
+         lambda b: build_footstool(b, 0, 0, 0, length=0.62, width=0.32, height=0.22)),
+        ('prop_moon_lamp', 'Moon Shadow Garden Stone Lantern',
+         lambda b: build_moon_lamp(b, 0, 0, 0, scale=1.0)),
+        ('prop_hand_fan', 'Literati Silk Hand Fan',
+         lambda b: build_hand_fan(b, 0, 0, 0, scale=1.0)),
+        ('arch_lattice_door', 'Four-Leaf Lattice Partition Door',
+         lambda b: build_lattice_door(b, 0, 0, 0, width=1.8, height=2.4)),
+        ('arch_carved_beam_end', 'Carved Cloud Timber Bracket Corbel',
+         lambda b: build_carved_beam_end(b, 0, 0, 0, scale=1.0)),
+        ('arch_dock_pile_cap', 'Waterfront Mooring Bollard Stone Cap',
+         lambda b: build_dock_pile_cap(b, 0, 0, 0, scale=1.0)),
+        ('env_reed_bundle', 'Waterfront Reeds Bundle',
+         lambda b: build_reed_bundle(b, 0, 0, 0, count=14, height=1.9)),
+        ('env_rain_puddle', 'Garden Rain Puddle Ripple',
+         lambda b: build_rain_puddle(b, 0, 0, 0, rx=0.75, ry=0.48))
     ]
 
     for comp_id, label, func in definitions:

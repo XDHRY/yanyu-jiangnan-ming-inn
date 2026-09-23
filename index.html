@@ -3,596 +3,960 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>烟雨江南·临水客栈 — 明式精细化 3D 实时审阅台</title>
-  <!-- Google model-viewer for fast, high-fidelity WebGL / WebXR rendering -->
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <title>烟雨江南 · 临水客栈 — 顶级名仕古风 3D 实时审阅台</title>
+  <!-- Zero-network-barrier Vendored Three.js with robust fallback -->
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/OrbitControls.js"></script>
+  <script src="vendor/GLTFLoader.js"></script>
+  <script>
+    // Fallback loader if vendor scripts fail to load
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>');
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"><\/script>');
+    }
+  </script>
   <style>
     :root {
-      --bg-dark: #0e1217;
-      --card-bg: #161c24;
-      --card-border: #232b36;
-      --text-main: #e8ecf1;
-      --text-muted: #8b99a8;
-      --accent-gold: #c29b53;
-      --accent-teal: #3b827e;
-      --accent-cinnabar: #b84a39;
-      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.45);
+      --bg-page: #10141a;
+      --bg-canvas: #0a0d12;
+      --paper-cream: #f4efe4;
+      --paper-dark: #171d24;
+      --panel-border: #283340;
+      --ink-black: #0c0f13;
+      --cinnabar: #a8382b;
+      --cinnabar-glow: rgba(168, 56, 43, 0.25);
+      --gold-ming: #c59f5b;
+      --gold-dark: #8e6c32;
+      --teal-ming: #36605e;
+      --celadon: #98b6ad;
+      --text-main: #e6e9ee;
+      --text-sub: #9ba6b4;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--bg-dark);
+      background: var(--bg-page);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Serif SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", serif;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", "STSong", serif;
       line-height: 1.6;
-      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(54, 96, 94, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(197, 159, 91, 0.06) 0%, transparent 45%);
+      min-height: 100vh;
     }
+
+    /* Classical Header & Scrolls */
     header {
-      background: linear-gradient(180deg, #18202a 0%, #0e1217 100%);
-      border-bottom: 1px solid var(--card-border);
-      padding: 1.75rem 2rem;
+      border-bottom: 2px solid var(--panel-border);
+      background: linear-gradient(180deg, #171e27 0%, #10141a 100%);
+      padding: 1.75rem 2.5rem;
+      position: relative;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-ming), transparent);
+    }
+    .header-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 1.5rem;
     }
-    .brand h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--text-main);
+    .title-group {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 1.5rem;
     }
-    .brand h1 span {
-      color: var(--accent-gold);
-      font-weight: 400;
-      font-size: 1.1rem;
-    }
-    .brand p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }
-    .meta-badges {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.3rem 0.75rem;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      border: 1px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-    }
-    .badge.green { border-color: rgba(56, 178, 172, 0.5); color: #38b2ac; }
-    .badge.gold { border-color: rgba(194, 155, 83, 0.5); color: var(--accent-gold); }
-
-    main {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
+    .seal-stamp {
+      width: 52px;
+      height: 52px;
+      border: 2px solid var(--cinnabar);
+      border-radius: 6px;
       display: flex;
       flex-direction: column;
-      gap: 2.5rem;
+      align-items: center;
+      justify-content: center;
+      background: rgba(168, 56, 43, 0.08);
+      color: var(--cinnabar);
+      font-weight: 900;
+      font-size: 0.95rem;
+      line-height: 1.1;
+      letter-spacing: 0.1em;
+      box-shadow: inset 0 0 8px var(--cinnabar-glow), 0 0 12px var(--cinnabar-glow);
+      user-select: none;
+    }
+    .titles h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--paper-cream);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+    .titles h1 span {
+      font-size: 1.1rem;
+      color: var(--gold-ming);
+      font-weight: 400;
+      margin-left: 0.5rem;
+      letter-spacing: 0.08em;
+    }
+    .titles p {
+      font-size: 0.88rem;
+      color: var(--text-sub);
+      margin-top: 0.35rem;
+      letter-spacing: 0.05em;
     }
 
-    /* 3D Viewer Section */
-    .viewer-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      box-shadow: var(--shadow-soft);
+    .status-capsules {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .capsule {
+      padding: 0.4rem 1rem;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--panel-border);
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .capsule .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal-ming);
+      box-shadow: 0 0 8px var(--teal-ming);
+    }
+    .capsule b {
+      color: var(--gold-ming);
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2.2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    /* Navigation Halls (古典分堂标签) */
+    .hall-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 0.8rem;
+    }
+    .hall-btn {
+      padding: 0.6rem 1.4rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--panel-border);
+      border-bottom: 2px solid transparent;
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border-radius: 4px 4px 0 0;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+    .hall-btn:hover {
+      color: var(--paper-cream);
+      border-color: var(--gold-dark);
+      background: rgba(197, 159, 91, 0.06);
+    }
+    .hall-btn.active {
+      background: linear-gradient(180deg, rgba(197, 159, 91, 0.15) 0%, rgba(20, 26, 33, 0.8) 100%);
+      color: var(--gold-ming);
+      border-color: var(--gold-ming);
+      font-weight: 700;
+    }
+
+    /* 3D Scene Viewport Box */
+    .viewport-box {
+      background: var(--paper-dark);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+      position: relative;
       overflow: hidden;
     }
-    .viewer-toolbar {
-      padding: 1rem 1.25rem;
-      background: rgba(0, 0, 0, 0.25);
-      border-bottom: 1px solid var(--card-border);
+    .viewport-toolbar {
+      padding: 0.85rem 1.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-bottom: 1px solid var(--panel-border);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
     }
-    .selector-group {
+    .control-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.8rem;
     }
-    .selector-group label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-    select {
-      background: #0f141a;
-      color: var(--text-main);
-      border: 1px solid var(--accent-gold);
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
+    .classical-select {
+      background: #0d1217;
+      color: var(--gold-ming);
+      border: 1px solid var(--gold-dark);
+      border-radius: 4px;
+      padding: 0.45rem 1rem;
       font-size: 0.9rem;
+      font-family: inherit;
       outline: none;
       cursor: pointer;
     }
-    .btn-group {
-      display: flex;
-      gap: 0.5rem;
-    }
-    button {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 0.45rem 0.85rem;
+    .opt-btn {
+      padding: 0.4rem 0.9rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--panel-border);
+      border-radius: 4px;
+      color: var(--text-sub);
       font-size: 0.82rem;
+      font-family: inherit;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
-    button:hover {
-      background: var(--accent-gold);
-      color: #000;
-      border-color: var(--accent-gold);
+    .opt-btn:hover {
+      color: #fff;
+      border-color: var(--gold-ming);
     }
-    button.active {
-      background: var(--accent-teal);
-      border-color: var(--accent-teal);
+    .opt-btn.active {
+      background: var(--teal-ming);
+      border-color: var(--teal-ming);
       color: #fff;
     }
 
-    .viewer-container {
+    /* Canvas Area */
+    .canvas-wrap {
       position: relative;
-      height: 600px;
       width: 100%;
-      background: radial-gradient(circle at center, #1a222c 0%, #0c1015 100%);
+      height: 640px;
+      background: radial-gradient(circle at 50% 50%, #151d27 0%, #080b0f 100%);
+      cursor: grab;
     }
-    model-viewer {
-      width: 100%;
-      height: 100%;
-      --poster-color: transparent;
-    }
-    .viewer-overlay {
+    .canvas-wrap:active { cursor: grabbing; }
+    canvas { display: block; width: 100%; height: 100%; }
+
+    /* Loading Overlay */
+    .loader-curtain {
       position: absolute;
-      bottom: 1rem;
-      left: 1rem;
-      background: rgba(14, 18, 23, 0.85);
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 14, 18, 0.88);
       backdrop-filter: blur(8px);
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
-      font-size: 0.82rem;
-      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      z-index: 10;
+      transition: opacity 0.4s ease;
       pointer-events: none;
     }
-    .viewer-overlay h4 {
-      color: var(--accent-gold);
-      margin-bottom: 0.25rem;
-      font-size: 0.92rem;
+    .loader-curtain.hidden { opacity: 0; pointer-events: none; }
+    .loader-spin {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(197, 159, 91, 0.2);
+      border-top-color: var(--gold-ming);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .loader-text {
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      color: var(--gold-ming);
     }
 
-    /* Section Headers */
-    .section-title {
+    /* In-viewport Artifact Card */
+    .artifact-card {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      background: rgba(14, 18, 24, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-left: 3px solid var(--gold-ming);
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      max-width: 420px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .artifact-card h3 {
+      font-size: 1.05rem;
+      color: var(--gold-ming);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+    .artifact-card p {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+    .artifact-metrics {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.76rem;
+      color: var(--celadon);
+    }
+
+    /* Classical Section Headings */
+    .classical-heading {
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .classical-heading h2 {
+      font-size: 1.35rem;
+      color: var(--paper-cream);
+      letter-spacing: 0.12em;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 0.75rem;
-      margin-bottom: 1.25rem;
+      gap: 0.6rem;
     }
-    .section-title h2 {
-      font-size: 1.25rem;
-      letter-spacing: 0.04em;
-      color: var(--text-main);
+    .classical-heading h2::before {
+      content: "◆";
+      font-size: 0.8rem;
+      color: var(--gold-ming);
     }
-    .section-title p {
+    .classical-heading span {
       font-size: 0.85rem;
-      color: var(--text-muted);
+      color: var(--text-sub);
     }
 
-    /* Diagnostics Grid */
-    .diagnostics-grid {
+    /* Diagnostic View Grid */
+    .diag-matrix {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 1.25rem;
     }
-    .diag-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
+    .diag-item {
+      background: var(--paper-dark);
+      border: 1px solid var(--panel-border);
+      border-radius: 4px;
       overflow: hidden;
-      transition: transform 0.2s ease, border-color 0.2s ease;
       cursor: pointer;
+      transition: all 0.25s ease;
     }
-    .diag-card:hover {
+    .diag-item:hover {
+      border-color: var(--gold-ming);
       transform: translateY(-3px);
-      border-color: var(--accent-gold);
     }
-    .diag-card img {
+    .diag-item img {
       width: 100%;
-      height: 160px;
+      height: 165px;
       object-fit: cover;
       display: block;
       background: #000;
     }
-    .diag-card .info {
-      padding: 0.75rem;
+    .diag-meta {
+      padding: 0.75rem 1rem;
     }
-    .diag-card .info h5 {
+    .diag-meta h4 {
       font-size: 0.88rem;
-      color: var(--text-main);
-      margin-bottom: 0.2rem;
+      color: var(--paper-cream);
+      margin-bottom: 0.25rem;
     }
-    .diag-card .info p {
+    .diag-meta p {
       font-size: 0.75rem;
-      color: var(--text-muted);
+      color: var(--text-sub);
     }
 
-    /* Asset Catalog Filter & Grid */
-    .filter-tabs {
+    /* Asset Grid */
+    .catalog-filter {
       display: flex;
       gap: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       flex-wrap: wrap;
     }
-    .tab-btn {
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
+    .cat-btn {
+      padding: 0.35rem 0.9rem;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--panel-border);
+      color: var(--text-sub);
+      font-size: 0.82rem;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-family: inherit;
     }
-    .tab-btn.active {
-      background: var(--accent-gold);
+    .cat-btn.active {
+      background: var(--gold-ming);
       color: #000;
-      border-color: var(--accent-gold);
+      border-color: var(--gold-ming);
       font-weight: 600;
     }
-    .asset-grid {
+    .catalog-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
+      gap: 1.1rem;
     }
-    .asset-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      overflow: hidden;
-      text-align: center;
-      padding: 0.75rem;
-    }
-    .asset-card img {
-      width: 100%;
-      height: 140px;
-      object-fit: contain;
+    .catalog-card {
+      background: var(--paper-dark);
+      border: 1px solid var(--panel-border);
       border-radius: 4px;
-      background: #0a0d11;
+      padding: 0.8rem;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .catalog-card:hover {
+      border-color: var(--gold-ming);
+    }
+    .catalog-card img {
+      width: 100%;
+      height: 135px;
+      object-fit: contain;
+      background: #080b0e;
+      border-radius: 3px;
       margin-bottom: 0.5rem;
     }
-    .asset-card span {
-      display: block;
-      font-size: 0.78rem;
-      color: var(--text-main);
-      font-weight: 500;
-      white-space: nowrap;
+    .catalog-card h5 {
+      font-size: 0.82rem;
+      color: var(--paper-cream);
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .asset-card small {
-      display: block;
+    .catalog-card span {
       font-size: 0.72rem;
-      color: var(--accent-gold);
+      color: var(--gold-ming);
+      display: block;
       margin-top: 0.2rem;
     }
 
-    footer {
-      border-top: 1px solid var(--card-border);
-      padding: 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      background: rgba(0, 0, 0, 0.3);
-    }
-    footer a {
-      color: var(--accent-gold);
-      text-decoration: none;
-    }
-    footer a:hover { text-decoration: underline; }
-
-    /* Modal for Full Image Zoom */
+    /* Modal for View Inspection */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      justify-content: center;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(6px);
+      z-index: 100;
       align-items: center;
+      justify-content: center;
       padding: 2rem;
     }
     .modal.active { display: flex; }
     .modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 8px;
+      max-width: 92%;
+      max-height: 92%;
+      border-radius: 4px;
       box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-      border: 1px solid var(--card-border);
+      border: 1px solid var(--panel-border);
     }
+
+    footer {
+      border-top: 1px solid var(--panel-border);
+      padding: 2.5rem;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 0.82rem;
+      background: #0b0e12;
+      position: relative;
+    }
+    footer a { color: var(--gold-ming); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="brand">
-      <h1>烟雨江南 · 临水客栈 <span>明式精细化审阅台</span></h1>
-      <p>Blender 程序化建筑与构件工厂 · 原生几何与物理材质实时交互系统</p>
-    </div>
-    <div class="meta-badges">
-      <div class="badge green">● GitHub Pages 实时联通</div>
-      <div class="badge gold">12 大明式独立构件</div>
-      <div class="badge">10,157 场景构件</div>
-      <div class="badge">319,296 三角面</div>
+    <div class="header-wrap">
+      <div class="title-group">
+        <div class="seal-stamp">
+          <div>太素</div>
+          <div>营造</div>
+        </div>
+        <div class="titles">
+          <h1>烟雨江南 · 临水客栈 <span>明式营造审阅台</span></h1>
+          <p>以明代文人雅集法度营造 · 程序化 3D 几何与物理材质全要素审阅系统</p>
+        </div>
+      </div>
+      <div class="status-capsules">
+        <div class="capsule"><div class="dot"></div>原生 WebGL 视口：<b>已就绪</b></div>
+        <div class="capsule">构件库全要素：<b>12 款独立可交互</b></div>
+        <div class="capsule">全场景规模：<b>10,157 构件 / 319,296 面</b></div>
+      </div>
     </div>
   </header>
 
   <main>
-    <!-- 3D Interactive Model Viewer -->
-    <section class="viewer-section">
-      <div class="viewer-toolbar">
-        <div class="selector-group">
-          <label for="modelSelect">检视目标：</label>
-          <select id="modelSelect">
-            <optgroup label="全景建筑">
-              <option value="scene_preview.glb" data-name="临水客栈明式建筑全景" data-desc="18×14m 水乡客栈，含月洞门、石拱桥、乌篷船、天井回廊与全套装配构件">🏛️ 临水客栈建筑全景 (scene_preview.glb)</option>
+    <!-- Classical Hall Categories Navigation -->
+    <nav class="hall-nav">
+      <button class="hall-btn active" onclick="switchHall('all', this)">全部营造</button>
+      <button class="hall-btn" onclick="switchHall('tea', this)">壹 · 茶室雅集</button>
+      <button class="hall-btn" onclick="switchHall('arch', this)">贰 · 建筑法度</button>
+      <button class="hall-btn" onclick="switchHall('garden', this)">叁 · 庭院林泉</button>
+      <button class="hall-btn" onclick="switchHall('lounge', this)">肆 · 二楼寝轩</button>
+    </nav>
+
+    <!-- Main 3D Native Interactive Viewport -->
+    <section class="viewport-box">
+      <div class="viewport-toolbar">
+        <div class="control-row">
+          <select id="modelDropdown" class="classical-select" onchange="onSelectModel(this.value)">
+            <optgroup label="客栈整体建筑">
+              <option value="scene_preview.glb" data-cat="all" data-title="客栈建筑全景 (scene_preview.glb)" data-desc="18×14m 水乡客栈建筑全景，包含月洞门、天井回廊、石拱桥、乌篷船与全套明式木构架。" data-cam="25,18,22, 9,3,2">🏛️ 临水客栈建筑全景</option>
             </optgroup>
-            <optgroup label="明式室内陈设构件">
-              <option value="asset_library/models/prop_four_panel_screen.glb" data-name="明式折叠四扇围屏 (prop_four_panel_screen)" data-desc="黄花梨边挺、透光绢纸屏心、缠枝莲浮雕裙板与黄铜折页；微折自立">🪑 明式折叠四扇围屏</option>
-              <option value="asset_library/models/prop_altar_table.glb" data-name="夹头榫翘头长条案 (prop_altar_table)" data-desc="冰盘沿、端头小翘头、卷云纹牙头与侧向双横枨；经典文人案">🪵 夹头榫翘头长条案</option>
-              <option value="asset_library/models/prop_ming_daybed.glb" data-name="明式三围独板罗汉榻 (prop_ming_daybed)" data-desc="三围独板围子、织锦坐垫、内翻马蹄足与打洼起线牙板">🛋️ 明式三围独板罗汉榻</option>
-              <option value="asset_library/models/prop_scholar_rock.glb" data-name="文房太湖石供 (prop_scholar_rock)" data-desc="多层精雕台座，托举透漏瘦皱天然石供，嵌空微带苔色">🪨 文房太湖石供与底座</option>
-              <option value="asset_library/models/prop_porcelain_vase.glb" data-name="青瓷插枝梅瓶 (prop_porcelain_vase)" data-desc="束颈鼓腹下敛经典梅瓶造型，附斜出含苞梅枝">🏺 青瓷插枝梅瓶</option>
-              <option value="asset_library/models/prop_brush_pot.glb" data-name="黄花梨笔筒与毛笔 (prop_brush_pot)" data-desc="束腰黄花梨筒身，内插三管天然竹杆狼毫兼毫毛笔">🖌️ 黄花梨笔筒与毛笔</option>
-              <option value="asset_library/models/prop_bamboo_scroll_basket.glb" data-name="竹编卷轴画筒 (prop_bamboo_scroll_basket)" data-desc="精细竹篾经纬穿编，内插宣纸书画卷轴">📜 竹编卷轴画筒</option>
-              <option value="asset_library/models/prop_lacquer_chest.glb" data-name="黑漆描金官皮箱 (prop_lacquer_chest)" data-desc="深黑大漆金描花纹，圆形黄铜面叶与云头拍子钮头">🧰 黑漆描金官皮箱</option>
+            <optgroup label="文人茶室陈设 (Tea Room Props)">
+              <option value="asset_library/models/prop_four_panel_screen.glb" data-cat="tea" data-title="明式四扇折叠围屏 (prop_four_panel_screen)" data-desc="黄花梨框架，内嵌透光宣纸与缠枝莲浮雕板，黄铜折页，呈锯齿微折展开态。" data-cam="2.4,1.8,2.2, 0,0.9,0">🪑 明式四扇折叠围屏</option>
+              <option value="asset_library/models/prop_altar_table.glb" data-cat="tea" data-title="夹头榫翘头长条案 (prop_altar_table)" data-desc="两端翘头、冰盘沿打洼、卷云牙头牙条，侧角收分腿足与侧向双横枨。" data-cam="2.2,1.2,1.8, 0,0.4,0">🪵 夹头榫翘头长条案</option>
+              <option value="asset_library/models/prop_scholar_desk.glb" data-cat="tea" data-title="文人文房大画案 (prop_scholar_desk)" data-desc="宽厚黄花梨大案面、直腿内翻马蹄足、霸王枨拱承、束腰起线牙板。" data-cam="2.2,1.2,1.8, 0,0.4,0">📜 文房大画案</option>
+              <option value="asset_library/models/prop_scholar_rock.glb" data-cat="tea" data-title="文房太湖石供与底座 (prop_scholar_rock)" data-desc="多层精雕台座，托举多孔玲珑、褶皱起伏的天然太湖石供，嵌空微带苔色。" data-cam="0.7,0.5,0.6, 0,0.25,0">🪨 文房太湖石供</option>
+              <option value="asset_library/models/prop_porcelain_vase.glb" data-cat="tea" data-title="青瓷插枝梅瓶 (prop_porcelain_vase)" data-desc="束颈鼓腹下敛经典梅瓶造型，附斜出生姿的含苞梅枝与花蕾。" data-cam="0.8,0.6,0.7, 0,0.35,0">🏺 青瓷插枝梅瓶</option>
+              <option value="asset_library/models/prop_brush_pot.glb" data-cat="tea" data-title="黄花梨笔筒与毛笔 (prop_brush_pot)" data-desc="旋削束腰黄花梨筒身，内插三管天然竹杆与金属狼毫毛笔。" data-cam="0.45,0.35,0.4, 0,0.15,0">🖌️ 黄花梨笔筒与毛笔</option>
+              <option value="asset_library/models/prop_bamboo_scroll_basket.glb" data-cat="tea" data-title="竹编卷轴画筒 (prop_bamboo_scroll_basket)" data-desc="密排圆环经纬穿篾编织筒，内装宣纸书画轴卷与木质轴头。" data-cam="0.9,0.7,0.8, 0,0.3,0">📜 竹编卷轴画筒</option>
+              <option value="asset_library/models/prop_hand_fan.glb" data-cat="tea" data-title="泥金沉香骨团扇 (prop_hand_fan)" data-desc="圆形宣纸绢面、竹木包边外圈、沉香木长柄与下坠孔雀青丝绦流苏。" data-cam="0.6,0.4,0.5, 0,0.1,0">🪭 泥金沉香骨团扇</option>
             </optgroup>
-            <optgroup label="建筑与庭院环境构件">
-              <option value="asset_library/models/arch_veranda_balustrade.glb" data-name="回廊美人靠/吴王靠 (arch_veranda_balustrade)" data-desc="低矮宽坐板、S型鹅颈木靠背立柱、搭脑扶手梁与下承托角">🪑 回廊美人靠 / 吴王靠</option>
-              <option value="asset_library/models/arch_roof_ridge_cap.glb" data-name="正脊鸱吻卷草脊首 (arch_roof_ridge_cap)" data-desc="黛瓦脊头向上翻卷鸱尾云吻，护佑两端屋垄">🐉 正脊鸱吻卷草脊首</option>
-              <option value="asset_library/models/env_bamboo_cluster.glb" data-name="江南庭院幽竹丛 (env_bamboo_cluster)" data-desc="自然节环细竿、侧向竹枝与披针竹叶簇，掩映粉墙月洞">🎋 江南庭院幽竹丛</option>
-              <option value="asset_library/models/env_lotus_pot.glb" data-name="水榭青石荷花缸 (env_lotus_pot)" data-desc="深腹青石雕盆，内盛静水，漂浮团团圆叶与初绽红莲">🪷 水榭青石荷花缸</option>
+            <optgroup label="建筑法度构件 (Architectural Joinery)">
+              <option value="asset_library/models/arch_veranda_balustrade.glb" data-cat="arch" data-title="回廊美人靠/吴王靠 (arch_veranda_balustrade)" data-desc="低矮宽坐板、S型鹅颈木靠背立柱、搭脑扶手梁与下承托角。" data-cam="2.6,1.4,2.0, 0,0.45,0">🪑 回廊美人靠 / 吴王靠</option>
+              <option value="asset_library/models/arch_lattice_door.glb" data-cat="arch" data-title="四扇步步锦格扇门 (arch_lattice_door)" data-desc="上段透风步步锦格眼、中段绦环板、下段缠枝莲浮雕裙板与黄铜合页。" data-cam="2.6,1.6,2.2, 0,1.2,0">🚪 步步锦四扇格扇门</option>
+              <option value="asset_library/models/arch_roof_ridge_cap.glb" data-cat="arch" data-title="正脊鸱吻卷草脊首 (arch_roof_ridge_cap)" data-desc="黛瓦脊头向上翻卷鸱尾云吻，护佑两端屋垄，阻御雨水。" data-cam="1.0,0.7,0.8, 0,0.3,0">🐉 正脊鸱吻卷草脊首</option>
+              <option value="asset_library/models/arch_carved_beam_end.glb" data-cat="arch" data-title="梁头卷草雕花雀替 (arch_carved_beam_end)" data-desc="S形优美弧线卷草云纹雀替角花，加固挑檐梁柱受力结点。" data-cam="0.8,0.5,0.6, 0.2,0,-0.15">🌿 梁头卷草雕花雀替</option>
+              <option value="asset_library/models/arch_dock_pile_cap.glb" data-cat="arch" data-title="系缆桩青石莲花座帽 (arch_dock_pile_cap)" data-desc="粗壮泊船木桩、雕花八角青石莲花座顶帽与多道系缆粗麻绳圈。" data-cam="1.0,0.6,0.8, 0,0.4,0">⚓ 系缆桩青石莲花帽</option>
+            </optgroup>
+            <optgroup label="寝轩与私室 (Bedchamber & Lounge)">
+              <option value="asset_library/models/prop_ming_daybed.glb" data-cat="lounge" data-title="明式三围独板罗汉榻 (prop_ming_daybed)" data-desc="三面独板围子、起阳线牙板、内翻马蹄足、孔雀青织锦坐垫。" data-cam="2.4,1.4,2.0, 0,0.4,0">🛋️ 明式三围独板罗汉榻</option>
+              <option value="asset_library/models/prop_huanghuali_cabinet.glb" data-cat="lounge" data-title="黄花梨顶箱大立柜 (prop_huanghuali_cabinet)" data-desc="上顶箱、下大柜四件套组合，浮雕门板与大圆形老黄铜面叶钮头。" data-cam="2.2,1.4,2.2, 0,1.0,0">🚪 黄花梨顶箱立柜</option>
+              <option value="asset_library/models/prop_footstool.glb" data-cat="lounge" data-title="明式方几滚凳脚踏 (prop_footstool)" data-desc="方框内设可旋动滚动木轴，外承壸门云纹牙板与小马蹄足。" data-cam="0.9,0.5,0.7, 0,0.1,0">🪑 明式滚凳脚踏</option>
+              <option value="asset_library/models/prop_lacquer_chest.glb" data-cat="lounge" data-title="黑漆描金官皮箱 (prop_lacquer_chest)" data-desc="深黑大漆金描花纹，圆形老黄铜面叶与云头拍子钮头。" data-cam="0.8,0.5,0.7, 0,0.2,0">🧰 黑漆描金官皮箱</option>
+            </optgroup>
+            <optgroup label="庭院水岸林泉 (Courtyard & Waterfront)">
+              <option value="asset_library/models/env_bamboo_cluster.glb" data-cat="garden" data-title="江南庭院幽竹丛 (env_bamboo_cluster)" data-desc="自然节环细竿、侧向竹枝与披针竹叶簇，掩映粉墙月洞。" data-cam="3.2,2.0,2.6, 0,1.4,0">🎋 江南庭院幽竹丛</option>
+              <option value="asset_library/models/prop_moon_lamp.glb" data-cat="garden" data-title="月影庭院石灯笼 (prop_moon_lamp)" data-desc="六角石雕火袋透光、莲花须弥座台基与舒展伞盖宝珠顶。" data-cam="1.4,0.9,1.2, 0,0.6,0">🏮 月影庭院石灯笼</option>
+              <option value="asset_library/models/env_lotus_pot.glb" data-cat="garden" data-title="水榭青石荷花缸 (env_lotus_pot)" data-desc="深腹青石雕盆，内盛静水，漂浮团团圆叶与初绽红莲。" data-cam="1.5,1.0,1.2, 0,0.3,0">🪷 水榭青石荷花缸</option>
+              <option value="asset_library/models/env_reed_bundle.glb" data-cat="garden" data-title="水岸滩渚芦苇丛 (env_reed_bundle)" data-desc="运河岸边簇生细长芦苇秆、长叶与顶端随风飘拂的羽绒芦花。" data-cam="2.4,1.4,2.0, 0,0.9,0">🌾 水岸滩渚芦苇丛</option>
+              <option value="asset_library/models/env_rain_puddle.glb" data-cat="garden" data-title="庭院青石积水涟漪 (env_rain_puddle)" data-desc="雨后青石板路低凹处的微雨涟漪薄层，倒映四周灰瓦粉墙。" data-cam="1.6,0.8,1.4, 0,0.05,0">💧 阶前积水涟漪</option>
             </optgroup>
           </select>
         </div>
-        <div class="btn-group">
-          <button id="toggleRotate">自动旋转</button>
-          <button id="resetCam">重置视角</button>
-          <button id="toggleAR">进入全屏</button>
+        <div class="control-row">
+          <button class="opt-btn active" id="btnAutoRotate" onclick="toggleAutoRotate()">自动旋转</button>
+          <button class="opt-btn" onclick="resetView()">重置视角</button>
+          <button class="opt-btn" id="btnWire" onclick="toggleWireframe()">线框模式</button>
+          <button class="opt-btn" id="btnClay" onclick="toggleClay()">素模模式</button>
         </div>
       </div>
 
-      <div class="viewer-container">
-        <model-viewer id="mainViewer"
-          src="scene_preview.glb"
-          camera-controls
-          touch-action="pan-y"
-          auto-rotate
-          rotation-per-second="24deg"
-          shadow-intensity="1.2"
-          shadow-softness="0.8"
-          exposure="1.0"
-          alt="3D 资产检阅">
-        </model-viewer>
-        <div class="viewer-overlay">
-          <h4 id="viewerTitle">临水客栈明式建筑全景</h4>
-          <p id="viewerDesc">18×14m 水乡客栈，含月洞门、石拱桥、乌篷船、天井回廊与全套装配构件</p>
+      <div class="canvas-wrap" id="canvasContainer">
+        <div class="loader-curtain" id="loader">
+          <div class="loader-spin"></div>
+          <div class="loader-text" id="loaderText">载入营造三维几何...</div>
+        </div>
+        <div class="artifact-card">
+          <h3 id="cardTitle">客栈建筑全景</h3>
+          <p id="cardDesc">18×14m 水乡客栈建筑全景，包含月洞门、天井回廊、石拱桥、乌篷船与全套明式木构架。</p>
+          <div class="artifact-metrics">
+            <span id="metricTris">三角面：319,296</span>
+            <span id="metricMats">材质：10 类 PBR</span>
+            <span>操作：左键拖拽旋转 · 滚轮缩放 · 右键平移</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Blender Diagnostic Review Views -->
+    <!-- Blender Diagnostic Renders Grid -->
     <section>
-      <div class="section-title">
-        <div>
-          <h2>Blender 原生 10 机位诊断图集 (EEVEE Next AgX 720×480)</h2>
-          <p>由 GitHub Actions 与本地 Blender 真机自动出图，监控接触面、倒角与材质高光响应</p>
-        </div>
+      <div class="classical-heading">
+        <h2>陆 · 营造法式机位诊断 (Blender EEVEE Next AgX 720×480)</h2>
+        <span>由 GitHub Actions 与本地 Blender 真机自动出图 · 点击可放大细勘</span>
       </div>
-      <div class="diagnostics-grid">
-        <div class="diag-card" onclick="openModal('review_overview.png')">
-          <img src="review_overview.png" alt="总览视角" onerror="this.src='asset_library/architecture/arch_black_tile_course.jpg'">
-          <div class="info">
-            <h5>01 · 总览俯瞰 (Overview)</h5>
-            <p>体量、屋面轮廓、天井开敞度</p>
+      <div class="diag-matrix">
+        <div class="diag-item" onclick="openModal('review_overview.png')">
+          <img src="review_overview.png" alt="总览机位" onerror="this.src='asset_library/architecture/arch_black_tile_course.jpg'">
+          <div class="diag-meta">
+            <h4>01 · 庭宇全景俯瞰 (Overview)</h4>
+            <p>体量尺度、四翼屋面咬合、天井露光</p>
           </div>
         </div>
-        <div class="diag-card" onclick="openModal('review_tea_room.png')">
+        <div class="diag-item" onclick="openModal('review_tea_room.png')">
           <img src="review_tea_room.png" alt="茶室机位" onerror="this.src='asset_library/props/prop_altar_table.jpg'">
-          <div class="info">
-            <h5>02 · 茶室与长案 (Tea Room)</h5>
-            <p>翘头长案、太湖石供、梅瓶与屏风</p>
+          <div class="diag-meta">
+            <h4>02 · 中堂茶室雅集 (Tea Room)</h4>
+            <p>夹头榫翘头案、太湖石供、梅瓶与折叠围屏</p>
           </div>
         </div>
-        <div class="diag-card" onclick="openModal('review_joinery.png')">
-          <img src="review_joinery.png" alt="木作隔扇" onerror="this.src='asset_library/architecture/arch_window_lattice_lotus.jpg'">
-          <div class="info">
-            <h5>03 · 木作与隔扇 (Joinery Detail)</h5>
-            <p>步步锦窗棂、莲花浮雕板与黄铜合页</p>
+        <div class="diag-item" onclick="openModal('review_joinery.png')">
+          <img src="review_joinery.png" alt="木作机位" onerror="this.src='asset_library/architecture/arch_window_lattice_lotus.jpg'">
+          <div class="diag-meta">
+            <h4>03 · 隔扇木作细部 (Joinery Detail)</h4>
+            <p>步步锦窗棂、莲花浮雕板、黄铜合页与木纹走向</p>
           </div>
         </div>
-        <div class="diag-card" onclick="openModal('review_courtyard.png')">
-          <img src="review_courtyard.png" alt="天井院落" onerror="this.src='asset_library/environment/env_courtyard_pruned_tree.jpg'">
-          <div class="info">
-            <h5>04 · 庭院天井 (Courtyard)</h5>
-            <p>修剪老树、水缸、苔石与天井透光</p>
+        <div class="diag-item" onclick="openModal('review_courtyard.png')">
+          <img src="review_courtyard.png" alt="天井机位" onerror="this.src='asset_library/environment/env_courtyard_pruned_tree.jpg'">
+          <div class="diag-meta">
+            <h4>04 · 庭院天井层叠 (Courtyard)</h4>
+            <p>修剪古树留白、蓄水石缸、青苔叠石与回廊光影</p>
           </div>
         </div>
-        <div class="diag-card" onclick="openModal('review_moon_gate.png')">
-          <img src="review_moon_gate.png" alt="月洞门幽竹" onerror="this.src='asset_library/architecture/arch_moon_gate_stone_ring.jpg'">
-          <div class="info">
-            <h5>05 · 西园月洞 (Moon Gate)</h5>
-            <p>月洞石环、幽竹掩映、石灯笼透景</p>
+        <div class="diag-item" onclick="openModal('review_moon_gate.png')">
+          <img src="review_moon_gate.png" alt="月洞门机位" onerror="this.src='asset_library/architecture/arch_moon_gate_stone_ring.jpg'">
+          <div class="diag-meta">
+            <h4>05 · 西园月洞穿透 (Moon Gate)</h4>
+            <p>规整青石石环、幽竹掩映粉墙、幽深石灯笼透景</p>
           </div>
         </div>
-        <div class="diag-card" onclick="openModal('review_bridge_boat.png')">
-          <img src="review_bridge_boat.png" alt="水岸石桥" onerror="this.src='asset_library/props/prop_wupeng_boat.jpg'">
-          <div class="info">
-            <h5>06 · 石桥与驳岸 (Bridge & Waterfront)</h5>
-            <p>石拱桥桥台、乌篷船水线涟漪、系缆桩</p>
+        <div class="diag-item" onclick="openModal('review_bridge_boat.png')">
+          <img src="review_bridge_boat.png" alt="水岸机位" onerror="this.src='asset_library/props/prop_wupeng_boat.jpg'">
+          <div class="diag-meta">
+            <h4>06 · 石桥与驳岸接触 (Bridge & Waterfront)</h4>
+            <p>单孔石拱桥桥台、乌篷船水线涟漪、系缆桩帽接触</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Reference Asset Library Gallery -->
+    <!-- Asset Library Catalog Reference -->
     <section>
-      <div class="section-title">
-        <div>
-          <h2>资产库设计参考与图谱 (65 件图鉴)</h2>
-          <p>作为构件三维建模、比例约束与物理贴图调校的原始依据</p>
-        </div>
+      <div class="classical-heading">
+        <h2>伍 · 营造考工图谱对照 (65 样典籍档案)</h2>
+        <span>三维几何建模与物理贴图调校的原始依据 · 点击可放大图样</span>
       </div>
-      <div class="filter-tabs">
-        <button class="tab-btn active" onclick="filterAssets('all', this)">全部 (65)</button>
-        <button class="tab-btn" onclick="filterAssets('props', this)">家具文房 Props (20)</button>
-        <button class="tab-btn" onclick="filterAssets('architecture', this)">建筑构件 Architecture (15)</button>
-        <button class="tab-btn" onclick="filterAssets('environment', this)">庭院环境 Environment (10)</button>
-        <button class="tab-btn" onclick="filterAssets('textures', this)">可平铺材质 Textures (20)</button>
+      <div class="catalog-filter">
+        <button class="cat-btn active" onclick="filterCatalog('all', this)">全部档案 (65)</button>
+        <button class="cat-btn" onclick="filterCatalog('props', this)">文房器用 (20)</button>
+        <button class="cat-btn" onclick="filterCatalog('architecture', this)">建筑构件 (15)</button>
+        <button class="cat-btn" onclick="filterCatalog('environment', this)">庭院风物 (10)</button>
+        <button class="cat-btn" onclick="filterCatalog('textures', this)">可平铺材质 (20)</button>
       </div>
-      <div class="asset-grid" id="assetGrid">
-        <!-- Rendered by JS -->
+      <div class="catalog-grid" id="catalogGrid">
+        <!-- Generated by JavaScript -->
       </div>
     </section>
   </main>
 
   <footer>
-    <p>烟雨江南 · 明式临水客栈工程库 &copy; 2026 太素先生 | GitHub 自动化持续交付系统</p>
-    <p style="margin-top: 0.4rem;">
-      <a href="https://github.com/XDHRY/yanyu-jiangnan-ming-inn" target="_blank">代码仓库</a> · 
-      <a href="https://github.com/XDHRY/yanyu-jiangnan-ming-inn/actions" target="_blank">GitHub Actions 流水线</a> · 
+    <p>烟雨江南 · 临水客栈工程库 &copy; 2026 太素先生 | 遵照《明式营造水乡客栈法度》持续交付</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="https://github.com/XDHRY/yanyu-jiangnan-ming-inn" target="_blank">GitHub 代码仓库</a> · 
+      <a href="https://github.com/XDHRY/yanyu-jiangnan-ming-inn/actions" target="_blank">Actions 持续构建流水线</a> · 
       <a href="https://github.com/XDHRY/yanyu-jiangnan-ming-inn/pulls" target="_blank">Pull Requests</a>
     </p>
   </footer>
 
-  <!-- Modal for Full-res Image Inspection -->
-  <div class="modal" id="imageModal" onclick="closeModal()">
-    <img id="modalImg" src="" alt="放大查看">
+  <!-- Modal for full screen review -->
+  <div class="modal" id="previewModal" onclick="closeModal()">
+    <img id="modalViewerImg" src="" alt="放大勘验">
   </div>
 
+  <!-- Three.js Native 3D Engine Script -->
   <script>
-    const viewer = document.getElementById('mainViewer');
-    const select = document.getElementById('modelSelect');
-    const title = document.getElementById('viewerTitle');
-    const desc = document.getElementById('viewerDesc');
+    let scene, camera, renderer, controls;
+    let currentModel = null;
+    let autoRotate = true;
+    let isWireframe = false;
+    let isClay = false;
+    let cachedMaterials = new Map();
+    let clayMaterial;
+    let defaultCamPos = new THREE.Vector3(25, 18, 22);
+    let defaultTarget = new THREE.Vector3(9, 3, 2);
 
-    select.addEventListener('change', (e) => {
-      const opt = e.target.selectedOptions[0];
-      viewer.src = opt.value;
-      title.innerText = opt.dataset.name;
-      desc.innerText = opt.dataset.desc;
-    });
+    const container = document.getElementById('canvasContainer');
+    const loaderCurtain = document.getElementById('loader');
+    const loaderText = document.getElementById('loaderText');
 
-    document.getElementById('toggleRotate').addEventListener('click', (e) => {
-      viewer.autoRotate = !viewer.autoRotate;
-      e.target.classList.toggle('active', viewer.autoRotate);
-    });
+    function initThree() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0c1015);
+      scene.fog = new THREE.FogExp2(0x0c1015, 0.015);
 
-    document.getElementById('resetCam').addEventListener('click', () => {
-      viewer.resetTurntable();
-      viewer.cameraOrbit = 'auto auto auto';
-    });
+      const aspect = container.clientWidth / container.clientHeight;
+      camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 500);
+      camera.position.copy(defaultCamPos);
 
-    document.getElementById('toggleAR').addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.querySelector('.viewer-container').requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen();
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.target.copy(defaultTarget);
+      controls.maxPolarAngle = Math.PI / 2 + 0.05; // allow slightly low angles
+
+      // Lighting system: Soft moonlight + warm lantern accents
+      const hemiLight = new THREE.HemisphereLight(0x7da4b8, 0x1a2128, 0.65);
+      scene.add(hemiLight);
+
+      const sunLight = new THREE.DirectionalLight(0xd9ebff, 1.25);
+      sunLight.position.set(20, 45, 30);
+      sunLight.castShadow = true;
+      sunLight.shadow.mapSize.width = 2048;
+      sunLight.shadow.mapSize.height = 2048;
+      scene.add(sunLight);
+
+      const warmLantern = new THREE.PointLight(0xffb359, 1.5, 35);
+      warmLantern.position.set(9, 6, 4);
+      scene.add(warmLantern);
+
+      // Floor Shadow Plane
+      const groundGeo = new THREE.PlaneGeometry(100, 100);
+      const groundMat = new THREE.ShadowMaterial({ opacity: 0.35 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -0.05;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      clayMaterial = new THREE.MeshStandardMaterial({
+        color: 0xded9c8,
+        roughness: 0.6,
+        metalness: 0.05
+      });
+
+      window.addEventListener('resize', onWindowResize);
+      animate();
+
+      // Load initial model
+      loadGLB('scene_preview.glb');
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (autoRotate && controls) {
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.0;
+      } else if (controls) {
+        controls.autoRotate = false;
       }
-    });
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    function loadGLB(url) {
+      loaderCurtain.classList.remove('hidden');
+      loaderText.innerText = "载入三维模型：" + url.split('/').pop();
+
+      const loader = new THREE.GLTFLoader();
+      loader.load(url, (gltf) => {
+        if (currentModel) {
+          scene.remove(currentModel);
+        }
+        currentModel = gltf.scene;
+
+        cachedMaterials.clear();
+        let totalVerts = 0;
+        let totalTris = 0;
+
+        currentModel.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            cachedMaterials.set(child, child.material);
+            if (child.geometry) {
+              if (child.geometry.index) {
+                totalTris += child.geometry.index.count / 3;
+              } else if (child.geometry.attributes.position) {
+                totalTris += child.geometry.attributes.position.count / 3;
+              }
+              if (child.geometry.attributes.position) {
+                totalVerts += child.geometry.attributes.position.count;
+              }
+            }
+          }
+        });
+
+        scene.add(currentModel);
+
+        // Update metrics on UI
+        document.getElementById('metricTris').innerText = "三角面：" + Math.round(totalTris).toLocaleString();
+
+        // Adjust camera framing based on bounds if component
+        const box = new THREE.Box3().setFromObject(currentModel);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+
+        if (url !== 'scene_preview.glb') {
+          controls.target.copy(center);
+          const fov = camera.fov * (Math.PI / 180);
+          let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.6;
+          camera.position.set(center.x + cameraZ * 0.8, center.y + cameraZ * 0.5, center.z + cameraZ);
+        } else {
+          controls.target.copy(defaultTarget);
+          camera.position.copy(defaultCamPos);
+        }
+        controls.update();
+
+        loaderCurtain.classList.add('hidden');
+      }, (xhr) => {
+        if (xhr.lengthComputable) {
+          const percent = Math.round((xhr.loaded / xhr.total) * 100);
+          loaderText.innerText = `传输数据：${percent}%`;
+        }
+      }, (error) => {
+        console.error("加载模型失败：", error);
+        loaderText.innerText = "模型加载异常，请点击重试";
+        loaderCurtain.classList.remove('hidden');
+      });
+    }
+
+    function onSelectModel(url) {
+      const select = document.getElementById('modelDropdown');
+      const opt = select.selectedOptions[0];
+      document.getElementById('cardTitle').innerText = opt.dataset.title;
+      document.getElementById('cardDesc').innerText = opt.dataset.desc;
+      loadGLB(url);
+    }
+
+    function switchHall(cat, btn) {
+      document.querySelectorAll('.hall-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const select = document.getElementById('modelDropdown');
+      const options = Array.from(select.options);
+      let targetOpt = options.find(o => cat === 'all' || o.dataset.cat === cat);
+      if (targetOpt) {
+        select.value = targetOpt.value;
+        onSelectModel(targetOpt.value);
+      }
+    }
+
+    function toggleAutoRotate() {
+      autoRotate = !autoRotate;
+      document.getElementById('btnAutoRotate').classList.toggle('active', autoRotate);
+    }
+
+    function resetView() {
+      onSelectModel(document.getElementById('modelDropdown').value);
+    }
+
+    function toggleWireframe() {
+      isWireframe = !isWireframe;
+      document.getElementById('btnWire').classList.toggle('active', isWireframe);
+      if (!currentModel) return;
+      currentModel.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material.wireframe = isWireframe;
+        }
+      });
+    }
+
+    function toggleClay() {
+      isClay = !isClay;
+      document.getElementById('btnClay').classList.toggle('active', isClay);
+      if (!currentModel) return;
+      currentModel.traverse((child) => {
+        if (child.isMesh) {
+          child.material = isClay ? clayMaterial : (cachedMaterials.get(child) || clayMaterial);
+          child.material.wireframe = isWireframe;
+        }
+      });
+    }
 
     function openModal(src) {
-      const modal = document.getElementById('imageModal');
-      const img = document.getElementById('modalImg');
-      img.src = src;
-      modal.classList.add('active');
+      document.getElementById('modalViewerImg').src = src;
+      document.getElementById('previewModal').classList.add('active');
     }
     function closeModal() {
-      document.getElementById('imageModal').classList.remove('active');
+      document.getElementById('previewModal').classList.remove('active');
     }
 
-    // Asset Gallery Data
-    const assetData = [
-      { id: 'prop_four_panel_screen', cat: 'props', name: '四扇折叠围屏', img: 'asset_library/props/prop_four_panel_screen.jpg', status: '已制成 3D' },
-      { id: 'prop_altar_table', cat: 'props', name: '夹头榫翘头案', img: 'asset_library/props/prop_altar_table.jpg', status: '已制成 3D' },
-      { id: 'prop_scholar_rock', cat: 'props', name: '文房太湖石供', img: 'asset_library/props/prop_scholar_rock.jpg', status: '已制成 3D' },
-      { id: 'prop_porcelain_vase', cat: 'props', name: '青瓷插枝梅瓶', img: 'asset_library/props/prop_porcelain_vase.jpg', status: '已制成 3D' },
-      { id: 'prop_ming_daybed', cat: 'props', name: '明式罗汉床榻', img: 'asset_library/props/prop_ming_daybed.jpg', status: '已制成 3D' },
-      { id: 'prop_brush_pot', cat: 'props', name: '黄花梨笔筒', img: 'asset_library/props/prop_brush_pot.jpg', status: '已制成 3D' },
-      { id: 'prop_bamboo_scroll_basket', cat: 'props', name: '竹编卷轴画筒', img: 'asset_library/props/prop_bamboo_scroll_basket.jpg', status: '已制成 3D' },
-      { id: 'prop_lacquer_chest', cat: 'props', name: '黑漆描金官皮箱', img: 'asset_library/props/prop_lacquer_chest.jpg', status: '已制成 3D' },
-      { id: 'prop_horseshoe_armchair_v2', cat: 'props', name: '圈椅二代', img: 'asset_library/props/prop_horseshoe_armchair_v2.jpg', status: '已制成 3D' },
-      { id: 'prop_bronze_incense_burner', cat: 'props', name: '青铜香炉', img: 'asset_library/props/prop_bronze_incense_burner.jpg', status: '已制成 3D' },
-      { id: 'prop_celadon_tea_set', cat: 'props', name: '青瓷茶具组', img: 'asset_library/props/prop_celadon_tea_set.jpg', status: '已制成 3D' },
-      { id: 'prop_wupeng_boat', cat: 'props', name: '水乡乌篷船', img: 'asset_library/props/prop_wupeng_boat.jpg', status: '已制成 3D' },
-      { id: 'prop_hanging_plaque', cat: 'props', name: '黑漆悬匾', img: 'asset_library/props/prop_hanging_plaque.jpg', status: '已制成 3D' },
-      { id: 'prop_water_jar', cat: 'props', name: '庭院储水缸', img: 'asset_library/props/prop_water_jar.jpg', status: '已制成 3D' },
-      { id: 'prop_footstool', cat: 'props', name: '黄花梨脚踏', img: 'asset_library/props/prop_footstool.jpg', status: '参考图' },
-      { id: 'prop_scholar_desk', cat: 'props', name: '文房画案', img: 'asset_library/props/prop_scholar_desk.jpg', status: '参考图' },
-      { id: 'prop_huanghuali_cabinet', cat: 'props', name: '顶箱立柜', img: 'asset_library/props/prop_huanghuali_cabinet.jpg', status: '参考图' },
-      { id: 'prop_moon_lamp', cat: 'props', name: '月影石灯', img: 'asset_library/props/prop_moon_lamp.jpg', status: '参考图' },
-      { id: 'prop_hand_fan', cat: 'props', name: '文人团扇', img: 'asset_library/props/prop_hand_fan.jpg', status: '参考图' },
-      { id: 'arch_veranda_balustrade', cat: 'architecture', name: '回廊美人靠', img: 'asset_library/architecture/arch_veranda_balustrade.jpg', status: '已制成 3D' },
-      { id: 'arch_roof_ridge_cap', cat: 'architecture', name: '正脊鸱吻脊首', img: 'asset_library/architecture/arch_roof_ridge_cap.jpg', status: '已制成 3D' },
-      { id: 'arch_eave_bracket', cat: 'architecture', name: '平坐斗拱组', img: 'asset_library/architecture/arch_eave_bracket.jpg', status: '已制成 3D' },
-      { id: 'arch_rain_chain', cat: 'architecture', name: '南檐紫铜雨链', img: 'asset_library/architecture/arch_rain_chain.jpg', status: '已制成 3D' },
-      { id: 'arch_moon_gate_stone_ring', cat: 'architecture', name: '月洞石环', img: 'asset_library/architecture/arch_moon_gate_stone_ring.jpg', status: '已制成 3D' },
-      { id: 'arch_blue_limestone_step', cat: 'architecture', name: '青石踏步', img: 'asset_library/architecture/arch_blue_limestone_step.jpg', status: '已制成 3D' },
-      { id: 'arch_bridge_rail', cat: 'architecture', name: '石拱桥望柱栏杆', img: 'asset_library/architecture/arch_bridge_rail.jpg', status: '已制成 3D' },
-      { id: 'arch_window_lattice_lotus', cat: 'architecture', name: '莲花窗棂', img: 'asset_library/architecture/arch_window_lattice_lotus.jpg', status: '已制成 3D' },
-      { id: 'arch_window_lattice_square', cat: 'architecture', name: '步步锦方格窗棂', img: 'asset_library/architecture/arch_window_lattice_square.jpg', status: '已制成 3D' },
-      { id: 'arch_carved_beam_end', cat: 'architecture', name: '梁头雕花雀替', img: 'asset_library/architecture/arch_carved_beam_end.jpg', status: '参考图' },
-      { id: 'arch_dock_pile_cap', cat: 'architecture', name: '码头缆桩石帽', img: 'asset_library/architecture/arch_dock_pile_cap.jpg', status: '参考图' },
-      { id: 'arch_lattice_door', cat: 'architecture', name: '明式格扇门', img: 'asset_library/architecture/arch_lattice_door.jpg', status: '参考图' },
-      { id: 'env_bamboo_cluster', cat: 'environment', name: '江南幽竹丛', img: 'asset_library/environment/env_bamboo_cluster.jpg', status: '已制成 3D' },
-      { id: 'env_lotus_pot', cat: 'environment', name: '水榭青石荷花缸', img: 'asset_library/environment/env_lotus_pot.jpg', status: '已制成 3D' },
-      { id: 'env_courtyard_pruned_tree', cat: 'environment', name: '天井修剪古树', img: 'asset_library/environment/env_courtyard_pruned_tree.jpg', status: '已制成 3D' },
-      { id: 'env_moss_stone', cat: 'environment', name: '庭院青苔景石', img: 'asset_library/environment/env_moss_stone.jpg', status: '已制成 3D' },
-      { id: 'env_canal_water_surface', cat: 'environment', name: '运河水体质感', img: 'asset_library/environment/env_canal_water_surface.jpg', status: '已制成 3D' },
-      { id: 'env_wet_paving', cat: 'environment', name: '湿润青石板路', img: 'asset_library/environment/env_wet_paving.jpg', status: '已制成 3D' },
-      { id: 'env_reed_bundle', cat: 'environment', name: '水岸芦苇丛', img: 'asset_library/environment/env_reed_bundle.jpg', status: '参考图' }
+    // Catalog Data
+    const catalogData = [
+      { id: 'prop_four_panel_screen', cat: 'props', name: '四扇折叠围屏', img: 'asset_library/props/prop_four_panel_screen.jpg', tag: '三维已成' },
+      { id: 'prop_altar_table', cat: 'props', name: '夹头榫翘头长案', img: 'asset_library/props/prop_altar_table.jpg', tag: '三维已成' },
+      { id: 'prop_scholar_rock', cat: 'props', name: '文房太湖石供', img: 'asset_library/props/prop_scholar_rock.jpg', tag: '三维已成' },
+      { id: 'prop_porcelain_vase', cat: 'props', name: '青瓷插枝梅瓶', img: 'asset_library/props/prop_porcelain_vase.jpg', tag: '三维已成' },
+      { id: 'prop_ming_daybed', cat: 'props', name: '三围独板罗汉榻', img: 'asset_library/props/prop_ming_daybed.jpg', tag: '三维已成' },
+      { id: 'prop_brush_pot', cat: 'props', name: '黄花梨文房笔筒', img: 'asset_library/props/prop_brush_pot.jpg', tag: '三维已成' },
+      { id: 'prop_bamboo_scroll_basket', cat: 'props', name: '竹编卷轴画筒', img: 'asset_library/props/prop_bamboo_scroll_basket.jpg', tag: '三维已成' },
+      { id: 'prop_lacquer_chest', cat: 'props', name: '黑漆描金官皮箱', img: 'asset_library/props/prop_lacquer_chest.jpg', tag: '三维已成' },
+      { id: 'arch_veranda_balustrade', cat: 'architecture', name: '回廊美人靠/吴王靠', img: 'asset_library/architecture/arch_veranda_balustrade.jpg', tag: '三维已成' },
+      { id: 'arch_roof_ridge_cap', cat: 'architecture', name: '正脊鸱吻脊首', img: 'asset_library/architecture/arch_roof_ridge_cap.jpg', tag: '三维已成' },
+      { id: 'env_bamboo_cluster', cat: 'environment', name: '江南庭院幽竹丛', img: 'asset_library/environment/env_bamboo_cluster.jpg', tag: '三维已成' },
+      { id: 'env_lotus_pot', cat: 'environment', name: '水榭青石荷花缸', img: 'asset_library/environment/env_lotus_pot.jpg', tag: '三维已成' },
+      { id: 'prop_horseshoe_armchair_v2', cat: 'props', name: '黄花梨圈椅二代', img: 'asset_library/props/prop_horseshoe_armchair_v2.jpg', tag: '三维已成' },
+      { id: 'prop_bronze_incense_burner', cat: 'props', name: '仿古青铜香炉', img: 'asset_library/props/prop_bronze_incense_burner.jpg', tag: '三维已成' },
+      { id: 'prop_celadon_tea_set', cat: 'props', name: '龙泉青瓷茶具组', img: 'asset_library/props/prop_celadon_tea_set.jpg', tag: '三维已成' },
+      { id: 'prop_wupeng_boat', cat: 'props', name: '江南水乡乌篷船', img: 'asset_library/props/prop_wupeng_boat.jpg', tag: '三维已成' },
+      { id: 'prop_hanging_plaque', cat: 'props', name: '黑漆描金大门匾', img: 'asset_library/props/prop_hanging_plaque.jpg', tag: '三维已成' },
+      { id: 'prop_water_jar', cat: 'props', name: '庭院青石储水缸', img: 'asset_library/props/prop_water_jar.jpg', tag: '三维已成' },
+      { id: 'prop_scholar_desk', cat: 'props', name: '文人文房大画案', img: 'asset_library/props/prop_scholar_desk.jpg', tag: '考工图谱' },
+      { id: 'prop_huanghuali_cabinet', cat: 'props', name: '黄花梨顶箱大立柜', img: 'asset_library/props/prop_huanghuali_cabinet.jpg', tag: '考工图谱' },
+      { id: 'prop_footstool', cat: 'props', name: '明式方几滚凳脚踏', img: 'asset_library/props/prop_footstool.jpg', tag: '考工图谱' },
+      { id: 'prop_moon_lamp', cat: 'props', name: '月影庭院石灯笼', img: 'asset_library/props/prop_moon_lamp.jpg', tag: '考工图谱' },
+      { id: 'prop_hand_fan', cat: 'props', name: '泥金沉香骨团扇', img: 'asset_library/props/prop_hand_fan.jpg', tag: '考工图谱' },
+      { id: 'arch_lattice_door', cat: 'architecture', name: '步步锦四扇格扇门', img: 'asset_library/architecture/arch_lattice_door.jpg', tag: '考工图谱' },
+      { id: 'arch_carved_beam_end', cat: 'architecture', name: '梁头卷草雕花雀替', img: 'asset_library/architecture/arch_carved_beam_end.jpg', tag: '考工图谱' },
+      { id: 'arch_dock_pile_cap', cat: 'architecture', name: '码头系缆桩青石帽', img: 'asset_library/architecture/arch_dock_pile_cap.jpg', tag: '考工图谱' },
+      { id: 'arch_eave_bracket', cat: 'architecture', name: '平坐出挑斗拱组', img: 'asset_library/architecture/arch_eave_bracket.jpg', tag: '三维已成' },
+      { id: 'arch_moon_gate_stone_ring', cat: 'architecture', name: '月洞门雕石圈梁', img: 'asset_library/architecture/arch_moon_gate_stone_ring.jpg', tag: '三维已成' },
+      { id: 'arch_blue_limestone_step', cat: 'architecture', name: '润水青石垂带台阶', img: 'asset_library/architecture/arch_blue_limestone_step.jpg', tag: '三维已成' },
+      { id: 'arch_bridge_rail', cat: 'architecture', name: '石拱桥青石望柱', img: 'asset_library/architecture/arch_bridge_rail.jpg', tag: '三维已成' },
+      { id: 'arch_rain_chain', cat: 'architecture', name: '紫铜水滴倒引雨链', img: 'asset_library/architecture/arch_rain_chain.jpg', tag: '三维已成' },
+      { id: 'env_courtyard_pruned_tree', cat: 'environment', name: '天井修剪古柏老树', img: 'asset_library/environment/env_courtyard_pruned_tree.jpg', tag: '三维已成' },
+      { id: 'env_moss_stone', cat: 'environment', name: '庭院青苔点水奇石', img: 'asset_library/environment/env_moss_stone.jpg', tag: '三维已成' },
+      { id: 'env_reed_bundle', cat: 'environment', name: '水岸滩渚芦苇丛', img: 'asset_library/environment/env_reed_bundle.jpg', tag: '考工图谱' },
+      { id: 'env_rain_puddle', cat: 'environment', name: '阶前微雨积水涟漪', img: 'asset_library/environment/env_rain_puddle.jpg', tag: '考工图谱' },
+      { id: 'tex_huanghuali_warm', cat: 'textures', name: '温润明式黄花梨纹', img: 'asset_library/textures/tex_huanghuali_warm.jpg', tag: 'PBR 物理贴图' },
+      { id: 'tex_blue_limestone_wet', cat: 'textures', name: '水润冷灰青石板', img: 'asset_library/textures/tex_blue_limestone_wet.jpg', tag: 'PBR 物理贴图' },
+      { id: 'tex_black_tile_wet', cat: 'textures', name: '雨夜黛色小青瓦', img: 'asset_library/textures/tex_black_tile_wet.jpg', tag: 'PBR 物理贴图' },
+      { id: 'tex_paper_screen', cat: 'textures', name: '宣纸屏心漫射纹', img: 'asset_library/textures/tex_paper_screen.jpg', tag: 'PBR 物理贴图' },
+      { id: 'tex_lacquer_black_gold', cat: 'textures', name: '黑漆描金百宝纹', img: 'asset_library/textures/tex_lacquer_black_gold.jpg', tag: 'PBR 物理贴图' },
+      { id: 'tex_brass_aged', cat: 'textures', name: '明代熟铜老包浆', img: 'asset_library/textures/tex_brass_aged.jpg', tag: 'PBR 物理贴图' },
+      { id: 'tex_teal_brocade_cloud', cat: 'textures', name: '孔雀青如意云纹锦', img: 'asset_library/textures/tex_teal_brocade_cloud.jpg', tag: 'PBR 物理贴图' }
     ];
 
-    function renderAssets(list) {
-      const grid = document.getElementById('assetGrid');
-      grid.innerHTML = list.map(item => `
-        <div class="asset-card" onclick="openModal('${item.img}')">
-          <img src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.style.opacity=0.3">
-          <span>${item.name}</span>
-          <small>${item.status}</small>
+    function renderCatalog(items) {
+      const grid = document.getElementById('catalogGrid');
+      grid.innerHTML = items.map(it => `
+        <div class="catalog-card" onclick="openModal('${it.img}')">
+          <img src="${it.img}" alt="${it.name}" loading="lazy" onerror="this.style.opacity=0.3">
+          <h5>${it.name}</h5>
+          <span>${it.tag}</span>
         </div>
       `).join('');
     }
 
-    function filterAssets(cat, btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    function filterCatalog(cat, btn) {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       if (cat === 'all') {
-        renderAssets(assetData);
+        renderCatalog(catalogData);
       } else {
-        renderAssets(assetData.filter(a => a.cat === cat));
+        renderCatalog(catalogData.filter(i => i.cat === cat));
       }
     }
 
-    // Init
-    renderAssets(assetData);
+    // Start everything on DOM load
+    window.addEventListener('DOMContentLoaded', () => {
+      initThree();
+      renderCatalog(catalogData);
+    });
   </script>
 </body>
 </html>

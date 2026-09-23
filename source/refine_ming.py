@@ -215,6 +215,32 @@ b.layer = 'roof'
 cf.build_roof_ridge_cap(bridge, x=0.10, y=2.0, z=6.58, rotDeg=90, scale=0.90)
 cf.build_roof_ridge_cap(bridge, x=17.90, y=2.0, z=6.58, rotDeg=-90, scale=0.90)
 
+# 8. Scholar painting desk, hand fan, wardrobe cabinet & footstool in upper chamber
+b.layer = 'upper'
+cf.build_scholar_desk(bridge, x=15.2, y=12.2, z=2.92, rotDeg=0, length=1.8, width=0.8, height=0.82)
+cf.build_hand_fan(bridge, x=15.2, y=12.2, z=2.92 + 0.82, rotDeg=25, scale=0.9)
+cf.build_huanghuali_cabinet(bridge, x=17.2, y=11.5, z=2.92, rotDeg=-90, width=1.1, depth=0.55, height=2.0)
+cf.build_footstool(bridge, x=3.0, y=11.5, z=2.92, rotDeg=0, length=0.6, width=0.3, height=0.22)
+
+# 9. Garden stone lantern and entrance reflective rain puddle
+b.layer = 'garden'
+cf.build_moon_lamp(bridge, x=-1.0, y=8.2, z=0.03, scale=1.0)
+b.layer = 'site'
+cf.build_rain_puddle(bridge, x=9.0, y=-1.1, z=0.03, rx=0.9, ry=0.55)
+
+# 10. Architectural joinery: carved corbel brackets on colonnade posts
+b.layer = 'ornament'
+for cx in [4.7, 13.3]:
+    for cy in [5.35, 8.65]:
+        cf.build_carved_beam_end(bridge, x=cx, y=cy, z=5.22, rotDeg=0, scale=0.8)
+
+# 11. Waterfront mooring bollard caps and wild reeds
+b.layer = 'waterfront'
+for bx in [-6.0, 1.5, 12.0, 22.0]:
+    cf.build_dock_pile_cap(bridge, x=bx, y=-1.75, z=-0.46, scale=0.9)
+for rx in [-5.5, 2.5, 17.5]:
+    cf.build_reed_bundle(bridge, x=rx, y=-7.8, z=-0.75, count=12, height=1.8)
+
 print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.
 payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}
