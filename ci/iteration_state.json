@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round21-full-45-assets-mastery-and-dual-mood",
+  "current_phase": "diagnostic-round22-ultimate-literati-cinematic-masterpiece",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -135,5 +135,12 @@
     "Dual mood system: Night Ink (夜雨烟渚) and Daylight Silk (素绢雪霁) with instant real-time shader transition",
     "Full catalog interactivity: clicking any reference card dynamically loads its 3D model into the viewport",
     "Multi-angle headless screenshot auditing verified zero console errors and smooth 60fps rotation"
+  ],
+  "round22_focus": [
+    "Integrated six-waypoint cinematic tour (名仕漫游巡礼) with smooth Bezier camera transitions and poetic scene descriptions",
+    "Procedural Web Audio acoustic rain engine (空庭听雨) with zero external audio assets",
+    "WebGL physical rain particle system (细雨微风) with dynamic wind tilt and water ripple interaction",
+    "Interactive 3D spatial annotation pins hovering over load-bearing architectural and artifact features",
+    "Upgraded master scene_preview.glb to full 335,280-triangle scene with 19 material batches for sub-second opening"
   ]
 }

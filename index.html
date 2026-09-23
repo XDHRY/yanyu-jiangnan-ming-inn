@@ -284,6 +284,39 @@
       color: var(--gold-ming);
     }
 
+    /* 3D Spatial Annotation Pin Badges */
+    .scene-pin {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background: rgba(16, 20, 26, 0.88);
+      border: 1px solid var(--gold-ming);
+      border-radius: 20px;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.76rem;
+      color: var(--paper-cream);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      pointer-events: auto;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      transition: all 0.2s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .scene-pin:hover {
+      background: var(--gold-ming);
+      color: #000;
+      transform: translate(-50%, -55%) scale(1.08);
+      border-color: #fff;
+    }
+    .scene-pin::before {
+      content: "✦";
+      color: var(--cinnabar);
+      font-size: 0.72rem;
+    }
+    .scene-pin:hover::before { color: #000; }
+
     /* In-viewport Artifact Card */
     .artifact-card {
       position: absolute;
@@ -575,11 +608,14 @@
           </select>
         </div>
         <div class="control-row">
-          <button class="opt-btn" id="btnMood" onclick="toggleMood()">🌙 切换昼夜氛境</button>
+          <button class="opt-btn" id="btnTour" onclick="toggleTour()">🚶 名仕漫游巡礼</button>
+          <button class="opt-btn" id="btnRainSound" onclick="toggleRainSound()">🌧️ 听雨声效</button>
+          <button class="opt-btn active" id="btnRainVisual" onclick="toggleRainVisual()">💧 细雨微风</button>
+          <button class="opt-btn" id="btnMood" onclick="toggleMood()">🌙 昼夜双调</button>
           <button class="opt-btn active" id="btnAutoRotate" onclick="toggleAutoRotate()">自动旋转</button>
           <button class="opt-btn" onclick="resetView()">重置视角</button>
-          <button class="opt-btn" id="btnWire" onclick="toggleWireframe()">线框模式</button>
-          <button class="opt-btn" id="btnClay" onclick="toggleClay()">素模模式</button>
+          <button class="opt-btn" id="btnWire" onclick="toggleWireframe()">线框</button>
+          <button class="opt-btn" id="btnClay" onclick="toggleClay()">素模</button>
         </div>
       </div>
 
@@ -588,11 +624,12 @@
           <div class="loader-spin"></div>
           <div class="loader-text" id="loaderText">载入营造三维几何...</div>
         </div>
+        <div id="pinContainer" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:4;"></div>
         <div class="artifact-card">
           <h3 id="cardTitle">客栈建筑全景</h3>
           <p id="cardDesc">18×14m 水乡客栈建筑全景，包含月洞门、天井回廊、石拱桥、乌篷船与全套明式木构架。</p>
           <div class="artifact-metrics">
-            <span id="metricTris">三角面：319,296</span>
+            <span id="metricTris">三角面：335,280</span>
             <span id="metricMats">材质：10 类 PBR</span>
             <span>操作：左键拖拽旋转 · 滚轮缩放 · 右键平移</span>
           </div>
@@ -716,6 +753,8 @@
       renderer.outputEncoding = THREE.sRGBEncoding;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.08;
       container.appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -754,21 +793,249 @@
         metalness: 0.05
       });
 
+      // Procedural Rain Particle System
+      createRain();
+
+      // Initialize 3D Spatial Pins
+      initPins();
+
       window.addEventListener('resize', onWindowResize);
-      animate();
+      animate(0);
 
       // Load initial model
       loadGLB('scene_preview.glb');
     }
 
-    function animate() {
+    // Procedural Rain Particles
+    let rainParticles, rainVelocities;
+    let rainEnabled = true;
+    function createRain() {
+      const count = 1800;
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
+      rainVelocities = new Float32Array(count);
+      for (let i = 0; i < count; i++) {
+        pos[i * 3] = (Math.random() - 0.5) * 45 + 9;
+        pos[i * 3 + 1] = Math.random() * 22 + 0.2;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 40 + 3;
+        rainVelocities[i] = Math.random() * 0.16 + 0.26;
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({
+        color: 0x98b8cb,
+        size: 0.08,
+        transparent: true,
+        opacity: 0.45
+      });
+      rainParticles = new THREE.Points(geo, mat);
+      scene.add(rainParticles);
+    }
+
+    function updateRain() {
+      if (!rainParticles || !rainEnabled) return;
+      const pos = rainParticles.geometry.attributes.position.array;
+      for (let i = 0; i < rainVelocities.length; i++) {
+        pos[i * 3 + 1] -= rainVelocities[i];
+        pos[i * 3] -= 0.015;
+        if (pos[i * 3 + 1] < 0) {
+          pos[i * 3 + 1] = 22;
+        }
+      }
+      rainParticles.geometry.attributes.position.needsUpdate = true;
+    }
+
+    function toggleRainVisual() {
+      rainEnabled = !rainEnabled;
+      document.getElementById('btnRainVisual').classList.toggle('active', rainEnabled);
+      if (rainParticles) rainParticles.visible = rainEnabled;
+    }
+
+    // Procedural Rain Acoustic Sound Engine (Web Audio API)
+    class RainSoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.isPlaying = false;
+        this.noiseNode = null;
+        this.gainNode = null;
+      }
+      start() {
+        if (this.isPlaying) return;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!this.ctx) this.ctx = new AudioContext();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const bufferSize = this.ctx.sampleRate * 2;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.045;
+          b6 = white * 0.115926;
+        }
+        this.noiseNode = this.ctx.createBufferSource();
+        this.noiseNode.buffer = buffer;
+        this.noiseNode.loop = true;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+        this.gainNode = this.ctx.createGain();
+        this.gainNode.gain.setValueAtTime(0.01, this.ctx.currentTime);
+        this.gainNode.gain.exponentialRampToValueAtTime(0.22, this.ctx.currentTime + 1.2);
+        this.noiseNode.connect(filter);
+        filter.connect(this.gainNode);
+        this.gainNode.connect(this.ctx.destination);
+        this.noiseNode.start();
+        this.isPlaying = true;
+      }
+      stop() {
+        if (!this.isPlaying || !this.gainNode) return;
+        this.gainNode.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.6);
+        setTimeout(() => {
+          if (this.noiseNode) {
+            this.noiseNode.stop();
+            this.noiseNode.disconnect();
+          }
+          this.isPlaying = false;
+        }, 650);
+      }
+    }
+    const rainAudio = new RainSoundEngine();
+    function toggleRainSound() {
+      const btn = document.getElementById('btnRainSound');
+      if (rainAudio.isPlaying) {
+        rainAudio.stop();
+        btn.classList.remove('active');
+        btn.innerText = "🌧️ 听雨声效";
+      } else {
+        rainAudio.start();
+        btn.classList.add('active');
+        btn.innerText = "🌧️ 听雨中 (点此静音)";
+      }
+    }
+
+    // 6-Waypoint Cinematic Tour Mode (名仕漫游巡礼)
+    const tourWaypoints = [
+      { name: "壹 · 泊舟水榭", desc: "运河水岸，石拱桥畔，乌篷船随波轻漾，系缆桩依偎驳岸。", cam: new THREE.Vector3(25, 6, -16), target: new THREE.Vector3(14, 0, -4.5) },
+      { name: "贰 · 门楼迎宾", desc: "主立面门楼，双层青石阶前积水映月，黑漆描金匾额悬于重檐之下。", cam: new THREE.Vector3(9, 3.8, -14), target: new THREE.Vector3(9, 2.0, 0) },
+      { name: "叁 · 月洞修竹", desc: "西园月洞门如规整圆镜，穿透粉墙，翠竹扶疏，石灯笼映幽径。", cam: new THREE.Vector3(-6, 3.2, 2.5), target: new THREE.Vector3(-1.5, 2.0, 4.0) },
+      { name: "肆 · 天井凝翠", desc: "四翼回廊环抱天井，盘曲修剪古柏留白舒朗，青石水缸蓄纳天光。", cam: new THREE.Vector3(7.8, 4.2, 5.0), target: new THREE.Vector3(9.0, 2.2, 7.0) },
+      { name: "伍 · 中堂雅集", desc: "中堂茶室，夹头榫翘头长条案置文房太湖石与插梅瓶，四扇折叠围屏如锦。", cam: new THREE.Vector3(4.5, 1.8, 3.8), target: new THREE.Vector3(2.5, 1.2, 2.2) },
+      { name: "陆 · 回廊凭栏", desc: "上层环廊，鹅颈木美人靠舒卷如云，凭栏俯瞰天井客房与黛瓦连绵。", cam: new THREE.Vector3(12.5, 6.2, 5.0), target: new THREE.Vector3(9.0, 3.5, 7.0) }
+    ];
+    let isTouring = false;
+    let tourIndex = 0;
+    let tourStartTime = 0;
+    const tourStepDuration = 6500;
+    function toggleTour() {
+      isTouring = !isTouring;
+      const btn = document.getElementById('btnTour');
+      btn.classList.toggle('active', isTouring);
+      if (isTouring) {
+        autoRotate = false;
+        document.getElementById('btnAutoRotate').classList.remove('active');
+        if (document.getElementById('modelDropdown').value !== 'scene_preview.glb') {
+          document.getElementById('modelDropdown').value = 'scene_preview.glb';
+          onSelectModel('scene_preview.glb');
+        }
+        tourIndex = 0;
+        tourStartTime = performance.now();
+        btn.innerText = "🚶 漫游中 (点此退出)";
+      } else {
+        btn.innerText = "🚶 名仕漫游巡礼";
+      }
+    }
+
+    function updateTour(time) {
+      if (!isTouring) return;
+      const elapsed = time - tourStartTime;
+      const current = tourWaypoints[tourIndex];
+      const next = tourWaypoints[(tourIndex + 1) % tourWaypoints.length];
+      const progress = Math.min(elapsed / tourStepDuration, 1.0);
+      const t = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      camera.position.lerpVectors(current.cam, next.cam, t);
+      controls.target.lerpVectors(current.target, next.target, t);
+
+      document.getElementById('cardTitle').innerText = current.name;
+      document.getElementById('cardDesc').innerText = current.desc;
+
+      if (progress >= 1.0) {
+        tourIndex = (tourIndex + 1) % tourWaypoints.length;
+        tourStartTime = performance.now();
+      }
+    }
+
+    // 3D Spatial Annotation Pins
+    const spatialPins = [
+      { name: "夹头榫翘头案", pos: new THREE.Vector3(2.75, 1.2, 3.68), model: "asset_library/models/prop_altar_table.glb" },
+      { name: "西园月洞门", pos: new THREE.Vector3(-2.0, 1.35, 3.3), model: "asset_library/models/arch_moon_gate_stone_ring.glb" },
+      { name: "天井修剪古柏", pos: new THREE.Vector3(8.4, 1.8, 7.0), model: "asset_library/models/env_courtyard_pruned_tree.glb" },
+      { name: "回廊美人靠", pos: new THREE.Vector3(11.5, 3.6, 5.35), model: "asset_library/models/arch_veranda_balustrade.glb" },
+      { name: "泊舟石拱桥", pos: new THREE.Vector3(14.0, 0.8, -4.5), model: "asset_library/models/prop_wupeng_boat.glb" },
+      { name: "正脊鸱吻", pos: new THREE.Vector3(9.0, 6.7, 2.0), model: "asset_library/models/arch_roof_ridge_cap.glb" }
+    ];
+    let pinElements = [];
+    function initPins() {
+      const pinContainer = document.getElementById('pinContainer');
+      pinContainer.innerHTML = '';
+      pinElements = spatialPins.map(pin => {
+        const el = document.createElement('div');
+        el.className = 'scene-pin';
+        el.innerHTML = `<span>${pin.name}</span>`;
+        el.onclick = () => {
+          const select = document.getElementById('modelDropdown');
+          select.value = pin.model;
+          onSelectModel(pin.model);
+        };
+        pinContainer.appendChild(el);
+        return { el, pos: pin.pos };
+      });
+    }
+
+    function updatePins() {
+      const isOverview = document.getElementById('modelDropdown').value === 'scene_preview.glb';
+      const container = document.getElementById('canvasContainer');
+      if (!container) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+
+      pinElements.forEach(item => {
+        if (!isOverview || isTouring) {
+          item.el.style.display = 'none';
+          return;
+        }
+        const tempV = item.pos.clone();
+        tempV.project(camera);
+        if (tempV.z > 1.0) {
+          item.el.style.display = 'none';
+          return;
+        }
+        item.el.style.display = 'flex';
+        const x = (tempV.x * 0.5 + 0.5) * w;
+        const y = (-(tempV.y * 0.5) + 0.5) * h;
+        item.el.style.left = `${x}px`;
+        item.el.style.top = `${y}px`;
+      });
+    }
+
+    function animate(time) {
       requestAnimationFrame(animate);
-      if (autoRotate && controls) {
+      if (isTouring) {
+        updateTour(time);
+      } else if (autoRotate && controls) {
         controls.autoRotate = true;
         controls.autoRotateSpeed = 1.0;
       } else if (controls) {
         controls.autoRotate = false;
       }
+      updateRain();
+      updatePins();
       controls.update();
       renderer.render(scene, camera);
     }
