@@ -509,6 +509,297 @@ def build_veranda_balustrade(builder, x0, x1, y, z, bench_w=0.30, height=0.92):
 
 
 # ==============================================================================
+# Component 7: Ming Daybed with Three-Sided Railing (明式三围独板罗汉榻)
+# ==============================================================================
+def build_ming_daybed(builder, x=0, y=0, z=0, rotDeg=0, length=2.05, depth=1.05, height=0.76):
+    """
+    Classic Ming huanghuali daybed (罗汉床/榻).
+    Features three-sided low waist railing, cabriole legs with inward-turned horse-hoof feet,
+    and a comfortable woven mat seat with brocade cushion.
+    """
+    start_idx = len(builder.records)
+    seat_z = 0.46
+    t_frame = 0.065
+
+    # Main bed platform frame
+    builder.box('daybed_frame', (0, 0, seat_z - t_frame / 2),
+                (length, depth, t_frame), 'wood')
+    # Soft woven teal brocade mattress cushion
+    builder.box('daybed_cushion', (0, 0, seat_z + 0.035),
+                (length - 0.10, depth - 0.10, 0.07), 'fabric')
+
+    # Three-sided railing: back and two sides
+    rail_h = height - seat_z
+    back_y = depth / 2 - 0.035
+    builder.box('daybed_back_rail', (0, back_y, seat_z + rail_h / 2),
+                (length, 0.05, rail_h), 'wood')
+    builder.box('daybed_back_panel', (0, back_y, seat_z + rail_h / 2),
+                (length - 0.16, 0.025, rail_h - 0.08), 'lotus')
+
+    for sx in [-1, 1]:
+        side_x = sx * (length / 2 - 0.035)
+        builder.box('daybed_side_rail', (side_x, -0.04, seat_z + rail_h / 2),
+                    (0.05, depth - 0.08, rail_h), 'wood')
+        builder.box('daybed_side_panel', (side_x, -0.04, seat_z + rail_h / 2),
+                    (0.025, depth - 0.20, rail_h - 0.08), 'lotus')
+
+    # Robust cabriole legs with inward-turned feet (马蹄足)
+    leg_r = 0.045
+    for sx in [-1, 1]:
+        lx = sx * (length / 2 - 0.10)
+        for sy in [-1, 1]:
+            ly = sy * (depth / 2 - 0.10)
+            builder.beam('daybed_leg', (lx + sx * 0.02, ly + sy * 0.02, 0.04),
+                         (lx, ly, seat_z - t_frame), leg_r, 'wood', 12)
+            builder.box('daybed_horsehoof_foot', (lx + sx * 0.02, ly + sy * 0.02, 0.02),
+                        (0.09, 0.09, 0.04), 'wood')
+
+    # Waist and apron with beaded edge (束腰与牙板)
+    apron_h = 0.08
+    for sy in [-1, 1]:
+        builder.box('daybed_apron_long', (0, sy * (depth / 2 - 0.03), seat_z - t_frame - apron_h / 2),
+                    (length - 0.22, 0.035, apron_h), 'wood')
+    for sx in [-1, 1]:
+        builder.box('daybed_apron_short', (sx * (length / 2 - 0.03), 0, seat_z - t_frame - apron_h / 2),
+                    (0.035, depth - 0.22, apron_h), 'wood')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 8: Scholar Brush Pot with Brushes (文房黄花梨笔筒)
+# ==============================================================================
+def build_brush_pot(builder, x=0, y=0, z=0, scale=1.0):
+    """
+    Ming scholar brush pot (笔筒) carved from huanghuali wood, with fine brushes.
+    """
+    start_idx = len(builder.records)
+    r = 0.085 * scale
+    h = 0.18 * scale
+    profile = [
+        (0.0, 0.0),
+        (0.015 * scale, r),
+        (0.09 * scale, r * 0.94),
+        (h - 0.015 * scale, r * 0.98),
+        (h, r),
+        (h, r * 0.82),
+        (0.02 * scale, r * 0.80),
+        (0.02 * scale, 0.0)
+    ]
+    builder.lathe('brush_pot_body', (0, 0, 0), profile, 'wood', 32)
+
+    # 3 Calligraphy writing brushes standing inside
+    brush_angles = [0.15, 2.2, 4.3]
+    brush_leans = [0.08, 0.07, 0.09]
+    for ang, lean in zip(brush_angles, brush_leans):
+        bx = math.cos(ang) * (r * 0.4)
+        by = math.sin(ang) * (r * 0.4)
+        b_len = 0.26 * scale
+        tip_pt = (bx + math.cos(ang) * lean * b_len,
+                  by + math.sin(ang) * lean * b_len,
+                  0.02 * scale + b_len)
+        builder.beam('calligraphy_brush_handle',
+                     (bx, by, 0.02 * scale), tip_pt,
+                     0.006 * scale, 'woodlight', 8)
+        # Brush hair tip
+        builder.sphere('brush_hair_tip',
+                       tip_pt, (0.012 * scale, 0.012 * scale, 0.025 * scale), 'metal', 1)
+
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 9: Woven Bamboo Scroll Basket (竹编卷轴画筒)
+# ==============================================================================
+def build_bamboo_scroll_basket(builder, x=0, y=0, z=0, scale=1.0):
+    """
+    Ming woven bamboo scroll container (竹编画筒), holding paper art scrolls.
+    """
+    start_idx = len(builder.records)
+    r = 0.16 * scale
+    h = 0.45 * scale
+
+    # Bamboo basket rings and vertical staves
+    for level_z in [0.02, 0.15, 0.30, h]:
+        builder.ring('scroll_basket_hoop', (0, 0, level_z * scale), r, 0.008 * scale, 'woodlight')
+    num_staves = 16
+    for i in range(num_staves):
+        t = i * math.tau / num_staves
+        px = r * math.cos(t)
+        py = r * math.sin(t)
+        builder.beam('scroll_basket_stave', (px, py, 0), (px, py, h), 0.007 * scale, 'woodlight', 6)
+    builder.box('scroll_basket_base', (0, 0, 0.015 * scale),
+                (r * 1.9, r * 1.9, 0.02 * scale), 'woodlight')
+
+    # Rolled-up paper scrolls inside
+    scroll_offsets = [(-0.06, 0.02, 0.12), (0.05, 0.04, 0.18), (0.0, -0.06, 0.15), (0.06, -0.03, 0.08)]
+    for ox, oy, extra_h in scroll_offsets:
+        sx = ox * scale
+        sy = oy * scale
+        tot_h = (h + extra_h) * scale
+        builder.beam('paper_scroll_roll', (sx, sy, 0.02 * scale), (sx, sy, tot_h),
+                     0.026 * scale, 'paper', 12)
+        # Wooden scroll spindle ends
+        builder.sphere('scroll_wooden_knob', (sx, sy, tot_h + 0.015 * scale),
+                       (0.016 * scale, 0.016 * scale, 0.016 * scale), 'wood', 1)
+
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 10: Ming Lacquer Chest with Brass Mounts (黑漆描金官皮箱)
+# ==============================================================================
+def build_lacquer_chest(builder, x=0, y=0, z=0, rotDeg=0, scale=1.0):
+    """
+    Ming black lacquer jewelry/document chest (官皮箱/印匣).
+    Deep black lacquer body with gold trims, circular brass lock plate, and corner brackets.
+    """
+    start_idx = len(builder.records)
+    w = 0.42 * scale
+    d = 0.32 * scale
+    h = 0.36 * scale
+
+    # Lacquer chest body
+    builder.box('lacquer_chest_body', (0, 0, h / 2), (w, d, h), 'lacquer')
+    # Lid separation groove
+    builder.box('lacquer_lid_trim', (0, 0, h * 0.72), (w + 0.01 * scale, d + 0.01 * scale, 0.018 * scale), 'metal')
+
+    # Front circular brass faceplate & hasp (面叶与拍子)
+    builder.lathe('chest_brass_faceplate', (0, -d / 2 - 0.005 * scale, h * 0.65),
+                  [(0, 0), (0.004 * scale, 0.048 * scale), (0.004 * scale, 0)], 'brass', 24)
+    builder.box('chest_padlock_hasp', (0, -d / 2 - 0.012 * scale, h * 0.62),
+                (0.018 * scale, 0.012 * scale, 0.055 * scale), 'brass')
+
+    # Brass corner brackets (铜包角)
+    for sx in [-1, 1]:
+        for sz_level in [0.03 * scale, h - 0.03 * scale]:
+            builder.box('chest_corner_brace',
+                        (sx * (w / 2 - 0.015 * scale), -d / 2 - 0.002 * scale, sz_level),
+                        (0.035 * scale, 0.006 * scale, 0.035 * scale), 'brass')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 11: Roof Ridge Chiwen Ornament (正脊鸱吻卷草脊首)
+# ==============================================================================
+def build_roof_ridge_cap(builder, x=0, y=0, z=0, rotDeg=0, scale=1.0):
+    """
+    Gabled roof ridge terminal Chiwen / cloud crest (正脊鸱吻/兽头).
+    Sculpted upward-curving crest protecting the ridge end from weather.
+    """
+    start_idx = len(builder.records)
+    # Ridge mount base
+    builder.box('ridge_cap_pedestal', (0, 0, 0.06 * scale),
+                (0.24 * scale, 0.32 * scale, 0.12 * scale), 'tile')
+
+    # Main curving Chiwen tail profile (curving upward and backward)
+    pts = [
+        (0, -0.10 * scale, 0.10 * scale),
+        (0, 0.02 * scale, 0.22 * scale),
+        (0, 0.12 * scale, 0.38 * scale),
+        (0, 0.08 * scale, 0.52 * scale),
+        (0, -0.04 * scale, 0.58 * scale),
+        (0, -0.12 * scale, 0.52 * scale)
+    ]
+    for p_a, p_b in zip(pts[:-1], pts[1:]):
+        builder.beam('chiwen_tail_body', p_a, p_b, 0.048 * scale, 'tile', 8)
+
+    # Cloud scroll curled crest at top
+    builder.ring('chiwen_cloud_scroll',
+                 (0, -0.06 * scale, 0.54 * scale),
+                 0.055 * scale, 0.02 * scale, 'tile')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 12: Waterfront Stone Lotus Basin (水榭青石荷花缸)
+# ==============================================================================
+def build_lotus_pot(builder, x=0, y=0, z=0, scale=1.0):
+    """
+    Deep carved limestone lotus bowl (水榭青石荷花缸).
+    Circular basin filled with water, floating green lotus leaves, and a rising pink bud.
+    """
+    start_idx = len(builder.records)
+    r = 0.42 * scale
+    h = 0.48 * scale
+    profile = [
+        (0.0, 0.0),
+        (0.03 * scale, r * 0.72),
+        (0.18 * scale, r * 0.94),
+        (0.38 * scale, r * 1.02),
+        (h - 0.02 * scale, r),
+        (h, r * 1.05),
+        (h, r * 0.88),
+        (0.06 * scale, r * 0.82),
+        (0.06 * scale, 0.0)
+    ]
+    builder.lathe('stone_lotus_basin', (0, 0, 0), profile, 'stone', 32)
+    # Water surface inside basin
+    builder.lathe('basin_water_surface', (0, 0, h - 0.05 * scale),
+                  [(0, 0), (0.01 * scale, r * 0.88), (0.01 * scale, 0)], 'water', 24)
+
+    # Floating round lotus pads (荷叶)
+    leaf_locs = [
+        (r * 0.35, r * 0.25, 0.09 * scale),
+        (-r * 0.32, r * 0.30, 0.12 * scale),
+        (-r * 0.28, -r * 0.28, 0.11 * scale),
+        (r * 0.25, -r * 0.32, 0.10 * scale)
+    ]
+    for lx, ly, lr in leaf_locs:
+        builder.sphere('floating_lotus_pad',
+                       (lx, ly, h - 0.045 * scale),
+                       (lr, lr, 0.008 * scale), 'leaf', 1)
+
+    # One rising pink lotus flower bud
+    bud_pt = (0.04 * scale, 0.02 * scale, h + 0.14 * scale)
+    builder.beam('lotus_flower_stem', (0, 0, h - 0.04 * scale), bud_pt,
+                 0.007 * scale, 'leaf2', 6)
+    builder.sphere('lotus_flower_bud', bud_pt,
+                   (0.035 * scale, 0.035 * scale, 0.055 * scale), 'red', 1)
+
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+
+# ==============================================================================
 # Standalone Export and Catalog Production
 # ==============================================================================
 def manufacture_standalone_assets(output_dir=None):
@@ -537,7 +828,19 @@ def manufacture_standalone_assets(output_dir=None):
         ('env_bamboo_cluster', 'Jiangnan Garden Bamboo Cluster',
          lambda b: build_bamboo_cluster(b, 0, 0, 0, count=5, height=2.8)),
         ('arch_veranda_balustrade', 'Ming Meirengkao Veranda Balustrade',
-         lambda b: build_veranda_balustrade(b, -1.2, 1.2, 0, 0))
+         lambda b: build_veranda_balustrade(b, -1.2, 1.2, 0, 0)),
+        ('prop_ming_daybed', 'Ming Daybed with Three-Sided Railing',
+         lambda b: build_ming_daybed(b, 0, 0, 0, length=2.05, depth=1.05, height=0.76)),
+        ('prop_brush_pot', 'Scholar Huanghuali Brush Pot with Brushes',
+         lambda b: build_brush_pot(b, 0, 0, 0, scale=1.0)),
+        ('prop_bamboo_scroll_basket', 'Woven Bamboo Scroll Basket',
+         lambda b: build_bamboo_scroll_basket(b, 0, 0, 0, scale=1.0)),
+        ('prop_lacquer_chest', 'Black Lacquer Chest with Brass Mounts',
+         lambda b: build_lacquer_chest(b, 0, 0, 0, scale=1.0)),
+        ('arch_roof_ridge_cap', 'Roof Ridge Chiwen Ornament',
+         lambda b: build_roof_ridge_cap(b, 0, 0, 0, scale=1.0)),
+        ('env_lotus_pot', 'Waterfront Stone Lotus Basin',
+         lambda b: build_lotus_pot(b, 0, 0, 0, scale=1.0))
     ]
 
     for comp_id, label, func in definitions:

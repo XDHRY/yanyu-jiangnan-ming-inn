@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round18-component-factory-integration",
+  "current_phase": "diagnostic-round19-public-interactive-viewer-and-expanded-components",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -118,5 +118,10 @@
     "Establish standalone component manufacturing factory (source/component_factory.py)",
     "Manufacture 6 isolated Ming-style assets: four-panel screen, altar table, scholar rock, plum vase, bamboo cluster, veranda meirengkao balustrade",
     "Integrate manufactured components into master scene and verify with 10-view diagnostic loop"
+  ],
+  "round19_focus": [
+    "Deploy interactive 3D WebGL inspector (index.html) to GitHub Pages for live mobile/desktop review",
+    "Manufacture 6 additional Ming-style assets: daybed, brush pot, scroll basket, lacquer chest, Chiwen crest, lotus pot (total 12 components)",
+    "Establish automated continuous iteration pipeline (tools/iterate_components.py) for closed-loop adjustment"
   ]
 }
