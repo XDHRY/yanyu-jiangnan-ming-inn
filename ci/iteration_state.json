@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round16-wet-entry-steps",
+  "current_phase": "diagnostic-round17-moon-gate-step",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -107,5 +107,10 @@
     "Add thin wet-blue-limestone caps to the two existing entry steps",
     "Keep step heights, doorway clearance, paper screens and plaque framing unchanged",
     "Recheck 02 / 10 first, then 03 / 06 / 08 / 09 for contact regressions"
+  ],
+  "round17_focus": [
+    "Add one shallow wet-paving stepping stone along the existing moon-gate path",
+    "Keep the gate ring, lantern, moss cap and garden wall unchanged",
+    "Recheck 04 first, then 02 / 03 / 06 / 08 / 09 / 10 for regressions"
   ]
 }
