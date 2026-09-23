@@ -29,8 +29,16 @@ component_counts = {
     "rain_chain": sum("rain_chain" in o.name.lower() for o in mesh_objects),
     "paper_screen": sum("paper_screen" in o.name.lower() for o in mesh_objects),
     "incense_burner": sum("incense_burner" in o.name.lower() for o in mesh_objects),
+    "altar_table": sum("altar_" in o.name.lower() for o in mesh_objects),
+    "folding_screen": sum("screen_" in o.name.lower() and "paper_screen" not in o.name.lower() for o in mesh_objects),
+    "scholar_rock": sum("rock_" in o.name.lower() for o in mesh_objects),
+    "bamboo": sum("bamboo_" in o.name.lower() for o in mesh_objects),
+    "meirengkao": sum("meirengkao_" in o.name.lower() for o in mesh_objects),
 }
-required = {"dougong": 20, "hanging_plaque": 5, "rain_chain": 10, "paper_screen": 10, "incense_burner": 2}
+required = {
+    "dougong": 20, "hanging_plaque": 5, "rain_chain": 10, "paper_screen": 10, "incense_burner": 2,
+    "altar_table": 5, "folding_screen": 10, "scholar_rock": 2, "bamboo": 20, "meirengkao": 10
+}
 missing = {k: (component_counts[k], v) for k, v in required.items() if component_counts[k] < v}
 if missing:
     raise SystemExit(f"Authoritative components missing after GLB import: {missing}")
@@ -66,8 +74,10 @@ if clearance_violations:
 # Lighting: blue-hour ambient + warm entrance/courtyard accents.
 world = bpy.data.worlds.new("CI_BlueHour")
 world.use_nodes = True
-world.node_tree.nodes["Background"].inputs[0].default_value = (0.12, 0.17, 0.22, 1)
-world.node_tree.nodes["Background"].inputs[1].default_value = 0.45
+bg_node = next((n for n in world.node_tree.nodes if n.type == "BACKGROUND"), None) or world.node_tree.nodes.get("Background")
+if bg_node:
+    bg_node.inputs[0].default_value = (0.12, 0.17, 0.22, 1)
+    bg_node.inputs[1].default_value = 0.45
 scene.world = world
 
 sun_data = bpy.data.lights.new("CI_SoftSun", "SUN")
