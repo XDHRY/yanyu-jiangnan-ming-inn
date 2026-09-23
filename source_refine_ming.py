@@ -180,11 +180,13 @@ for level,filename in enumerate(['ground.json','upper.json']):
 import component_factory as cf
 bridge = cf.ComponentBuilderBridge(b, layer='ornament')
 
-# 1. Altar table with scholar rock & porcelain vase in the tea room
+# 1. Altar table with scholar rock, porcelain vase, brush pot and scroll basket in the tea room
 b.layer = 'ornament'
 cf.build_altar_table(bridge, x=2.75, y=3.68, z=0.22, rotDeg=0, length=2.0, width=0.46, height=0.84)
 cf.build_scholar_rock(bridge, x=2.35, y=3.68, z=0.22 + 0.84, scale=0.85)
 cf.build_porcelain_vase(bridge, x=3.15, y=3.68, z=0.22 + 0.84, scale=0.85)
+cf.build_brush_pot(bridge, x=1.95, y=3.68, z=0.22 + 0.84, scale=0.85)
+cf.build_bamboo_scroll_basket(bridge, x=1.55, y=3.65, z=0.22, scale=0.90)
 
 # 2. Four-panel folding screen providing atmospheric division in reception area
 cf.build_four_panel_screen(bridge, x=4.85, y=2.0, z=0.22, rotDeg=90, angle_deg=8, width=2.1, height=1.85)
@@ -194,10 +196,24 @@ b.layer = 'garden'
 cf.build_bamboo_cluster(bridge, x=-2.8, y=2.6, z=0.0, count=5, height=2.8, seed=42)
 cf.build_bamboo_cluster(bridge, x=-2.8, y=5.4, z=0.0, count=5, height=3.0, seed=108)
 
-# 4. Upper veranda Meirengkao balustrade
+# 4. Upper floor lounge daybed with lacquer chest
 b.layer = 'upper'
+cf.build_ming_daybed(bridge, x=3.0, y=12.2, z=2.92, rotDeg=0, length=2.0, depth=1.0, height=0.74)
+cf.build_lacquer_chest(bridge, x=1.75, y=12.2, z=2.92, rotDeg=90, scale=0.85)
+
+# 5. Upper veranda Meirengkao balustrade
 cf.build_veranda_balustrade(bridge, x0=5.4, x1=7.6, y=5.35, z=2.92)
 cf.build_veranda_balustrade(bridge, x0=10.5, x1=12.6, y=5.35, z=2.92)
+
+# 6. Waterfront stone lotus basins alongside the quay
+b.layer = 'waterfront'
+cf.build_lotus_pot(bridge, x=3.2, y=-1.1, z=0.05, scale=0.95)
+cf.build_lotus_pot(bridge, x=6.8, y=-1.1, z=0.05, scale=0.95)
+
+# 7. Roof ridge Chiwen terminal crests
+b.layer = 'roof'
+cf.build_roof_ridge_cap(bridge, x=0.10, y=2.0, z=6.58, rotDeg=90, scale=0.90)
+cf.build_roof_ridge_cap(bridge, x=17.90, y=2.0, z=6.58, rotDeg=-90, scale=0.90)
 
 print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.

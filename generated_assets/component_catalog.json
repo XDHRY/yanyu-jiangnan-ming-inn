@@ -151,6 +151,156 @@
         0.328,
         0.878
       ]
+    },
+    {
+      "id": "prop_ming_daybed",
+      "name": "Ming Daybed with Three-Sided Railing",
+      "file": "generated_assets\\models\\prop_ming_daybed.glb",
+      "objects": 20,
+      "triangles": 384,
+      "vertices": 232,
+      "bounds": [
+        [
+          -1.025,
+          -0.525,
+          0.0
+        ],
+        [
+          1.025,
+          0.525,
+          0.76
+        ]
+      ],
+      "dimensions": [
+        2.05,
+        1.05,
+        0.76
+      ]
+    },
+    {
+      "id": "prop_brush_pot",
+      "name": "Scholar Huanghuali Brush Pot with Brushes",
+      "file": "generated_assets\\models\\prop_brush_pot.glb",
+      "objects": 7,
+      "triangles": 720,
+      "vertices": 436,
+      "bounds": [
+        [
+          -0.085,
+          -0.085,
+          0.0
+        ],
+        [
+          0.085,
+          0.085,
+          0.305
+        ]
+      ],
+      "dimensions": [
+        0.17,
+        0.17,
+        0.305
+      ]
+    },
+    {
+      "id": "prop_bamboo_scroll_basket",
+      "name": "Woven Bamboo Scroll Basket",
+      "file": "generated_assets\\models\\prop_bamboo_scroll_basket.glb",
+      "objects": 29,
+      "triangles": 2444,
+      "vertices": 1272,
+      "bounds": [
+        [
+          -0.168,
+          -0.1661,
+          -0.148
+        ],
+        [
+          0.168,
+          0.1661,
+          0.661
+        ]
+      ],
+      "dimensions": [
+        0.336,
+        0.3321,
+        0.809
+      ]
+    },
+    {
+      "id": "prop_lacquer_chest",
+      "name": "Black Lacquer Chest with Brass Mounts",
+      "file": "generated_assets\\models\\prop_lacquer_chest.glb",
+      "objects": 8,
+      "triangles": 132,
+      "vertices": 128,
+      "bounds": [
+        [
+          -0.215,
+          -0.213,
+          0.0
+        ],
+        [
+          0.215,
+          0.165,
+          0.36
+        ]
+      ],
+      "dimensions": [
+        0.43,
+        0.378,
+        0.36
+      ]
+    },
+    {
+      "id": "arch_roof_ridge_cap",
+      "name": "Roof Ridge Chiwen Ornament",
+      "file": "generated_assets\\models\\arch_roof_ridge_cap.glb",
+      "objects": 7,
+      "triangles": 556,
+      "vertices": 290,
+      "bounds": [
+        [
+          -0.12,
+          -0.16,
+          0.0
+        ],
+        [
+          0.12,
+          0.1644,
+          0.6207
+        ]
+      ],
+      "dimensions": [
+        0.24,
+        0.3244,
+        0.6207
+      ]
+    },
+    {
+      "id": "env_lotus_pot",
+      "name": "Waterfront Stone Lotus Basin",
+      "file": "generated_assets\\models\\env_lotus_pot.glb",
+      "objects": 8,
+      "triangles": 920,
+      "vertices": 584,
+      "bounds": [
+        [
+          -0.441,
+          -0.441,
+          0.0
+        ],
+        [
+          0.441,
+          0.441,
+          0.675
+        ]
+      ],
+      "dimensions": [
+        0.882,
+        0.882,
+        0.675
+      ]
     }
   ]
 }
