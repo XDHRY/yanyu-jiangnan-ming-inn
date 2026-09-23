@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round15-lotus-paper-water",
+  "current_phase": "diagnostic-round16-wet-entry-steps",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -102,5 +102,10 @@
     "Warm the paper-screen factor slightly so paper separates from plaster at diagnostic scale",
     "Add one faint outer boat ripple for water-surface breakup without changing hull or dock",
     "Recheck 02 / 05 / 10 first, then 03 / 06 / 08 / 09 for regressions"
+  ],
+  "round16_focus": [
+    "Add thin wet-blue-limestone caps to the two existing entry steps",
+    "Keep step heights, doorway clearance, paper screens and plaque framing unchanged",
+    "Recheck 02 / 10 first, then 03 / 06 / 08 / 09 for contact regressions"
   ]
 }
