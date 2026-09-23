@@ -1250,6 +1250,540 @@ def build_rain_puddle(builder, x=0, y=0, z=0, rx=0.75, ry=0.48):
             rec['bounds'] = m.bounds.round(4).tolist()
 
 
+# ==============================================================================
+# Component 23: Horseshoe Armchair (黄花梨圈椅二代)
+# ==============================================================================
+def build_horseshoe_armchair(builder, x=0, y=0, z=0, rotDeg=0, scale=1.0):
+    start_idx = len(builder.records)
+    # Woven cane seat board
+    builder.box('chair_seat', (0, 0, 0.46 * scale), (0.55 * scale, 0.49 * scale, 0.055 * scale), 'wood')
+    builder.box('chair_cushion', (0, 0, 0.495 * scale), (0.48 * scale, 0.43 * scale, 0.03 * scale), 'fabric')
+    # Four tapered legs
+    for sx in [-0.23, 0.23]:
+        for sy in [-0.21, 0.21]:
+            builder.beam('tapered_chair_leg', (sx * scale, sy * scale, 0), (sx * 0.92 * scale, sy * 0.92 * scale, 0.46 * scale), 0.02 * scale, 'wood', 8)
+    # Side and front foot stretchers
+    builder.beam('chair_stretcher_front', (-0.23 * scale, -0.21 * scale, 0.11 * scale), (0.23 * scale, -0.21 * scale, 0.11 * scale), 0.012 * scale, 'wood', 6)
+    builder.beam('chair_stretcher_back', (-0.23 * scale, 0.21 * scale, 0.16 * scale), (0.23 * scale, 0.21 * scale, 0.16 * scale), 0.012 * scale, 'wood', 6)
+    # Curved continuous horseshoe crest rail (弧形搭脑)
+    pts = []
+    N = 20
+    for i in range(N + 1):
+        ang = math.pi * 0.12 + (math.pi * 0.76) * i / N
+        pts.append((math.cos(ang) * 0.32 * scale, (math.sin(ang) * 0.28 - 0.05) * scale, (0.75 + math.sin(i / N * math.pi) * 0.11) * scale))
+    for p_a, p_b in zip(pts[:-1], pts[1:]):
+        builder.beam('horseshoe_crest_arm', p_a, p_b, 0.018 * scale, 'wood', 8)
+    # Curved S-shaped back splat (S形靠背板)
+    builder.box('chair_back_splat', (0, 0.21 * scale, 0.64 * scale), (0.16 * scale, 0.02 * scale, 0.32 * scale), 'wood')
+    builder.box('chair_splat_medallion', (0, 0.20 * scale, 0.65 * scale), (0.08 * scale, 0.012 * scale, 0.08 * scale), 'lotus')
+
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 24: Huanghuali Tea Table (黄花梨茶桌二代)
+# ==============================================================================
+def build_tea_table(builder, x=0, y=0, z=0, rotDeg=0, length=1.2, width=0.75, height=0.74):
+    start_idx = len(builder.records)
+    t = 0.045
+    builder.box('tea_table_top', (0, 0, height - t / 2), (length, width, t), 'wood')
+    leg_x = length / 2 - 0.08
+    leg_y = width / 2 - 0.08
+    for sx in [-1, 1]:
+        for sy in [-1, 1]:
+            builder.beam('tea_table_leg', (sx * leg_x, sy * leg_y, 0), (sx * leg_x, sy * leg_y, height - t), 0.032, 'wood', 10)
+    for sy in [-1, 1]:
+        builder.box('tea_table_apron_l', (0, sy * (leg_y - 0.01), height - t - 0.04), (length - 0.18, 0.025, 0.08), 'wood')
+    for sx in [-1, 1]:
+        builder.box('tea_table_apron_s', (sx * (leg_x - 0.01), 0, height - t - 0.04), (0.025, width - 0.18, 0.08), 'wood')
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 25: Celadon Tea Set with Tray (龙泉青瓷茶具组)
+# ==============================================================================
+def build_celadon_tea_set(builder, x=0, y=0, z=0, scale=1.0):
+    start_idx = len(builder.records)
+    # Wooden tea tray
+    builder.box('tea_tray_base', (0, 0, 0.015 * scale), (0.58 * scale, 0.36 * scale, 0.03 * scale), 'woodlight')
+    # Celadon teapot
+    builder.lathe('celadon_teapot_body', (0, 0, 0.03 * scale), [(0, 0), (0.01, 0.06 * scale), (0.08 * scale, 0.095 * scale), (0.13 * scale, 0.065 * scale), (0.13 * scale, 0)], 'celadon', 32)
+    builder.beam('celadon_teapot_spout', (0.06 * scale, 0, 0.08 * scale), (0.15 * scale, 0, 0.13 * scale), 0.018 * scale, 'celadon', 8)
+    builder.ring('celadon_teapot_handle', (-0.08 * scale, 0, 0.09 * scale), 0.045 * scale, 0.009 * scale, 'celadon')
+    # 4 Cups
+    for cx, cy in [(-0.18, -0.09), (0.18, -0.09), (-0.18, 0.09), (0.18, 0.09)]:
+        builder.lathe('celadon_cup', (cx * scale, cy * scale, 0.03 * scale), [(0, 0), (0.008, 0.024 * scale), (0.04 * scale, 0.032 * scale), (0.04 * scale, 0)], 'celadon', 20)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 26: Bronze Tripod Censer (仿古双耳青铜鬲式香炉)
+# ==============================================================================
+def build_bronze_incense_burner(builder, x=0, y=0, z=0, scale=1.0):
+    start_idx = len(builder.records)
+    # Tripod censer body
+    profile = [(0, 0), (0.015 * scale, 0.05 * scale), (0.06 * scale, 0.085 * scale), (0.11 * scale, 0.075 * scale), (0.13 * scale, 0.05 * scale), (0.135 * scale, 0)]
+    builder.lathe('incense_burner_body', (0, 0, 0.04 * scale), profile, 'metal', 32)
+    # 3 Tripod legs
+    for ang in [0, math.pi * 2 / 3, math.pi * 4 / 3]:
+        lx = math.cos(ang) * 0.05 * scale
+        ly = math.sin(ang) * 0.05 * scale
+        builder.beam('incense_burner_leg', (lx * 1.3, ly * 1.3, 0), (lx, ly, 0.05 * scale), 0.014 * scale, 'metal', 8)
+    # 2 Upright loop handles
+    for ang in [math.pi / 2, -math.pi / 2]:
+        hx = math.cos(ang) * 0.075 * scale
+        hy = math.sin(ang) * 0.075 * scale
+        builder.beam('incense_burner_handle', (hx, hy, 0.12 * scale), (hx, hy, 0.17 * scale), 0.012 * scale, 'brass', 8)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 27: Black Lacquer Hanging Plaque (黑漆描金悬匾)
+# ==============================================================================
+def build_hanging_plaque(builder, x=0, y=0, z=0, rotDeg=0, length=2.2, height=0.58):
+    start_idx = len(builder.records)
+    builder.box('hanging_plaque_body', (0, 0, 0), (length, 0.09, height), 'lacquer')
+    for dx in [-length / 2 + 0.05, length / 2 - 0.05]:
+        builder.box('plaque_frame_v', (dx, -0.05, 0), (0.035, 0.02, height), 'brass')
+    for dz in [-height / 2 + 0.04, height / 2 - 0.04]:
+        builder.box('plaque_frame_h', (0, -0.05, dz), (length - 0.06, 0.02, 0.035), 'brass')
+    # Chains
+    for dx in [-length * 0.32, length * 0.32]:
+        builder.beam('plaque_suspension_chain', (dx, 0, height / 2), (dx, 0, height / 2 + 0.35), 0.012, 'metal', 6)
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 28: Courtyard Carved Water Cistern (庭院蓄水青石缸)
+# ==============================================================================
+def build_water_jar(builder, x=0, y=0, z=0, scale=1.0):
+    start_idx = len(builder.records)
+    profile = [(0, 0), (0.05 * scale, 0.38 * scale), (0.3 * scale, 0.52 * scale), (0.65 * scale, 0.48 * scale), (0.75 * scale, 0.44 * scale), (0.75 * scale, 0.35 * scale), (0.18 * scale, 0.31 * scale), (0.18 * scale, 0)]
+    builder.lathe('stone_water_jar_basin', (0, 0, 0), profile, 'stone', 32)
+    builder.lathe('water_jar_surface', (0, 0, 0.68 * scale), [(0, 0), (0.01 * scale, 0.36 * scale), (0.01 * scale, 0)], 'water', 24)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 29: Jiangnan Wupeng Boat (江南水乡乌篷船)
+# ==============================================================================
+def build_wupeng_boat(builder, x=0, y=0, z=0, rotDeg=0, scale=1.0):
+    start_idx = len(builder.records)
+    # Pointed wooden hull
+    N = 28
+    V = []; F = []
+    for z_lvl, rx, ry in [(-0.45 * scale, 1.9 * scale, 0.36 * scale), (0, 2.4 * scale, 0.75 * scale), (0, 2.25 * scale, 0.62 * scale), (-0.35 * scale, 1.85 * scale, 0.30 * scale)]:
+        for i in range(N):
+            t = i * math.tau / N
+            V.append([rx * math.cos(t), ry * math.sin(t), z_lvl])
+    for j in range(3):
+        for i in range(N):
+            k = (i + 1) % N
+            a = j * N + i; b = j * N + k; c = (j + 1) * N + k; d = (j + 1) * N + i
+            F.extend([[a, b, c], [a, c, d]])
+    builder.add('wupeng_boat_hull', trimesh.Trimesh(V, F, process=False), 'woodlight')
+    builder.box('wupeng_boat_deck', (0, 0, -0.28 * scale), (3.4 * scale, 0.58 * scale, 0.05 * scale), 'wood')
+    # Arched bamboo awnings (乌篷)
+    for bx in [-0.4 * scale, 0.4 * scale]:
+        V_c = []; F_c = []
+        for ax in [bx - 0.45 * scale, bx + 0.45 * scale]:
+            for t in np.linspace(0, math.pi, 16):
+                V_c.append([ax, math.cos(t) * 0.6 * scale, math.sin(t) * 0.65 * scale])
+        for i in range(15):
+            F_c.extend([[i, i + 1, 17 + i], [i, 17 + i, 16 + i]])
+        builder.add('wupeng_canopy_arch', trimesh.Trimesh(V_c, F_c, process=False), 'tile')
+    # Oar
+    builder.beam('wupeng_boat_oar', (-1.8 * scale, -0.4 * scale, 0.1 * scale), (-2.8 * scale, -1.1 * scale, -0.3 * scale), 0.024 * scale, 'woodlight', 8)
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 30: Traditional Eave Dougong Bracket Set (平坐挑檐斗拱铺作)
+# ==============================================================================
+def build_eave_bracket(builder, x=0, y=0, z=0, rotDeg=0, scale=1.0):
+    start_idx = len(builder.records)
+    # Bearing block (大斗)
+    builder.box('dougong_base_block', (0, 0, 0.05 * scale), (0.24 * scale, 0.24 * scale, 0.10 * scale), 'wood')
+    # Cantilever arm (单翘)
+    builder.box('dougong_transverse_arm', (0, 0.12 * scale, 0.14 * scale), (0.18 * scale, 0.52 * scale, 0.09 * scale), 'woodlight')
+    # Longitudinal bracket (令拱)
+    builder.box('dougong_bracket_plate', (0, 0, 0.23 * scale), (0.76 * scale, 0.18 * scale, 0.09 * scale), 'wood')
+    # Upper cap block
+    builder.box('dougong_top_cap', (0, 0.22 * scale, 0.31 * scale), (0.22 * scale, 0.32 * scale, 0.08 * scale), 'wood')
+    if rotDeg != 0 or x != 0 or y != 0 or z != 0:
+        T = trimesh.transformations.rotation_matrix(math.radians(rotDeg), [0, 0, 1])
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 31: Moon Gate Monolithic Stone Ring (月洞门整圈石梁环)
+# ==============================================================================
+def build_moon_gate_stone_ring(builder, x=0, y=0, z=0, radius=1.25, thick=0.18):
+    start_idx = len(builder.records)
+    N = 36
+    for i in range(N):
+        t1 = i * math.tau / N; t2 = (i + 1) * math.tau / N
+        p1 = (math.cos(t1) * radius, 0, math.sin(t1) * radius + radius)
+        p2 = (math.cos(t2) * radius, 0, math.sin(t2) * radius + radius)
+        builder.beam('moon_gate_stone_segment', p1, p2, thick / 2, 'stone', 8)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 32: Blue Limestone Threshold Steps (润水青石垂带台阶)
+# ==============================================================================
+def build_blue_limestone_step(builder, x=0, y=0, z=0, width=2.4, steps=3):
+    start_idx = len(builder.records)
+    t_step = 0.12
+    d_step = 0.32
+    for i in range(steps):
+        sz = (i + 0.5) * t_step
+        sy = i * d_step
+        builder.box('limestone_step_block', (0, sy, sz), (width, d_step, t_step), 'stone')
+        builder.box('limestone_step_wet_cap', (0, sy, (i + 1) * t_step + 0.01), (width - 0.06, d_step - 0.04, 0.02), 'paving')
+    # Side cheek stones (垂带石)
+    for sx in [-width / 2 - 0.07, width / 2 + 0.07]:
+        builder.box('step_side_cheek_stone', (sx, (steps - 1) * d_step / 2, steps * t_step / 2), (0.14, steps * d_step + 0.1, steps * t_step + 0.08), 'stone')
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 33: Stone Arch Bridge Railing (石拱桥望柱栏杆)
+# ==============================================================================
+def build_bridge_rail(builder, x=0, y=0, z=0, length=2.2, height=0.95):
+    start_idx = len(builder.records)
+    # Posts with lotus finials
+    for sx in [-length / 2, 0, length / 2]:
+        builder.box('bridge_rail_post', (sx, 0, height / 2), (0.14, 0.14, height), 'stone')
+        builder.sphere('bridge_post_lotus_finial', (sx, 0, height + 0.08), (0.09, 0.09, 0.11), 'stone', 1)
+    # Horizontal stone rails
+    for hz in [height * 0.35, height * 0.88]:
+        builder.beam('bridge_rail_beam', (-length / 2, 0, hz), (length / 2, 0, hz), 0.045, 'stone', 8)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 34: Black Tile Roof Course with Eaves Drip Tiles (黛瓦瓦垄滴水瓦当)
+# ==============================================================================
+def build_black_tile_course(builder, x=0, y=0, z=0, length=1.8, courses=4):
+    start_idx = len(builder.records)
+    dx = length / courses
+    for i in range(courses):
+        cx = -length / 2 + (i + 0.5) * dx
+        # Pan tile base
+        builder.box('roof_pan_tile', (cx, 0.45, 0.02), (dx * 0.92, 0.9, 0.025), 'tile')
+        # Semicircular cover tile roll
+        builder.beam('roof_cover_roll', (cx, 0, 0.05), (cx, 0.9, 0.05), 0.038, 'tile', 8)
+        # Eave drip tile (滴水) and round beast-head eave tile (瓦当)
+        builder.sphere('eave_tile_beast_end', (cx, 0, 0.05), (0.045, 0.02, 0.045), 'tile', 1)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 35: Copper Rain Chain (紫铜水滴倒引雨链)
+# ==============================================================================
+def build_rain_chain(builder, x=0, y=0, z=0, count=12, step=0.22):
+    start_idx = len(builder.records)
+    for i in range(count):
+        cz = -i * step
+        # Copper funnel cup
+        builder.lathe('rain_chain_funnel', (0, 0, cz), [(0, 0), (0.015, 0.022), (0.065, 0.058), (0.065, 0.048), (0.02, 0.012), (0.02, 0)], 'metal', 16)
+        # Connecting link
+        builder.beam('rain_chain_connector', (0, 0, cz), (0, 0, cz - step), 0.007, 'brass', 6)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 36: Stair Timber Handrail (木构楼梯扶手栏杆)
+# ==============================================================================
+def build_stair_handrail(builder, x=0, y=0, z=0, length=3.5, height=0.95, angle_deg=35):
+    start_idx = len(builder.records)
+    rad = math.radians(angle_deg)
+    dx = length * math.cos(rad)
+    dz = length * math.sin(rad)
+    # Inclined handrail beam
+    builder.beam('stair_inclined_handrail', (0, 0, height), (dx, 0, height + dz), 0.038, 'wood', 8)
+    builder.beam('stair_inclined_stringer', (0, 0, 0.12), (dx, 0, 0.12 + dz), 0.05, 'wood', 8)
+    # Balusters
+    num_spindles = 14
+    for i in range(num_spindles + 1):
+        t = i / num_spindles
+        px = t * dx; pz = t * dz
+        builder.beam('stair_baluster_spindle', (px, 0, pz + 0.12), (px, 0, pz + height), 0.018, 'woodlight', 6)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 37: Wall Plate Mortise-Tenon Joint (额枋壁板透榫燕尾榫卯)
+# ==============================================================================
+def build_wall_plate_joint(builder, x=0, y=0, z=0, scale=1.0):
+    start_idx = len(builder.records)
+    # Main column cap mortise block
+    builder.box('joint_mortise_post_cap', (0, 0, 0.15 * scale), (0.28 * scale, 0.28 * scale, 0.30 * scale), 'wood')
+    # Transverse penetrating tenon (透榫)
+    builder.box('joint_penetrating_tenon', (0, 0, 0.15 * scale), (0.46 * scale, 0.16 * scale, 0.18 * scale), 'woodlight')
+    # Locking wedge peg (销钉)
+    builder.beam('joint_locking_peg', (0.18 * scale, -0.12 * scale, 0.15 * scale), (0.18 * scale, 0.12 * scale, 0.15 * scale), 0.016 * scale, 'wood', 6)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 38: Lotus Window Lattice (缠枝莲花木雕窗棂)
+# ==============================================================================
+def build_window_lattice_lotus(builder, x=0, y=0, z=0, width=1.1, height=1.4):
+    start_idx = len(builder.records)
+    # Outer frame
+    builder.frame('window_lotus_frame', 0, 0, 0, width, height, 0.04, 0.06, 'wood')
+    # Central lotus medallion
+    cx = 0; cz = height / 2
+    builder.ring('window_lotus_center_ring', (cx, 0, cz), 0.18, 0.014, 'woodlight')
+    for ang in [0, math.pi / 4, math.pi / 2, math.pi * 3 / 4, math.pi, math.pi * 5 / 4, math.pi * 3 / 2, math.pi * 7 / 4]:
+        px = cx + math.cos(ang) * 0.18
+        pz = cz + math.sin(ang) * 0.18
+        builder.beam('lotus_petal_spoke', (cx, 0, cz), (px, 0, pz), 0.01, 'woodlight', 6)
+    # Paper backing
+    builder.box('window_paper_backing', (0, 0.01, height / 2), (width - 0.07, 0.008, height - 0.07), 'paper')
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 39: Square Step Window Lattice (步步锦方格窗格)
+# ==============================================================================
+def build_window_lattice_square(builder, x=0, y=0, z=0, width=1.1, height=1.4):
+    start_idx = len(builder.records)
+    builder.frame('window_square_frame', 0, 0, 0, width, height, 0.04, 0.06, 'wood')
+    # Step-pattern grid
+    cols = 4; rows = 5
+    for c in range(1, cols):
+        mx = -width / 2 + c * (width / cols)
+        builder.beam('square_mullion_v', (mx, 0, 0.04), (mx, 0, height - 0.04), 0.011, 'woodlight', 6)
+    for r in range(1, rows):
+        mz = r * (height / rows)
+        builder.beam('square_transom_h', (-width / 2 + 0.04, 0, mz), (width / 2 - 0.04, 0, mz), 0.011, 'woodlight', 6)
+    builder.box('window_square_paper', (0, 0.01, height / 2), (width - 0.07, 0.008, height - 0.07), 'paper')
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 40: Courtyard Pruned Pine Tree (天井修剪古柏老树)
+# ==============================================================================
+def build_courtyard_pruned_tree(builder, x=0, y=0, z=0, height=2.8, seed=27):
+    start_idx = len(builder.records)
+    rng = random.Random(seed)
+    # Gnarled twisting trunk
+    pts = [(0, 0, 0), (0.08, 0.05, height * 0.3), (-0.12, 0.08, height * 0.6), (0.04, -0.05, height * 0.85)]
+    for p_a, p_b in zip(pts[:-1], pts[1:]):
+        builder.beam('tree_gnarled_trunk', p_a, p_b, 0.08, 'wood', 8)
+    # Tiered branch clouds
+    branch_tips = [(-0.6, 0.2, height * 0.55), (0.65, 0.1, height * 0.65), (-0.45, -0.4, height * 0.78), (0.35, -0.3, height * 0.88), (0.05, 0.05, height)]
+    for tip in branch_tips:
+        builder.beam('tree_branch_arm', (0, 0, tip[2] * 0.85), tip, 0.035, 'wood', 6)
+        # Stratified horizontal foliage clouds
+        builder.sphere('tree_foliage_pad', tip, (0.38, 0.32, 0.14), 'leaf', 1)
+        builder.sphere('tree_foliage_pad_sub', (tip[0] + 0.1, tip[1] - 0.08, tip[2] + 0.05), (0.24, 0.20, 0.10), 'leaf2', 1)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 41: Garden Water-worn Taihu Moss Stone (庭院太湖透石青苔组)
+# ==============================================================================
+def build_moss_stone(builder, x=0, y=0, z=0, scale=1.0):
+    start_idx = len(builder.records)
+    builder.sphere('taihu_stone_core', (0, 0, 0.22 * scale), (0.35 * scale, 0.26 * scale, 0.24 * scale), 'stone', 1)
+    builder.sphere('taihu_stone_peak', (0.08 * scale, -0.06 * scale, 0.38 * scale), (0.20 * scale, 0.18 * scale, 0.22 * scale), 'stone', 1)
+    builder.sphere('taihu_stone_satellite', (-0.32 * scale, 0.12 * scale, 0.12 * scale), (0.18 * scale, 0.14 * scale, 0.12 * scale), 'stone', 1)
+    # Green velvet moss patches
+    builder.sphere('taihu_stone_moss_patch', (0.06 * scale, -0.04 * scale, 0.44 * scale), (0.16 * scale, 0.14 * scale, 0.05 * scale), 'leaf2', 1)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 42: Terracotta Courtyard Bonsai Pot (庭院紫砂盆景)
+# ==============================================================================
+def build_garden_pot(builder, x=0, y=0, z=0, scale=1.0):
+    start_idx = len(builder.records)
+    profile = [(0, 0), (0.03 * scale, 0.24 * scale), (0.22 * scale, 0.35 * scale), (0.25 * scale, 0.36 * scale), (0.25 * scale, 0.28 * scale), (0.06 * scale, 0.20 * scale), (0.06 * scale, 0)]
+    builder.lathe('garden_terracotta_pot', (0, 0, 0), profile, 'red', 16)
+    # Miniature pine tree inside
+    builder.beam('bonsai_mini_trunk', (0, 0, 0.15 * scale), (0.08 * scale, -0.06 * scale, 0.45 * scale), 0.025 * scale, 'wood', 6)
+    builder.sphere('bonsai_foliage_pad', (0.08 * scale, -0.06 * scale, 0.48 * scale), (0.18 * scale, 0.15 * scale, 0.09 * scale), 'leaf', 1)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 43: Floating Lotus Pads Cluster (水生挺水立叶睡莲组)
+# ==============================================================================
+def build_lotus_leaf(builder, x=0, y=0, z=0, count=6, scale=1.0):
+    start_idx = len(builder.records)
+    locs = [(0, 0, 0.22), (0.28, 0.18, 0.16), (-0.24, 0.22, 0.19), (-0.26, -0.22, 0.15), (0.22, -0.25, 0.17), (0.05, 0.35, 0.14)]
+    for lx, ly, lr in locs[:count]:
+        builder.sphere('floating_lotus_leaf_pad', (lx * scale, ly * scale, 0), (lr * scale, lr * scale, 0.008 * scale), 'leaf', 1)
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 44: Wet Limestone Paving Terrace (水润青石板路拼花铺地)
+# ==============================================================================
+def build_wet_paving(builder, x=0, y=0, z=0, width=2.2, length=2.2):
+    start_idx = len(builder.records)
+    cols = 3; rows = 3
+    dx = width / cols; dy = length / rows
+    for i in range(cols):
+        for j in range(rows):
+            cx = -width / 2 + (i + 0.5) * dx
+            cy = -length / 2 + (j + 0.5) * dy
+            builder.box('ashlar_limestone_slab', (cx, cy, 0.025), (dx - 0.03, dy - 0.03, 0.05), 'paving')
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+# ==============================================================================
+# Component 45: Canal Water Surface with Ripples (运河微波水面与波纹)
+# ==============================================================================
+def build_canal_water_surface(builder, x=0, y=0, z=0, width=3.0, length=4.0):
+    start_idx = len(builder.records)
+    builder.box('canal_water_plane', (0, 0, -0.025), (width, length, 0.05), 'water')
+    builder.ring('canal_ripple_ring_1', (-width * 0.2, -length * 0.15, 0.002), 0.45, 0.008, 'water')
+    builder.ring('canal_ripple_ring_2', (-width * 0.2, -length * 0.15, 0.002), 0.75, 0.006, 'water')
+    if x != 0 or y != 0 or z != 0:
+        T = np.eye(4)
+        T[:3, 3] = [x, y, z]
+        for rec in builder.records[start_idx:]:
+            m = builder.scene.geometry[rec['name']]
+            m.apply_transform(T)
+            rec['bounds'] = m.bounds.round(4).tolist()
+
+
+
 
 # ==============================================================================
 # Standalone Export and Catalog Production
@@ -1312,7 +1846,53 @@ def manufacture_standalone_assets(output_dir=None):
         ('env_reed_bundle', 'Waterfront Reeds Bundle',
          lambda b: build_reed_bundle(b, 0, 0, 0, count=14, height=1.9)),
         ('env_rain_puddle', 'Garden Rain Puddle Ripple',
-         lambda b: build_rain_puddle(b, 0, 0, 0, rx=0.75, ry=0.48))
+         lambda b: build_rain_puddle(b, 0, 0, 0, rx=0.75, ry=0.48)),
+        ('prop_horseshoe_armchair_v2', 'Horseshoe Armchair V2',
+         lambda b: build_horseshoe_armchair(b, 0, 0, 0, scale=1.0)),
+        ('prop_huanghuali_tea_table_v2', 'Huanghuali Tea Table V2',
+         lambda b: build_tea_table(b, 0, 0, 0, length=1.2, width=0.75, height=0.74)),
+        ('prop_celadon_tea_set', 'Celadon Tea Set with Tray',
+         lambda b: build_celadon_tea_set(b, 0, 0, 0, scale=1.0)),
+        ('prop_bronze_incense_burner', 'Bronze Tripod Incense Burner',
+         lambda b: build_bronze_incense_burner(b, 0, 0, 0, scale=1.0)),
+        ('prop_hanging_plaque', 'Black Lacquer Gold Hanging Plaque',
+         lambda b: build_hanging_plaque(b, 0, 0, 0, length=2.2, height=0.58)),
+        ('prop_water_jar', 'Courtyard Carved Water Cistern',
+         lambda b: build_water_jar(b, 0, 0, 0, scale=1.0)),
+        ('prop_wupeng_boat', 'Jiangnan Wupeng Boat',
+         lambda b: build_wupeng_boat(b, 0, 0, 0, scale=1.0)),
+        ('arch_eave_bracket', 'Traditional Dougong Eave Bracket',
+         lambda b: build_eave_bracket(b, 0, 0, 0, scale=1.0)),
+        ('arch_moon_gate_stone_ring', 'Moon Gate Monolithic Stone Ring',
+         lambda b: build_moon_gate_stone_ring(b, 0, 0, 0, radius=1.25, thick=0.18)),
+        ('arch_blue_limestone_step', 'Blue Limestone Threshold Steps',
+         lambda b: build_blue_limestone_step(b, 0, 0, 0, width=2.4, steps=3)),
+        ('arch_bridge_rail', 'Stone Arch Bridge Railing',
+         lambda b: build_bridge_rail(b, 0, 0, 0, length=2.2, height=0.95)),
+        ('arch_black_tile_course', 'Black Tile Roof Course with Eaves Tiles',
+         lambda b: build_black_tile_course(b, 0, 0, 0, length=1.8, courses=4)),
+        ('arch_rain_chain', 'Copper Funnel Rain Chain',
+         lambda b: build_rain_chain(b, 0, 0, 0, count=12, step=0.22)),
+        ('arch_stair_handrail', 'Staircase Timber Handrail',
+         lambda b: build_stair_handrail(b, 0, 0, 0, length=3.5, height=0.95, angle_deg=35)),
+        ('arch_wall_plate_joint', 'Wall Plate Mortise-Tenon Joint',
+         lambda b: build_wall_plate_joint(b, 0, 0, 0, scale=1.0)),
+        ('arch_window_lattice_lotus', 'Lotus Medallion Window Lattice',
+         lambda b: build_window_lattice_lotus(b, 0, 0, 0, width=1.1, height=1.4)),
+        ('arch_window_lattice_square', 'Square Step Window Lattice',
+         lambda b: build_window_lattice_square(b, 0, 0, 0, width=1.1, height=1.4)),
+        ('env_courtyard_pruned_tree', 'Courtyard Pruned Pine Tree',
+         lambda b: build_courtyard_pruned_tree(b, 0, 0, 0, height=2.8, seed=27)),
+        ('env_moss_stone', 'Taihu Scholar Moss Stone Pair',
+         lambda b: build_moss_stone(b, 0, 0, 0, scale=1.0)),
+        ('env_garden_pot', 'Terracotta Courtyard Bonsai Pot',
+         lambda b: build_garden_pot(b, 0, 0, 0, scale=1.0)),
+        ('env_lotus_leaf', 'Floating Water Lotus Leaf Pads',
+         lambda b: build_lotus_leaf(b, 0, 0, 0, count=6, scale=1.0)),
+        ('env_wet_paving', 'Wet Limestone Flagstone Paving',
+         lambda b: build_wet_paving(b, 0, 0, 0, width=2.2, length=2.2)),
+        ('env_canal_water_surface', 'Canal Water Surface with Ripples',
+         lambda b: build_canal_water_surface(b, 0, 0, 0, width=3.0, length=4.0))
     ]
 
     for comp_id, label, func in definitions:

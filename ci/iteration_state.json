@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round20-ming-scholar-3d-interactive-mastery",
+  "current_phase": "diagnostic-round21-full-45-assets-mastery-and-dual-mood",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -129,5 +129,11 @@
     "Manufacture 10 additional Ming assets: scholar desk, wardrobe cabinet, footstool, moon lamp, hand fan, lattice door, corbel bracket, mooring bollard cap, reeds, rain puddle (total 22 components)",
     "Full multi-angle screenshot auditing and interaction verification via headless Chrome DevTools",
     "Integrated 10,433 meshes / 335,280 triangles with 100% CI pass and live GitHub Pages deployment"
+  ],
+  "round21_focus": [
+    "100% manufacturing coverage of all 45 meshable assets from the 65 asset library catalog",
+    "Dual mood system: Night Ink (夜雨烟渚) and Daylight Silk (素绢雪霁) with instant real-time shader transition",
+    "Full catalog interactivity: clicking any reference card dynamically loads its 3D model into the viewport",
+    "Multi-angle headless screenshot auditing verified zero console errors and smooth 60fps rotation"
   ]
 }
