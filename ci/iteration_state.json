@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round19-public-interactive-viewer-and-expanded-components",
+  "current_phase": "diagnostic-round20-ming-scholar-3d-interactive-mastery",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -123,5 +123,11 @@
     "Deploy interactive 3D WebGL inspector (index.html) to GitHub Pages for live mobile/desktop review",
     "Manufacture 6 additional Ming-style assets: daybed, brush pot, scroll basket, lacquer chest, Chiwen crest, lotus pot (total 12 components)",
     "Establish automated continuous iteration pipeline (tools/iterate_components.py) for closed-loop adjustment"
+  ],
+  "round20_focus": [
+    "Top-tier Ming literati front-end overhaul with zero-network vendored Three.js and classical aesthetics",
+    "Manufacture 10 additional Ming assets: scholar desk, wardrobe cabinet, footstool, moon lamp, hand fan, lattice door, corbel bracket, mooring bollard cap, reeds, rain puddle (total 22 components)",
+    "Full multi-angle screenshot auditing and interaction verification via headless Chrome DevTools",
+    "Integrated 10,433 meshes / 335,280 triangles with 100% CI pass and live GitHub Pages deployment"
   ]
 }

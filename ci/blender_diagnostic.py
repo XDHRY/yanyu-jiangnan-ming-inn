@@ -39,11 +39,22 @@ component_counts = {
     "scroll_basket": sum("scroll_" in o.name.lower() for o in mesh_objects),
     "lotus_pot": sum("lotus_basin" in o.name.lower() or "floating_lotus" in o.name.lower() for o in mesh_objects),
     "chiwen": sum("chiwen_" in o.name.lower() for o in mesh_objects),
+    "scholar_desk": sum("desk_" in o.name.lower() for o in mesh_objects),
+    "cabinet": sum("cabinet_" in o.name.lower() for o in mesh_objects),
+    "footstool": sum("footstool_" in o.name.lower() for o in mesh_objects),
+    "moon_lamp": sum("moon_lamp" in o.name.lower() or "lamp_" in o.name.lower() for o in mesh_objects),
+    "hand_fan": sum("fan_" in o.name.lower() for o in mesh_objects),
+    "corbel": sum("corbel_" in o.name.lower() for o in mesh_objects),
+    "bollard": sum("bollard_" in o.name.lower() for o in mesh_objects),
+    "reed": sum("reed_" in o.name.lower() for o in mesh_objects),
+    "puddle": sum("puddle_" in o.name.lower() or "rain_water" in o.name.lower() for o in mesh_objects),
 }
 required = {
     "dougong": 20, "hanging_plaque": 5, "rain_chain": 10, "paper_screen": 10, "incense_burner": 2,
     "altar_table": 5, "folding_screen": 10, "scholar_rock": 2, "bamboo": 20, "meirengkao": 10,
-    "daybed": 10, "brush_pot": 5, "scroll_basket": 10, "lotus_pot": 5, "chiwen": 4
+    "daybed": 10, "brush_pot": 5, "scroll_basket": 10, "lotus_pot": 5, "chiwen": 4,
+    "scholar_desk": 10, "cabinet": 15, "footstool": 5, "moon_lamp": 5, "hand_fan": 4,
+    "corbel": 10, "bollard": 4, "reed": 20, "puddle": 2
 }
 missing = {k: (component_counts[k], v) for k, v in required.items() if component_counts[k] < v}
 if missing:
