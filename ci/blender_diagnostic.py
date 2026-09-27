@@ -1,5 +1,5 @@
 from pathlib import Path
-import bpy, json, math, sys
+import bpy, json, math, sys, hashlib
 from mathutils import Vector
 
 def arg(name, default=None):
@@ -23,6 +23,27 @@ scene.unit_settings.system = "METRIC"
 scene.unit_settings.scale_length = 1.0
 
 mesh_objects = [o for o in scene.objects if o.type == "MESH"]
+# Water uses authored shallow waves plus small normal variation. No external
+# texture or opaque blue overlay is needed for the canal surface.
+for obj in mesh_objects:
+    if "canal_ripple_surface" in obj.name:
+        for polygon in obj.data.polygons:
+            polygon.use_smooth = True
+water = bpy.data.materials.get("water")
+if water and water.use_nodes:
+    nodes, links = water.node_tree.nodes, water.node_tree.links
+    bsdf = next((n for n in nodes if n.type == "BSDF_PRINCIPLED"), None)
+    if bsdf:
+        bsdf.inputs["Roughness"].default_value = .24
+        bsdf.inputs["Base Color"].default_value = (.025, .082, .076, 1)
+        noise = nodes.new("ShaderNodeTexNoise")
+        noise.inputs["Scale"].default_value = 4.5
+        noise.inputs["Detail"].default_value = 2.0
+        bump = nodes.new("ShaderNodeBump")
+        bump.inputs["Strength"].default_value = .24
+        bump.inputs["Distance"].default_value = .018
+        links.new(noise.outputs["Fac"], bump.inputs["Height"])
+        links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
 component_counts = {
     "dougong": sum("dougong_" in o.name.lower() for o in mesh_objects),
     "hanging_plaque": sum("hanging_plaque" in o.name.lower() for o in mesh_objects),
@@ -144,8 +165,8 @@ for engine in ("BLENDER_EEVEE_NEXT", "BLENDER_EEVEE"):
 if engine_set is None:
     raise SystemExit("No Eevee render engine available")
 
-scene.render.resolution_x = 720
-scene.render.resolution_y = 480
+scene.render.resolution_x = int(arg("--width", "720"))
+scene.render.resolution_y = round(scene.render.resolution_x * 2 / 3)
 scene.render.resolution_percentage = 100
 scene.render.image_settings.file_format = "PNG"
 scene.render.film_transparent = False
@@ -180,6 +201,14 @@ views = [
     ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
 ]
 
+selected = arg("--views")
+if selected:
+    requested = set(selected.split(","))
+    known = {v[0] for v in views}
+    if requested - known:
+        raise SystemExit(f"Unknown diagnostic views: {sorted(requested - known)}")
+    views = [v for v in views if v[0] in requested]
+
 for name, loc, target, lens, hide_tokens in views:
     for obj in mesh_objects:
         low = obj.name.lower()
@@ -204,6 +233,11 @@ manifest = {
     "views": [v[0] for v in views],
     "view_count": len(views),
     "mesh_objects_after_import": len([o for o in scene.objects if o.type == "MESH"]),
+    "triangles_after_import": sum(len(o.data.polygons) for o in mesh_objects),
+    "input_sha256": hashlib.sha256(INPUT.read_bytes()).hexdigest(),
+    "view_cutaways": {v[0]: v[4] for v in views},
+    "source_hashes": {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                      for p in sorted((ROOT / "source").glob("*.py"))},
     "component_counts": component_counts,
     "primary_arrival_clear": not clearance_violations,
     "coordinate_anchor_entry_steps": entry_centers,

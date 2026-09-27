@@ -69,6 +69,9 @@ jobs:
       - name: Validate expanded material contract
         run: python ci/validate_review_contract.py
 
+      - name: Validate landscape clearance and waterline
+        run: python ci/validate_landscape.py
+
       - name: Install Blender and virtual display
         run: |
           sudo apt-get update
@@ -97,8 +100,22 @@ jobs:
             .ci_work/review/report.json
             .ci_work/review/validation.json
             .ci_work/review/ci-contract.json
+            .ci_work/review/landscape-validation.json
             .ci_work/ci-input-manifest.json
             ci/review_matrix.json
             ci/iteration_state.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload lightweight review images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-preview-${{ github.run_number }}
+          path: |
+            diagnostics/*.png
+            diagnostics/*.jpg
+            diagnostics/*.json
+            .ci_work/review/landscape-validation.json
           if-no-files-found: warn
           retention-days: 14
