@@ -8,7 +8,7 @@ from trimesh.visual.material import PBRMaterial
 P=Path(__file__).resolve().parent
 random.seed(27)
 S=trimesh.Scene(); records=[]; layer='site'
-COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943','lacquer':'171411','paper':'d7cfb8'}
+COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943','lacquer':'171411','paper':'d7cfb8','bark':'594b3c'}
 M={k:PBRMaterial(name=k,baseColorFactor=[*bytes.fromhex(v),255],roughnessFactor=.23 if k in ['water','tile','paving'] else .76,metallicFactor=0,emissiveFactor=[.5,.23,.06] if k=='glow' else [0,0,0],doubleSided=True) for k,v in COL.items()}
 def add(name,m,mat):
  m.update_faces(m.nondegenerate_faces());m.remove_unreferenced_vertices();m.visual=trimesh.visual.TextureVisuals(material=M[mat]); n=f'{layer}/{name}_{len(records):05d}'; S.add_geometry(m,node_name=n,geom_name=n);records.append({'name':n,'layer':layer,'material':mat,'bounds':m.bounds.round(4).tolist(),'vertices':len(m.vertices),'triangles':len(m.faces)})

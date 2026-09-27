@@ -44,6 +44,31 @@ if water and water.use_nodes:
         bump.inputs["Distance"].default_value = .018
         links.new(noise.outputs["Fac"], bump.inputs["Height"])
         links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+bark = bpy.data.materials.get("bark")
+if bark and bark.use_nodes:
+    nodes, links = bark.node_tree.nodes, bark.node_tree.links
+    bsdf = next((n for n in nodes if n.type == "BSDF_PRINCIPLED"), None)
+    if bsdf:
+        bsdf.inputs["Roughness"].default_value = .92
+        tex = nodes.new("ShaderNodeTexNoise")
+        tex.inputs["Scale"].default_value = 8
+        tex.inputs["Detail"].default_value = 3
+        mapping = nodes.new("ShaderNodeVectorMath")
+        mapping.operation = "MULTIPLY"
+        mapping.inputs[1].default_value = (2.5, 2.5, .32)
+        geometry = nodes.new("ShaderNodeNewGeometry")
+        links.new(geometry.outputs["Position"], mapping.inputs[0])
+        links.new(mapping.outputs["Vector"], tex.inputs["Vector"])
+        ramp = nodes.new("ShaderNodeValToRGB")
+        ramp.color_ramp.elements[0].color = (.028, .020, .014, 1)
+        ramp.color_ramp.elements[1].color = (.14, .105, .065, 1)
+        links.new(tex.outputs["Fac"], ramp.inputs[0])
+        links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
+        bump = nodes.new("ShaderNodeBump")
+        bump.inputs["Strength"].default_value = .30
+        bump.inputs["Distance"].default_value = .012
+        links.new(tex.outputs["Fac"], bump.inputs["Height"])
+        links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
 component_counts = {
     "dougong": sum("dougong_" in o.name.lower() for o in mesh_objects),
     "hanging_plaque": sum("hanging_plaque" in o.name.lower() for o in mesh_objects),

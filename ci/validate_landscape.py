@@ -1,6 +1,6 @@
 """Check the authored landscape against circulation and waterline contracts."""
 from pathlib import Path
-import json
+import json, struct
 import numpy as np
 
 work = Path('.ci_work')
@@ -39,6 +39,17 @@ for rec in leaves + trees + ferns:
         for x0, x1 in [(3.2, 5.8), (7.55, 10.45), (19.15, 21.85)]:
             if bounds[1, 0] > x0 and bounds[0, 0] < x1:
                 errors.append('Bank foliage crosses a landing route: ' + rec['name'])
+# Check exported material values rather than the builder's unused PBR objects.
+glb = (work / 'ming_review.glb').read_bytes()
+n = struct.unpack_from('<I', glb, 12)[0]
+doc = json.loads(glb[20:20+n])
+materials = {m['name']: m['pbrMetallicRoughness'] for m in doc['materials']}
+for name in ['leaf', 'leaf2']:
+    color = materials[name]['baseColorFactor'][:3]
+    if max(color) > .22 or color[1] <= color[0]:
+        errors.append('Exported foliage color is not restrained linear green: ' + name)
+if materials.get('bark', {}).get('roughnessFactor', 0) < .85:
+    errors.append('Tree bark must stay rough in the GLB')
 report = {'pass': not errors, 'errors': errors, 'trees': len(trees),
           'individual_leaves': sum(r['triangles'] for r in leaves) // 4,
           'bank_fern_clumps': len(ferns),

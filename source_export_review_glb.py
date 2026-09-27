@@ -1,6 +1,9 @@
 """glTF 2.0 writer: named meshes, interleaved vertices, shared embedded PNGs."""
 import json,struct,base64,math
 import numpy as np
+def srgb_to_linear(channel):
+ return channel / 12.92 if channel <= .04045 else ((channel + .055) / 1.055) ** 2.4
+
 def write_glb(path,payload,texture_dir,colors):
  j={'asset':{'version':'2.0','generator':'Jiangnan Ming review v0.2'},'scene':0,'scenes':[{'nodes':[0]}],
  'nodes':[{'name':'Z_up_to_Y_up','rotation':[-math.sqrt(.5),0,0,math.sqrt(.5)],'children':[]}],
@@ -17,9 +20,14 @@ def write_glb(path,payload,texture_dir,colors):
    tint={'tile':[185/255,198/255,208/255,1],
          'paving':[208/255,222/255,230/255,1]}
    factor=tint.get(k,[1,1,1,1]) if tx else [v/255 for v in bytes.fromhex(colors[k])]+[1]
+   # Palette swatches are sRGB, while glTF baseColorFactor is linear. The
+   # botanical solids were previously exported too pale under native lighting.
+   if not tx and k in {'leaf','leaf2','bark','soil'}:
+    factor=[srgb_to_linear(c) for c in factor[:3]]+[1]
+   if k=='water':factor=[.025,.082,.076,1]
    rough={'wood':.43,'woodlight':.45,'fabric':.80,'lotus':.42,'lacquer':.31,
           'metal':.38,'paper':.76,'tile':.34,'paving':.44,'brass':.38,
-          'celadon':.24,'stone':.58}.get(k,.65)
+          'celadon':.24,'stone':.58,'bark':.92,'water':.24}.get(k,.65)
    metallic=.74 if k=='brass' else .72 if k=='metal' else 0.
    pbr={'baseColorFactor':factor,'metallicFactor':metallic,'roughnessFactor':rough}
    if tx:

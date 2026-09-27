@@ -60,21 +60,21 @@ def build_pruned_tree(add, x, y, z, scale=1, seed=2709):
         end = np.array([math.cos(angle) * reach, math.sin(angle) * reach, high])
         woody.extend([_taper(pt(root), pt(elbow), .045 * scale, .028 * scale),
                       _taper(pt(elbow), pt(end), .028 * scale, .009 * scale)])
-        for j in range(5):
-            heading = angle + (j - 2) * .49
-            tip = end + [.25 * math.cos(heading), .25 * math.sin(heading), .07 + .04 * (j % 2)]
+        for j in range(7):
+            heading = angle + (j - 3) * .38
+            tip = end + [.32 * math.cos(heading), .32 * math.sin(heading), .07 + .04 * (j % 2)]
             woody.append(_taper(pt(end), pt(tip), .009 * scale, .0025 * scale, 6))
-            for k in range(16):
-                t = (k + .4) / 16
+            for k in range(24):
+                t = (k + .4) / 24
                 # Leaf petioles meet the twig; alternating sides create airy pads.
                 attach = end * (1 - t) + tip * t
                 side = 1 if k % 2 else -1
                 h = heading + side * rng.uniform(.5, 1.30)
-                length = rng.uniform(.075, .14) * scale
+                length = rng.uniform(.095, .17) * scale
                 key = 'leaf2' if rng.random() < .28 else 'leaf'
-                _leaf(*leaves[key], pt(attach), h, length, length * .30,
+                _leaf(*leaves[key], pt(attach), h, length, length * .34,
                       rng.uniform(-.35, .45))
-    add('tree_tapered_branchwork', trimesh.util.concatenate(woody), 'woodlight')
+    add('tree_tapered_branchwork', trimesh.util.concatenate(woody), 'bark')
     for key, (v, f) in leaves.items():
         add('tree_individual_leaves_' + key,
             trimesh.Trimesh(vertices=v, faces=f, process=False), key)
