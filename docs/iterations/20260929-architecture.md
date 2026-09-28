@@ -38,3 +38,5 @@ xvfb-run -a blender --background --python ci/blender_diagnostic.py -- --input .c
 ```
 
 完整技能Form检查已运行，仍因旧证据文件路径缺失、开口mask/cutter和正式人工批准缺失而失败；本轮只继续用户明确授权的低成本建模诊断闭环，不越过正式发布门禁。
+
+云端run79定位到新闭合法线修复调用依赖SciPy图连通性分析，而旧requirements未声明。已显式补上SciPy与NetworkX，防止仅在预装完整依赖的本地环境通过。
