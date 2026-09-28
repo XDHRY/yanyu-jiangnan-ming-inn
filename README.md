@@ -78,3 +78,13 @@ python ci/validate_diagnostics.py diagnostics
 预览来自模型真实三角面与贴图，经简单OpenGL着色输出；不是AI场景概念图，也不是Cycles最终光追结果。贴图未做无缝接缝认证，非扫描PBR套图，无伪造法线/位移文件。雕花源图不能证明真实雕刻深度。屋面、植被、倒角、近景接缝和最终灯光仍需继续精修。保留原先的待审阅门禁，不把脚本运行成功写成人工批准。
 
 本轮不调用付费 Meshy。GitHub Actions 工作流已加入公开仓库门禁：仓库仍为 private 时 job 自动跳过；可见性切换为 public 后，`public` 事件会启动首轮 Blender 诊断。当前报告中的“5张嵌入纹理”属于上一次已生成结果；新一轮预计增加黑漆描金与老黄铜两类纹理，必须以公开后实际 CI 产物为准。
+
+
+## 2026-09-29 构造细化与临园茶亭
+
+第一轮细化16处柱础、24件曲线雀替、12组斗拱以及四翼八道檐口。第二轮在东侧增建4.2×4米临园茶亭，配完整四坡屋顶、四柱承梁、栏杆、台阶、铺石路、长凳和茶桌。新增构件来自可复用的米制参数化模型，不依赖外部付费资产。
+
+- 源码：`source/architecture_detail.py`、`source/garden_pavilion.py`。
+- 构造及入口校验：`python ci/validate_architecture.py`。
+- 设计、史料参考与限制：[`docs/iterations/20260929-architecture.md`](docs/iterations/20260929-architecture.md)。
+- 本轮将04/07机位轮换为茶亭外观/檐下，继续十张720×480诊断图；尚非最终精修成片或Runtime验收。

@@ -105,6 +105,7 @@ jobs:
             .ci_work/review/ci-contract.json
             .ci_work/review/landscape-validation.json
             .ci_work/review/architecture-validation.json
+            .ci_work/review/pavilion-layout.json
             .ci_work/ci-input-manifest.json
             ci/review_matrix.json
             ci/iteration_state.json
@@ -122,5 +123,6 @@ jobs:
             diagnostics/*.json
             .ci_work/review/landscape-validation.json
             .ci_work/review/architecture-validation.json
+            .ci_work/review/pavilion-layout.json
           if-no-files-found: warn
           retention-days: 14

@@ -1,5 +1,5 @@
 from pathlib import Path
-import json, shutil
+import json, shutil, io
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +13,7 @@ copies = {
     "source/build_scene_roof_tree_revision.py": "build_scene.py",
     "source/refine_ming.py": "refine_ming.py",
     "source/component_factory.py": "component_factory.py",
+    "source/garden_pavilion.py": "garden_pavilion.py",
     "source/architecture_detail.py": "architecture_detail.py",
     "source/landscape_detail.py": "landscape_detail.py",
     "source_export_review_glb.py": "export_review_glb.py",
@@ -45,7 +46,15 @@ for src, dst in copies.items():
 for src, dst in derived.items():
     target = WORK / dst
     target.parent.mkdir(parents=True, exist_ok=True)
-    Image.open(ROOT / src).convert("RGB").save(target, format="PNG", optimize=True)
+    # Encode fully before replacing an existing output; reject incomplete PNGs.
+    buffer = io.BytesIO()
+    Image.open(ROOT / src).convert("RGB").save(buffer, format="PNG", optimize=True)
+    encoded = buffer.getvalue()
+    Image.open(io.BytesIO(encoded)).load()
+    temporary = target.with_suffix(".png.tmp")
+    temporary.write_bytes(encoded)
+    temporary.replace(target)
+    Image.open(target).load()
 
 manifest = {
     "workspace": str(WORK),

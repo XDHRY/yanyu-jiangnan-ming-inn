@@ -343,6 +343,11 @@ for xx in [x-1.06,x+1.06]:
 for yy in [ya-.18,yb+.18]:
  box('bridge_abutment',(x,yy,.02),(2.45,.42,.42),'stone')
  box('bridge_abutment_cap',(x,yy,.25),(2.55,.50,.08),'paving')
+# East garden extension uses the same architectural component family.
+import garden_pavilion
+import sys
+garden_pavilion.build(sys.modules[__name__])
+(P/'review/pavilion-layout.json').write_text(json.dumps(garden_pavilion.PAVILION,indent=2))
 # Save portable geometry and authoritative object index.
 G=S.copy();G.apply_transform(trimesh.transformations.rotation_matrix(-math.pi/2,[1,0,0]));(P/'scene.glb').write_bytes(G.export(file_type='glb'))
 (P/'scene_objects.json').write_text(json.dumps({'units':'metres','up':'Z','seed':27,'objects':records},ensure_ascii=False,indent=2))

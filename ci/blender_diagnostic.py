@@ -23,6 +23,21 @@ scene.unit_settings.system = "METRIC"
 scene.unit_settings.scale_length = 1.0
 
 mesh_objects = [o for o in scene.objects if o.type == "MESH"]
+# Remove faceting from rotational craft surfaces while preserving UV seams.
+# glTF review buffers are face-expanded, so merge coincident vertices first.
+import bmesh
+smooth_tokens = ('lantern_shade', 'column_plinth_drum', 'pavilion_tapered_column',
+                 'celadon_teapot', 'celadon_cup', 'pavilion_tea_cup', 'pavilion_stool_seat')
+for obj in mesh_objects:
+    if any(token in obj.name for token in smooth_tokens):
+        bm = bmesh.new()
+        bm.from_mesh(obj.data)
+        bmesh.ops.remove_doubles(bm, verts=list(bm.verts), dist=1e-6)
+        bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+        bm.to_mesh(obj.data)
+        bm.free()
+        for polygon in obj.data.polygons:
+            polygon.use_smooth = True
 # Water uses authored shallow waves plus small normal variation. No external
 # texture or opaque blue overlay is needed for the canal surface.
 for obj in mesh_objects:
@@ -113,7 +128,7 @@ def world_bounds(obj):
             min(p.y for p in pts), max(p.y for p in pts),
             min(p.z for p in pts), max(p.z for p in pts))
 
-entry_steps = [o for o in mesh_objects if "entry_step" in o.name.lower()]
+entry_steps = [o for o in mesh_objects if "entry_step" in o.name.lower() and "pavilion_" not in o.name.lower()]
 if len(entry_steps) < 2:
     raise SystemExit("Coordinate-frame anchor missing: expected two entry steps")
 entry_centers = []
@@ -217,10 +232,10 @@ views = [
     ("01_overview", (31, -29, 22), (9, 5.0, 2.6), 52, []),
     ("02_south_arrival", (9, -15, 4.2), (9, 0.5, 2.2), 52, []),
     ("03_courtyard", (8.4, 5.3, 4.6), (9.2, 7.0, 1.0), 35, ["roof"]),
-    ("04_moon_gate", (-10, 1.0, 4.8), (-1.2, 5.0, 1.7), 55, []),
+    ("04_east_pavilion", (27.8, 0.4, 6.3), (21.2, 6.0, 1.85), 46, []),
     ("05_bridge_waterfront", (28, -16, 8.0), (15, -4.8, 1.1), 55, []),
     ("06_tree_clearance", (13.0, 5.5, 5.0), (8.4, 7.0, 2.4), 40, ["roof"]),
-    ("07_upper_veranda", (20, 1.0, 7.25), (10.5, 6.8, 4.55), 55, ["roof"]),
+    ("07_pavilion_joinery", (21.2, 3.65, 1.65), (21.2, 6.5, 2.1), 24, []),
     ("08_eave_column_plinth", (7.0, 7.5, 2.9), (13.3, 5.35, 2.6), 24, ["roof_substrate", "tile_roll", "veranda_roof", "veranda_tiles", "balcony_rail", "baluster", "tree"]),
     ("09_roof_wall_plate", (20.5, -2.8, 5.55), (15.8, 0.15, 5.18), 54, []),
     ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
