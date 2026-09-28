@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import numpy as np
+import trimesh
 records=json.loads(Path('.ci_work/review/scene_objects.json').read_text())
 errors=[]
 def find(token):return [r for r in records if token in r['name']]
@@ -41,9 +42,29 @@ for r in find('pavilion_tapered_column'):
     if not any(np.all(np.minimum(b[1],bounds(q)[1])-np.maximum(b[0],bounds(q)[0])>0) for q in find('pavilion_column_plinth_neck')):
         errors.append('Pavilion column misses base')
 if len(find('pavilion_tapered_column'))!=4:errors.append('Pavilion must have four load-bearing columns')
+purlins=find('pavilion_seated_purlin')
+if len(purlins)!=4:errors.append('Roof must have four seated purlins')
+for r in purlins:
+    b=bounds(r)
+    if not any(np.all(np.minimum(b[1],bounds(q)[1])-np.maximum(b[0],bounds(q)[0])>0) for q in find('pavilion_bearing_beam')):
+        errors.append('Purlin does not meet bearing beam')
+    if not 3.25 <= b[0,2] <= 3.28:errors.append('Purlin base is not seated')
+# Verify the authored purlin top line against the exported roof surface itself.
+scene=trimesh.load_scene('.ci_work/scene.glb',process=False)
+roof=next(m for n,m in scene.geometry.items() if 'pavilion_roof_shell' in n)
+roof_contact_distances=[]
+for rec in purlins:
+    m=scene.geometry[rec['name']]
+    points=m.vertices[m.vertices[:,2]>3.30].copy()
+    narrow=int(np.argmin(np.ptp(m.vertices[:,:2],axis=0)))
+    points[:,narrow]=np.mean(m.bounds[:,narrow])
+    _,distances,_=trimesh.proximity.closest_point_naive(roof,points)
+    roof_contact_distances.extend(distances.tolist())
+    if len(distances)==0 or np.max(distances)>.006:
+        errors.append('Purlin top does not follow exported roof underside: '+rec['name'])
 triangles=sum(r['triangles'] for r in records)
 if triangles>450000:errors.append('Diagnostic scene exceeds 450k triangle working ceiling')
-report={'pass':not errors,'errors':errors,'columns':len(columns),'knees':len(knees),'triangles':triangles,'pavilion_mesh_parts':len(pavilion),
+report={'pass':not errors,'errors':errors,'columns':len(columns),'knees':len(knees),'triangles':triangles,'pavilion_mesh_parts':len(pavilion),'max_roof_contact_distance_m':max(roof_contact_distances,default=None),
         'scope':'additive diagnostic joinery only; not full structural certification or runtime budget approval'}
 Path('.ci_work/review/architecture-validation.json').write_text(json.dumps(report,indent=2))
 print(json.dumps(report,indent=2))

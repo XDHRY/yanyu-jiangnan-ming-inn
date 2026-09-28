@@ -79,6 +79,27 @@ def build(b):
                 rafters.append(cylinder(pt(s,u,a)+[0,0,-.09],pt(s,u,c)+[0,0,-.09],.032,8))
         for i in range(16):fascia.append(cylinder(pt(s,i/16,1)+[0,0,-.08],pt(s,(i+1)/16,1)+[0,0,-.08],.062,8))
     for n,parts,mat in [('roof_shell',roof_parts,'tile'),('tile_rolls',tiles,'tile'),('rafters',rafters,'woodlight'),('fascia',fascia,'wood')]:add(n,trimesh.util.concatenate(parts),mat)
+    # Fit purlin tops to the underside of the actual generated roof triangles.
+    roof_mesh=trimesh.util.concatenate(roof_parts)
+    triangles=roof_mesh.vertices[roof_mesh.faces]
+    aa=triangles[:,0,:2];d1=triangles[:,1,:2]-aa;d2=triangles[:,2,:2]-aa
+    det=d1[:,0]*d2[:,1]-d1[:,1]*d2[:,0];valid=abs(det)>1e-9
+    def underside(x,y):
+        q=np.array([x,y])-aa;u=np.zeros(len(det));v=u.copy()
+        u[valid]=(q[valid,0]*d2[valid,1]-q[valid,1]*d2[valid,0])/det[valid]
+        v[valid]=(d1[valid,0]*q[valid,1]-d1[valid,1]*q[valid,0])/det[valid]
+        hit=valid&(u>=-1e-6)&(v>=-1e-6)&(u+v<=1+1e-6)
+        zz=triangles[hit,0,2]+u[hit]*(triangles[hit,1,2]-triangles[hit,0,2])+v[hit]*(triangles[hit,2,2]-triangles[hit,0,2])
+        return float(zz.min())
+    for origin,length,angle in [((19.35,4.3,0),3.7,0),((19.35,7.7,0),3.7,0),((19.35,4.3,0),3.4,math.pi/2),((23.05,4.3,0),3.4,math.pi/2)]:
+        samples=np.linspace(0,length,13)
+        top=[(t,underside(origin[0]+t*math.cos(angle),origin[1]+t*math.sin(angle))+.002) for t in samples]
+        profile=[(0,3.255),(length,3.255)]+list(reversed(top))
+        place(add,'seated_purlin',prism(profile,.10),origin,angle)
+    # Visible pendant suspension meets the ridge underside above the tea table.
+    b.sphere('pavilion_tea_lantern_shade',(21.2,6,2.56),(.16,.16,.24),'glow',2)
+    for z in [2.32,2.80]:box('tea_lantern_cap',(21.2,6,z),(.23,.23,.03))
+    rod('tea_lantern_cable',(21.2,6,2.815),(21.2,6,4.30),.008,'metal',8)
     rod('ridge_cap',(20.3,6,4.365),(22.1,6,4.365),.072,'tile')
     for x in [20.35,22.05]:
         box('ridge_king_post',(x,6,3.79),(.11,.11,.98))

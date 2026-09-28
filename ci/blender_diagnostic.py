@@ -194,6 +194,24 @@ for idx, (x, y, z) in enumerate(((9, -1.2, 2.2), (6, 6.0, 3.0), (12, 8.0, 3.0)))
     scene.collection.objects.link(lo)
     lo.location = (x, y, z)
 
+# The new pavilion sits in the inn's shadow. A broad neutral diagnostic fill
+# reveals the structure, while a warm point source belongs to its visible pendant.
+pd = bpy.data.lights.new("CI_PavilionSky", "AREA")
+pd.energy = 450
+pd.shape = "DISK"
+pd.size = 4
+po = bpy.data.objects.new("CI_PavilionSky", pd)
+scene.collection.objects.link(po)
+po.location = (24.8, 2.4, 5.4)
+po.rotation_euler = (Vector((21.2, 6.0, 1.7)) - po.location).to_track_quat("-Z", "Y").to_euler()
+ld = bpy.data.lights.new("Pavilion_Pendant", "POINT")
+ld.energy = 65
+ld.color = (1.0, .69, .40)
+ld.shadow_soft_size = .35
+lo = bpy.data.objects.new("Pavilion_Pendant", ld)
+scene.collection.objects.link(lo)
+lo.location = (21.2, 6.0, 2.28)
+
 engine_set = None
 for engine in ("BLENDER_EEVEE_NEXT", "BLENDER_EEVEE"):
     try:
@@ -229,13 +247,13 @@ def make_camera(name, loc, target, lens=48):
     return obj
 
 views = [
-    ("01_overview", (31, -29, 22), (9, 5.0, 2.6), 52, []),
+    ("01_overview", (34, -32, 23), (10.5, 5.0, 2.5), 48, []),
     ("02_south_arrival", (9, -15, 4.2), (9, 0.5, 2.2), 52, []),
     ("03_courtyard", (8.4, 5.3, 4.6), (9.2, 7.0, 1.0), 35, ["roof"]),
-    ("04_east_pavilion", (27.8, 0.4, 6.3), (21.2, 6.0, 1.85), 46, []),
+    ("04_east_pavilion", (28.6, -1.5, 5.3), (21.2, 6.1, 2.15), 36, []),
     ("05_bridge_waterfront", (28, -16, 8.0), (15, -4.8, 1.1), 55, []),
     ("06_tree_clearance", (13.0, 5.5, 5.0), (8.4, 7.0, 2.4), 40, ["roof"]),
-    ("07_pavilion_joinery", (21.2, 3.65, 1.65), (21.2, 6.5, 2.1), 24, []),
+    ("07_pavilion_joinery", (21.2, 3.10, 1.75), (21.2, 6.2, 1.95), 22, []),
     ("08_eave_column_plinth", (7.0, 7.5, 2.9), (13.3, 5.35, 2.6), 24, ["roof_substrate", "tile_roll", "veranda_roof", "veranda_tiles", "balcony_rail", "baluster", "tree"]),
     ("09_roof_wall_plate", (20.5, -2.8, 5.55), (15.8, 0.15, 5.18), 54, []),
     ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
