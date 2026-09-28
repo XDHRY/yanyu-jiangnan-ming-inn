@@ -115,3 +115,30 @@ def build_bank_ferns(add):
                     _leaf(v, f, center, heading + side * 1.02, ll, ll * .17, -.10)
         add('bank_fern_fronds_' + str(idx), trimesh.Trimesh(vertices=v, faces=f, process=False), 'leaf')
         add('bank_fern_ribs_' + str(idx), trimesh.util.concatenate(ribs), 'leaf2')
+
+
+def build_potted_shrub(add, x, y):
+    """Small leafy shrub rooted in a soil disk below the terracotta rim."""
+    origin = np.array([x, y, .435])
+    soil = trimesh.creation.cylinder(radius=.255, height=.024, sections=24)
+    soil.apply_translation([x, y, .423])
+    add('pot_soil_surface', soil, 'soil')
+    woody = [_taper(origin - [0, 0, .018], origin + [0, 0, .23], .019, .010, 7)]
+    leaves = {key: ([], []) for key in ['leaf', 'leaf2']}
+    for i in range(9):
+        angle = i * 2.39996
+        root = origin + [0, 0, .06 + .018 * i]
+        reach = .17 if i < 7 else .09
+        tip = origin + [reach * math.cos(angle), reach * math.sin(angle), .30 + .035 * (i % 4)]
+        woody.append(_taper(root, tip, .007, .002, 6))
+        for j in range(12):
+            t = .20 + .8 * j / 11
+            attach = root * (1 - t) + tip * t
+            side = -1 if j % 2 else 1
+            key = 'leaf2' if j % 4 == 0 else 'leaf'
+            _leaf(*leaves[key], attach, angle + side * .85,
+                  .085 + .012 * (j % 3), .030, .25 - .045 * (j % 5))
+    add('pot_rooted_branchwork', trimesh.util.concatenate(woody), 'bark')
+    for key, (vertices, faces) in leaves.items():
+        add('pot_individual_leaves_' + key,
+            trimesh.Trimesh(vertices=vertices, faces=faces, process=False), key)
