@@ -3,11 +3,12 @@ from pathlib import Path
 import json, math, random, base64
 import numpy as np
 import trimesh
+from landscape_detail import build_pruned_tree, build_water_surface, build_bank_ferns
 from trimesh.visual.material import PBRMaterial
 P=Path(__file__).resolve().parent
 random.seed(27)
 S=trimesh.Scene(); records=[]; layer='site'
-COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943','lacquer':'171411','paper':'d7cfb8'}
+COL={'plaster':'ded9c8','wood':'493324','woodlight':'796047','tile':'303d42','stone':'777e79','paving':'999e91','water':'34616b','leaf':'47664d','leaf2':'64734b','red':'a95531','glow':'f6bf69','fabric':'b5b1a0','soil':'4c4938','metal':'454943','lacquer':'171411','paper':'d7cfb8','bark':'594b3c'}
 M={k:PBRMaterial(name=k,baseColorFactor=[*bytes.fromhex(v),255],roughnessFactor=.23 if k in ['water','tile','paving'] else .76,metallicFactor=0,emissiveFactor=[.5,.23,.06] if k=='glow' else [0,0,0],doubleSided=True) for k,v in COL.items()}
 def add(name,m,mat):
  m.update_faces(m.nondegenerate_faces());m.remove_unreferenced_vertices();m.visual=trimesh.visual.TextureVisuals(material=M[mat]); n=f'{layer}/{name}_{len(records):05d}'; S.add_geometry(m,node_name=n,geom_name=n);records.append({'name':n,'layer':layer,'material':mat,'bounds':m.bounds.round(4).tolist(),'vertices':len(m.vertices),'triangles':len(m.faces)})
@@ -111,28 +112,8 @@ def lantern(x,y,z):
  beam('lantern_tassel',(x,y,z-.3),(x,y,z-.49),.018,'red')
 
 def tree(x,y,z,s=1):
- # Layered courtyard tree: tapered trunk, readable branch forks, and small
- # irregular foliage clusters. This replaces the previous eight oversized
- # spheres that read like decorative balloons.
- beam('tree_trunk_base',(x,y,z),(x+.03*s,y,z+.85*s),.15*s,'woodlight',10)
- beam('tree_trunk_mid',(x+.03*s,y,z+.82*s),(x-.02*s,y+.015*s,z+1.65*s),.11*s,'woodlight',10)
- beam('tree_trunk_top',(x-.02*s,y+.015*s,z+1.62*s),(x+.02*s,y-.015*s,z+2.12*s),.075*s,'woodlight',10)
- branch_specs=[(-2.55,.72,2.10),(-1.55,.86,2.32),(-.45,.68,2.48),(.62,.74,2.30),(1.72,.83,2.18),(2.65,.64,2.42)]
- for i,(ang,reach,top) in enumerate(branch_specs):
-  start=(x-.01*s,y,z+(1.35+0.05*(i%2))*s)
-  mid=(x+math.cos(ang)*reach*.48*s,y+math.sin(ang)*reach*.48*s,z+(1.72+0.08*(i%3))*s)
-  end=(x+math.cos(ang)*reach*s,y+math.sin(ang)*reach*s,z+top*s)
-  beam('tree_branch_primary',start,mid,.052*s,'woodlight',8)
-  beam('tree_branch_secondary',mid,end,.034*s,'woodlight',8)
-  # Two offset leaf clusters per branch create a hand-pruned, asymmetrical
-  # canopy without losing the restrained radial rhythm.
-  for j,off in enumerate([-.12,.16]):
-   px=end[0]+math.cos(ang+off)*.22*s;py=end[1]+math.sin(ang+off)*.22*s;pz=end[2]+(.12 if j else -.04)*s
-   mat='leaf2' if (i+j)%3==0 else 'leaf'
-   sphere('tree_leaf_cluster',(px,py,pz),(.24*s,.18*s,.22*s),mat,1)
- # Small upright crown keeps the tree legible in the open skywell and avoids a
- # flat ring of equal-sized blobs.
- sphere('tree_leaf_crown',(x+.02*s,y-.01*s,z+2.56*s),(.30*s,.24*s,.25*s),'leaf2',1)
+ # Individual folded leaves and tapering branch forks, batched by material.
+ build_pruned_tree(add,x,y,z,s,seed=2709+round(x*13+y*7))
 
 def dougong(x,y,z,axis='x'):
  # Compact, readable Ming-style bracket cluster: stacked bearing blocks first,
@@ -174,13 +155,14 @@ def water_ripple(name,c,scale):
 
 # Site and water. Main facade faces south (negative Y).
 box('north_bank',(8,7,-.48),(32,18,.96),'soil');box('south_bank',(8,-10,-.48),(32,4,.96),'soil')
-box('canal',(8,-5,-.81),(32,6,.06),'water')
+build_water_surface(add)
 for y in [-1.7,-8.3]:
  box('quay_substrate',(8,y,-.46),(32,.6,.9),'stone')
  for x in np.arange(-7.5,24,.85):
   for z in [-.65,-.3]:box('quay_block',(x,y,z),(.81,.63,.32),'stone')
 for x in np.arange(-7.6,24,1.1):
  for y in [-1.1,-.45,-9.0,-9.7]:box('wet_paving',(x,y,.025),(1.065,.61,.05),'paving')
+build_bank_ferns(add)
 # Building floor foundations, floors, ring verandas; central sky well has no upper slab.
 for level in [0,1]:
  layer='ground' if level==0 else 'upper';z=.2+level*2.7

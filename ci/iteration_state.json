@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round22-ultimate-literati-cinematic-masterpiece",
+  "current_phase": "diagnostic-round23-landscape-leaf-water-bank",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -142,5 +142,11 @@
     "WebGL physical rain particle system (细雨微风) with dynamic wind tilt and water ripple interaction",
     "Interactive 3D spatial annotation pins hovering over load-bearing architectural and artifact features",
     "Upgraded master scene_preview.glb to full 335,280-triangle scene with 19 material batches for sub-second opening"
+  ],
+  "round23_focus": [
+    "Replace spherical foliage with 5880 seeded folded leaf meshes on five tapering trees",
+    "Add seven bank-attached fern clumps and a 20mm peak-to-peak canal wave surface",
+    "Retain all ten fixed spatial cameras; add clearances and lightweight preview artifacts",
+    "Review candidate only; full Form and Runtime remain pending"
   ]
 }
