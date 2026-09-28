@@ -3,7 +3,7 @@ from pathlib import Path
 import json, math, random, base64
 import numpy as np
 import trimesh
-from landscape_detail import build_pruned_tree, build_water_surface, build_bank_ferns
+from landscape_detail import build_pruned_tree, build_water_surface, build_bank_ferns, build_potted_shrub
 from trimesh.visual.material import PBRMaterial
 P=Path(__file__).resolve().parent
 random.seed(27)
@@ -236,7 +236,7 @@ sphere('moss_cap',(9.52,7.05,.30),(.22,.16,.05),'leaf2',1)
 sphere('moss_stone',(9.92,7.20,.11),(.16,.12,.10),'stone',1)
 for x,y in [(6.3,6.5),(11.1,8.05),(10.95,6.25)]:
  lathe('terracotta_pot',(x,y,.05),[(0,0),(.03,.2),(.38,.32),(.43,.34),(.43,.27),(.1,.15)],'red',16)
- for i in range(7):sphere('pot_leaves',(x+random.uniform(-.15,.15),y+random.uniform(-.15,.15),.55+random.random()*.3),(.18,.18,.27),'leaf',1)
+ build_potted_shrub(add, x, y)
 # Roofs: four compact wings, central courtyard remains open. The 0.25m
 # overhang is enough for rain protection without visually separating the roof
 # from the second-floor wall line.

@@ -39,6 +39,22 @@ for rec in leaves + trees + ferns:
         for x0, x1 in [(3.2, 5.8), (7.55, 10.45), (19.15, 21.85)]:
             if bounds[1, 0] > x0 and bounds[0, 0] < x1:
                 errors.append('Bank foliage crosses a landing route: ' + rec['name'])
+# Verify the authored pot plants stay rooted and inside the courtyard reserve.
+pot_branches = [r for r in records if 'pot_rooted_branchwork' in r['name']]
+pot_leaves = [r for r in records if 'pot_individual_leaves' in r['name']]
+pot_soils = [r for r in records if 'pot_soil_surface' in r['name']]
+if (len(pot_branches), len(pot_leaves), len(pot_soils)) != (3, 6, 3):
+    errors.append('Expected three rooted pot plants with soil and two leaf batches')
+if any(r['name'].startswith('pot_leaves') for r in records):
+    errors.append('Legacy spherical pot foliage remains')
+for branch in pot_branches:
+    b = np.array(branch['bounds'])
+    if not .40 <= b[0, 2] <= .435:
+        errors.append('Pot branch root does not meet soil')
+for rec in pot_branches + pot_leaves:
+    b = np.array(rec['bounds'])
+    if b[0,0] < 5.55 or b[1,0] > 12.45 or b[0,1] < 5.55 or b[1,1] > 8.45 or b[1,2] > 1.05:
+        errors.append('Pot plant exceeds courtyard clearance: ' + rec['name'])
 # Check exported material values rather than the builder's unused PBR objects.
 glb = (work / 'ming_review.glb').read_bytes()
 n = struct.unpack_from('<I', glb, 12)[0]
@@ -52,7 +68,7 @@ if materials.get('bark', {}).get('roughnessFactor', 0) < .85:
     errors.append('Tree bark must stay rough in the GLB')
 report = {'pass': not errors, 'errors': errors, 'trees': len(trees),
           'individual_leaves': sum(r['triangles'] for r in leaves) // 4,
-          'bank_fern_clumps': len(ferns),
+          'bank_fern_clumps': len(ferns), 'rooted_pot_plants': len(pot_branches),
           'scene_triangles': sum(r['triangles'] for r in records),
           'scope': 'landscape envelope and waterline; not full building collision certification'}
 (work / 'review/landscape-validation.json').write_text(json.dumps(report, indent=2))
