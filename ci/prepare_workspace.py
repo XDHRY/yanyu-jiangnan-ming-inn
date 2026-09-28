@@ -13,6 +13,7 @@ copies = {
     "source/build_scene_roof_tree_revision.py": "build_scene.py",
     "source/refine_ming.py": "refine_ming.py",
     "source/component_factory.py": "component_factory.py",
+    "source/architecture_detail.py": "architecture_detail.py",
     "source/landscape_detail.py": "landscape_detail.py",
     "source_export_review_glb.py": "export_review_glb.py",
     "source_validate_ming.py": "validate_ming.py",

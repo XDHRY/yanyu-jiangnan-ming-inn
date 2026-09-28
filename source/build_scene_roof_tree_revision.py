@@ -3,6 +3,7 @@ from pathlib import Path
 import json, math, random, base64
 import numpy as np
 import trimesh
+from architecture_detail import build_column_foot, build_knee_pair, build_bracket, build_eave_detail
 from landscape_detail import build_pruned_tree, build_water_surface, build_bank_ferns, build_potted_shrub
 from trimesh.visual.material import PBRMaterial
 P=Path(__file__).resolve().parent
@@ -88,6 +89,8 @@ def roof(x0,x1,y0,y1,along='x'):
   for t in np.linspace(.12,1,8):beam('tile_course',pt(lo,t,side),pt(hi,t,side),.012,'tile',5)
   beam('eave_beam',pt(lo,1,side),pt(hi,1,side),.105,'wood')
   beam('roof_wall_plate',pt(lo,1,side),pt(hi,1,side),.072,'woodlight')
+  edge=pt(lo,1,side)[1 if along=='x' else 0]
+  build_eave_detail(add,lo,hi,edge,along,side)
  beam('roof_ridge',pt(lo,0,1),pt(hi,0,1),.11,'tile')
  # end gable closure, no empty triangular attic
  for a in [lo+.4,hi-.4]:
@@ -116,17 +119,7 @@ def tree(x,y,z,s=1):
  build_pruned_tree(add,x,y,z,s,seed=2709+round(x*13+y*7))
 
 def dougong(x,y,z,axis='x'):
- # Compact, readable Ming-style bracket cluster: stacked bearing blocks first,
- # ornament second. Kept intentionally economical so silhouette does the work.
- major=(.72,.24,.10) if axis=='x' else (.24,.72,.10)
- cross=(.26,.48,.09) if axis=='x' else (.48,.26,.09)
- cap=(.96,.18,.08) if axis=='x' else (.18,.96,.08)
- box('dougong_base',(x,y,z),major,'wood')
- box('dougong_cross',(x,y,z+.105),cross,'woodlight')
- box('dougong_cap',(x,y,z+.205),cap,'wood')
- for side in [-1,1]:
-  if axis=='x':box('dougong_arm',(x+side*.32,y,z+.29),(.22,.34,.08),'wood')
-  else:box('dougong_arm',(x,y+side*.32,z+.29),(.34,.22,.08),'wood')
+ build_bracket(add,x,y,z,axis)
 
 def paper_screen(x,y,z,w=.9,h=1.95):
  # Low-cost high-impact screen: real paper plane with a restrained timber frame.
@@ -180,7 +173,8 @@ for level in [0,1]:
  for xx in [4.7,7.6,10.5,13.3]:
   for yy in [5.35,8.65]:
    beam('colonnade_post',(xx,yy,z),(xx,yy,z+2.7),.08)
-   box('post_stone_base',(xx,yy,z+.075),(.25,.25,.15),'stone')
+   build_column_foot(add,xx,yy,z)
+   build_knee_pair(add,xx,yy,z+2.52,left=xx>4.7,right=xx<13.3)
  for yy in [5.35,8.65]:beam('veranda_beam',(4.7,yy,z+2.52),(13.3,yy,z+2.52),.095)
  if level:
   for a,b in [((5.4,5.4),(12.6,5.4)),((5.4,8.6),(12.6,8.6)),((5.4,5.4),(5.4,8.6)),((12.6,5.4),(12.6,8.6))]:railing(a,b,z)
