@@ -64,11 +64,11 @@ def build(b):
             wr('column',(x,y,.31),(x,y,2.79),.075)
     for y in [.3,3.5]:wb('bearing_beam',(-5.1,y,2.75),(3.05,.14,.14))
     for x in [-6.55,-3.65]:
-        wb('cross_beam',(x,1.9,2.78),(.14,3.34,.14))
+        wb('cross_beam',(x,1.9,2.75),(.14,3.34,.14))
         wb('king_post',(x,1.9,3.11),(.10,.10,.72))
         for y,sgn in [(.3,1),(3.5,-1)]:
             wr('knee_brace',(x,y,2.28),(x,y+sgn*.48,2.76),.040)
-    wb('ridge_support',(-5.1,1.9,3.47),(3.08,.12,.14))
+    wb('ridge_support',(-5.1,1.9,3.42),(3.08,.12,.12))
     def roofpoint(x,t,side):return np.array([x,1.9+side*2*t,3.55-.88*t+.05*t**4])
     for side in [-1,1]:
         # Closed thick roof shell; bent rafters and tile rolls share its curve.
