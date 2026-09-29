@@ -4,6 +4,7 @@ import json, math, random, base64
 import numpy as np
 import trimesh
 from architecture_detail import build_column_foot, build_knee_pair, build_bracket, build_eave_detail
+from roof_sweep import sweep
 from landscape_detail import build_pruned_tree, build_water_surface, build_bank_ferns, build_potted_shrub
 from trimesh.visual.material import PBRMaterial
 P=Path(__file__).resolve().parent
@@ -84,8 +85,8 @@ def roof(x0,x1,y0,y1,along='x'):
   mm=trimesh.Trimesh(v,faces,process=False);add('roof_substrate',mm,'tile')
   for a in np.arange(lo+.08,hi,.22):
    # one complete raised tile roll per row, eight curved segments
-   for j in range(8):
-    p=pt(a,j/8,side);q=pt(a,(j+1)/8,side);p[2]+=.035;q[2]+=.035;beam('tile_roll',p,q,.038,'tile',6)
+   points=[np.array(pt(a,j/8,side))+[0,0,.035] for j in range(9)]
+   add('tile_roll',sweep(points,.038,6),'tile')
   for t in np.linspace(.12,1,8):beam('tile_course',pt(lo,t,side),pt(hi,t,side),.012,'tile',5)
   beam('eave_beam',pt(lo,1,side),pt(hi,1,side),.105,'wood')
   beam('roof_wall_plate',pt(lo,1,side),pt(hi,1,side),.072,'woodlight')
@@ -219,7 +220,7 @@ for i in range(2):box('entry_step_wet_cap',(9,-.75+i*.3,.1125+i*.1),(2.62,.50,.0
 # Tighten the soil island and pull the jar/rocks into one readable courtyard
 # rhythm: tree as primary, wet stone as connector, jar as secondary anchor.
 layer='courtyard'
-box('courtyard_paving',(9,7,.025),(7.2,3.2,.05),'paving')
+box('courtyard_paving',(9,7,.0175),(7.2,3.2,.035),'stone')
 # A low organic mound avoids a rectangular slab reading in the courtyard view.
 lathe('tree_bed',(8.4,7,.02),[(0,0),(.02,.48),(.08,.62),(.14,.52),(.14,0)],'soil',24)
 tree(8.4,7,.15,.9)
@@ -348,6 +349,8 @@ import garden_pavilion
 import sys
 garden_pavilion.build(sys.modules[__name__])
 (P/'review/pavilion-layout.json').write_text(json.dumps(garden_pavilion.PAVILION,indent=2))
+import courtyard_craft
+courtyard_craft.build(sys.modules[__name__])
 # Save portable geometry and authoritative object index.
 G=S.copy();G.apply_transform(trimesh.transformations.rotation_matrix(-math.pi/2,[1,0,0]));(P/'scene.glb').write_bytes(G.export(file_type='glb'))
 (P/'scene_objects.json').write_text(json.dumps({'units':'metres','up':'Z','seed':27,'objects':records},ensure_ascii=False,indent=2))

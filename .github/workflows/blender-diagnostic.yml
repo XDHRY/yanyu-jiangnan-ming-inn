@@ -78,6 +78,9 @@ jobs:
       - name: Validate architectural support and detail budget
         run: python ci/validate_architecture.py
 
+      - name: Validate connected roof and courtyard craft
+        run: python ci/validate_courtyard_craft.py
+
       - name: Install Blender and virtual display
         run: |
           sudo apt-get update
@@ -109,6 +112,7 @@ jobs:
             .ci_work/review/landscape-validation.json
             .ci_work/review/architecture-validation.json
             .ci_work/review/material-assets-validation.json
+            .ci_work/review/courtyard-craft-validation.json
             .ci_work/review/pavilion-layout.json
             .ci_work/ci-input-manifest.json
             ci/review_matrix.json
@@ -128,6 +132,7 @@ jobs:
             .ci_work/review/landscape-validation.json
             .ci_work/review/architecture-validation.json
             .ci_work/review/material-assets-validation.json
+            .ci_work/review/courtyard-craft-validation.json
             .ci_work/review/pavilion-layout.json
           if-no-files-found: warn
           retention-days: 14
