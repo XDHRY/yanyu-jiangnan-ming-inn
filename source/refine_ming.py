@@ -249,6 +249,8 @@ print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.
 payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png','foliage':'leaf_albedo.png','foliage2':'leaf_albedo.png'}
 for rec in b.records:
+ if 'pavilion_celadon_teapot' in rec['name'] or 'pavilion_tea_cup' in rec['name']:
+  rec['material']='celadon'
  if any(t in rec['name'] for t in ['tree_individual_leaves','pot_individual_leaves']):
   rec['material']='foliage2' if rec['material']=='leaf2' else 'foliage'
  m=b.S.geometry[rec['name']];v=m.vertices[m.faces].reshape(-1,3);n=np.repeat(m.face_normals,3,axis=0);k=rec['material'];ext=np.ptp(v,axis=0);axis=int(np.argmax(ext))
