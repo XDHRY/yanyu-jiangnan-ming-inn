@@ -270,7 +270,7 @@ views = [
     ("07_pavilion_joinery", (21.2, 3.10, 1.75), (21.2, 6.2, 1.95), 22, []),
     ("08_eave_column_plinth", (7.0, 7.5, 2.9), (13.3, 5.35, 2.6), 24, ["roof_substrate", "tile_roll", "veranda_roof", "veranda_tiles", "balcony_rail", "baluster", "tree"]),
     ("09_roof_wall_plate", (20.5, -2.8, 5.55), (15.8, 0.15, 5.18), 54, []),
-    ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
+    ("10_west_shelter", (-10.5, -4.5, 5.1), (-4.4, 2.8, 1.65), 40, []),
 ]
 
 selected = arg("--views")

@@ -18,6 +18,18 @@ grates=[r for r in records if 'craft_drain_grate' in r['name']]
 if len(grates)<150:errors.append('Drain grates incomplete')
 if any(r['bounds'][1][2]>.0501 for r in grates):errors.append('Drain cover creates a trip edge')
 if len([r for r in records if 'craft_cleat_foot' in r['name']])!=6:errors.append('Six pile-mounted cleats required')
-report={'pass':not errors,'errors':errors,'continuous_roof_rolls':len(rolls),'roof_triangles_saved':len(rolls)*84,'courtyard_pavers':len(pavers),'drain_grates':len(grates),'scope':'roof topology and authored hardscape; not full collision or drainage engineering'}
+west=[r for r in records if r['layer']=='west_shelter']
+columns=[r for r in west if 'west_shelter_column_' in r['name'] and 'base' not in r['name']]
+if len(columns)!=4:errors.append('West shelter needs four continuous columns')
+reserve=np.array([[-3.6,2.05,.23],[-3.10,3.35,2.2]])
+for r in west:
+    bb=np.asarray(r['bounds'])
+    if np.all(np.minimum(bb[1],reserve[1])-np.maximum(bb[0],reserve[0])>1e-4):errors.append('West shelter east entry blocked: '+r['name'])
+    if bb[0,0]<-7.10 or bb[1,0]>-1.9 or bb[1,2]>3.7:errors.append('West shelter exceeds reserved site envelope')
+for col in columns:
+    cb=np.asarray(col['bounds'])
+    bases=[r for r in west if 'column_base' in r['name'] and np.linalg.norm(np.mean(r['bounds'],axis=0)[:2]-cb.mean(axis=0)[:2])<.001]
+    if len(bases)!=1 or cb[0,2]>bases[0]['bounds'][1][2]:errors.append('West column not seated')
+report={'west_shelter_parts':len(west),'pass':not errors,'errors':errors,'continuous_roof_rolls':len(rolls),'roof_triangles_saved':len(rolls)*84,'courtyard_pavers':len(pavers),'drain_grates':len(grates),'scope':'roof topology and authored hardscape; not full collision or drainage engineering'}
 Path('.ci_work/review/courtyard-craft-validation.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
 raise SystemExit(bool(errors))

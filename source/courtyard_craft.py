@@ -51,3 +51,51 @@ def build(b):
     for y in np.arange(-4.8,-1.35,.18):
         for x in [3.48,5.52]:
             b.lathe('craft_dock_nail',(x,y,.010),[(0,0),(0,.012),(.002,.012),(.002,0)],'metal',8)
+    # West-side resting shelter: subordinate to the inn, open eastward to moon gate.
+    b.layer='west_shelter'
+    def wb(n,c,d,mat='wood'):return b.box('west_shelter_'+n,c,d,mat)
+    def wr(n,a,c,r=.035,mat='wood'):return b.beam('west_shelter_'+n,a,c,r,mat,10)
+    wb('platform',(-5.1,1.9,.10),(3.4,3.6,.20),'stone')
+    for x in np.arange(-6.5,-3.6,.4):
+        for y in np.arange(.4,3.5,.4):wb('floor_tile',(x,y,.21),(.393,.393,.02),'paving')
+    for x in [-6.55,-3.65]:
+        for y in [.3,3.5]:
+            wb('column_base',(x,y,.27),(.26,.26,.10),'stone')
+            wr('column',(x,y,.31),(x,y,2.79),.075)
+    for y in [.3,3.5]:wb('bearing_beam',(-5.1,y,2.75),(3.05,.14,.14))
+    for x in [-6.55,-3.65]:
+        wb('cross_beam',(x,1.9,2.78),(.14,3.34,.14))
+        wb('king_post',(x,1.9,3.11),(.10,.10,.72))
+        for y,sgn in [(.3,1),(3.5,-1)]:
+            wr('knee_brace',(x,y,2.28),(x,y+sgn*.48,2.76),.040)
+    wb('ridge_support',(-5.1,1.9,3.47),(3.08,.12,.14))
+    def roofpoint(x,t,side):return np.array([x,1.9+side*2*t,3.55-.88*t+.05*t**4])
+    for side in [-1,1]:
+        # Closed thick roof shell; bent rafters and tile rolls share its curve.
+        vs=[];fs=[]
+        for off in [0,-.045]:
+            for x in [-6.95,-3.25]:
+                for t in np.linspace(0,1,9):vs.append(roofpoint(x,t,side)+[0,0,off])
+        for i in range(8):
+            fs.extend([(i,i+1,10+i),(i,10+i,9+i),(18+i,28+i,19+i),(18+i,27+i,28+i)])
+        rim=list(range(9))+list(range(17,8,-1))
+        for a,c in zip(rim,rim[1:]+rim[:1]):fs.extend([(a,c,c+18),(a,c+18,a+18)])
+        m=trimesh.Trimesh(vertices=vs,faces=fs,process=True);m.fix_normals();b.add('west_shelter_roof',m,'tile')
+        for x in np.arange(-6.88,-3.27,.16):
+            b.add('west_shelter_tile',sweep([roofpoint(x,t,side)+[0,0,.024] for t in np.linspace(0,1,9)],.027,6),'tile')
+        for x in np.linspace(-6.7,-3.5,10):
+            b.add('west_shelter_rafter',sweep([roofpoint(x,t,side)+[0,0,-.067] for t in np.linspace(0,1,9)],.025,6),'woodlight')
+        wr('fascia',roofpoint(-6.95,1,side)+[0,0,-.055],roofpoint(-3.25,1,side)+[0,0,-.055],.055)
+    wr('ridge',(-7,1.9,3.57),(-3.2,1.9,3.57),.065,'tile')
+    # A single north bench leaves the rest of the platform for circulation.
+    wb('bench_seat',(-5.1,3.18,.66),(2.45,.45,.065),'woodlight')
+    for x in [-6.14,-5.1,-4.06]:
+        for y in [3.04,3.32]:wb('bench_leg',(x,y,.43),(.065,.065,.42))
+    for y in [3.02,3.34]:wb('bench_apron',(-5.1,y,.58),(2.32,.04,.12))
+    for z in [.50,1.10]:
+        wr('rear_rail',(-6.55,3.5,z),(-3.65,3.5,z),.03)
+        wr('west_rail',(-6.55,.3,z),(-6.55,3.5,z),.03)
+    for x in np.linspace(-6.5,-3.7,11):wr('rear_baluster',(x,3.5,.48),(x,3.5,1.1),.017)
+    for y in np.linspace(.35,3.45,12):wr('west_baluster',(-6.55,y,.48),(-6.55,y,1.1),.017)
+    wb('entry_step',(-3.26,2.7,.055),(.30,1.40,.11),'stone')
+    for x,y in [(-2.96,2.8),(-2.58,3.05),(-2.2,3.3)]:wb('gate_path',(x,y,.025),(.38,.55,.05),'paving')
