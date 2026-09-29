@@ -142,9 +142,9 @@ def world_bounds(obj):
             min(p.y for p in pts), max(p.y for p in pts),
             min(p.z for p in pts), max(p.z for p in pts))
 
-entry_steps = [o for o in mesh_objects if "entry_step" in o.name.lower() and "pavilion_" not in o.name.lower()]
-if len(entry_steps) < 2:
-    raise SystemExit("Coordinate-frame anchor missing: expected two entry steps")
+entry_steps = [o for o in mesh_objects if o.name.lower().startswith("ground/entry_step_")]
+if len(entry_steps) != 4:
+    raise SystemExit("Coordinate-frame anchor missing: expected two main-entry steps and two caps")
 entry_centers = []
 for obj in entry_steps:
     x0,x1,y0,y1,z0,z1 = world_bounds(obj)
