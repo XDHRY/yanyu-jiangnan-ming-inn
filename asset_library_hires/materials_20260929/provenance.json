@@ -1,0 +1,59 @@
+{
+  "assets": [
+    {
+      "id": "clay_albedo",
+      "file": "asset_library_hires/materials_20260929/clay_albedo.jpg",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "833810e45e0824522c4804a73e6f82651d572c260411544ab2af13d8b0875668",
+      "original_png_sha256": "84a5d66520697e32eb6f4d2337e02c550c989fe5854a962bb67b9ac1553a5928",
+      "generator": "built-in image_gen",
+      "processing": "JPEG quality 95, no resizing or recoloring",
+      "role": "AI-authored diffuse base color, not measured PBR",
+      "tiling": "mirrored repeat; exact seamless borders not assumed"
+    },
+    {
+      "id": "huanghuali_albedo",
+      "file": "asset_library_hires/materials_20260929/huanghuali_albedo.jpg",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "17e4dae3089bd05576e41d65991f9078e4d543363d352e1bfefc6eae70b5ccb4",
+      "original_png_sha256": "826750ee4bca3c8a1a5c4fc8286b9798f49e332dce982860cda7cc67b7bc2c93",
+      "generator": "built-in image_gen",
+      "processing": "JPEG quality 95, no resizing or recoloring",
+      "role": "AI-authored diffuse base color, not measured PBR",
+      "tiling": "mirrored repeat; exact seamless borders not assumed"
+    },
+    {
+      "id": "limestone_albedo",
+      "file": "asset_library_hires/materials_20260929/limestone_albedo.jpg",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "8708cbdfdbfc28e6fa906e9260e00f482a4715bee3d5ebc3869e6244c4c9e853",
+      "original_png_sha256": "d3928a07758c58ac8724cb094ea937a6eb6defc073a3ac6a1af9897b3c6d6060",
+      "generator": "built-in image_gen",
+      "processing": "JPEG quality 95, no resizing or recoloring",
+      "role": "AI-authored diffuse base color, not measured PBR",
+      "tiling": "mirrored repeat; exact seamless borders not assumed"
+    },
+    {
+      "id": "leaf_albedo",
+      "file": "asset_library_hires/materials_20260929/leaf_albedo.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "99c3f5fe5728f5a121c3c4b6d6d875325928861aac415499d31eb80f0a05d55d",
+      "generator": "built-in image_gen",
+      "processing": "unmodified original PNG; RGBA preserved",
+      "role": "AI-authored foliage color and cutout alpha",
+      "tiling": "clamp-to-edge; one leaf per folded mesh"
+    }
+  ]
+}

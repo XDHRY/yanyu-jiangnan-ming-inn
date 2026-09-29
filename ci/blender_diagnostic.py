@@ -84,6 +84,20 @@ if bark and bark.use_nodes:
         bump.inputs["Distance"].default_value = .012
         links.new(tex.outputs["Fac"], bump.inputs["Height"])
         links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+# Fine surface relief is interpreted from the new albedo for review only;
+# these are artistic bump cues, not measured normal/displacement maps.
+for key,strength,distance in [('wood',.12,.0015),('woodlight',.10,.0015),('tile',.16,.002),('stone',.20,.003),('paving',.15,.002)]:
+    mat=bpy.data.materials.get(key)
+    if not mat or not mat.use_nodes:continue
+    nodes,links=mat.node_tree.nodes,mat.node_tree.links
+    bsdf=next((n for n in nodes if n.type=='BSDF_PRINCIPLED'),None)
+    texture=next((n for n in nodes if n.type=='TEX_IMAGE'),None)
+    if bsdf and texture:
+        bump=nodes.new('ShaderNodeBump')
+        bump.inputs['Strength'].default_value=strength
+        bump.inputs['Distance'].default_value=distance
+        links.new(texture.outputs['Color'],bump.inputs['Height'])
+        links.new(bump.outputs['Normal'],bsdf.inputs['Normal'])
 component_counts = {
     "dougong": sum("dougong_" in o.name.lower() for o in mesh_objects),
     "hanging_plaque": sum("hanging_plaque" in o.name.lower() for o in mesh_objects),

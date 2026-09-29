@@ -69,6 +69,9 @@ jobs:
       - name: Validate expanded material contract
         run: python ci/validate_review_contract.py
 
+      - name: Validate generated texture provenance and embedding
+        run: python ci/validate_material_assets.py
+
       - name: Validate landscape clearance and waterline
         run: python ci/validate_landscape.py
 
@@ -105,6 +108,7 @@ jobs:
             .ci_work/review/ci-contract.json
             .ci_work/review/landscape-validation.json
             .ci_work/review/architecture-validation.json
+            .ci_work/review/material-assets-validation.json
             .ci_work/review/pavilion-layout.json
             .ci_work/ci-input-manifest.json
             ci/review_matrix.json
@@ -123,6 +127,7 @@ jobs:
             diagnostics/*.json
             .ci_work/review/landscape-validation.json
             .ci_work/review/architecture-validation.json
+            .ci_work/review/material-assets-validation.json
             .ci_work/review/pavilion-layout.json
           if-no-files-found: warn
           retention-days: 14

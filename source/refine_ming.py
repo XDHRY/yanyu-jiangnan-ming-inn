@@ -6,6 +6,7 @@ from pathlib import Path
 import json, math, base64, gzip, hashlib
 import numpy as np
 import trimesh
+from material_uv import timber_uv
 from PIL import Image
 from trimesh.visual.material import PBRMaterial as BasePBRMaterial
 class PBRMaterial(BasePBRMaterial):
@@ -27,6 +28,9 @@ source={k:Image.open(P/'textures'/v).convert('RGB') for k,v in {
  'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png',
  'plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png',
  'lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}.items()}
+source['foliage']=Image.open(P/'textures/leaf_albedo.png').convert('RGBA')
+source['foliage2']=source['foliage']
+b.COL['foliage']='47664d';b.COL['foliage2']='64734b'
 # Wet architectural surfaces use broad, restrained highlights rather than mirror-like bands.
 # The cool factors keep the stone/tile family blue-black without washing to neutral gray.
 base_factors={
@@ -243,14 +247,23 @@ for rx in [-5.5, 2.5, 17.5]:
 
 print('Geometry assembled',len(b.records),flush=True)
 # Assign face-safe planar UVs. Continuous wood grain follows the longest component axis.
-payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png'}
+payload=[];stats={};texture_files={'wood':'huanghuali.png','woodlight':'huanghuali.png','fabric':'teal_brocade.png','plaster':'lime_plaster.png','stone':'blue_limestone.png','paving':'blue_limestone_wet.png','tile':'black_tile_wet.png','lotus':'lotus_panel.png','lacquer':'lacquer_black_gold.png','metal':'brass_aged.png','paper':'paper_screen.png','foliage':'leaf_albedo.png','foliage2':'leaf_albedo.png'}
 for rec in b.records:
+ if any(t in rec['name'] for t in ['tree_individual_leaves','pot_individual_leaves']):
+  rec['material']='foliage2' if rec['material']=='leaf2' else 'foliage'
  m=b.S.geometry[rec['name']];v=m.vertices[m.faces].reshape(-1,3);n=np.repeat(m.face_normals,3,axis=0);k=rec['material'];ext=np.ptp(v,axis=0);axis=int(np.argmax(ext))
  uv=np.empty((len(v),2));normaxis=np.argmax(abs(n),axis=1)
  for ax in range(3):
   ids=normaxis==ax;axes=[i for i in range(3) if i!=ax]
   if k in ['wood','woodlight'] and axis in axes:axes=[i for i in axes if i!=axis]+[axis]
   uv[ids]=v[ids][:,axes]/({'wood':1.0,'woodlight':1.,'fabric':.65,'plaster':1.5,'stone':1.,'paving':1.,'tile':.7,'paper':.8}.get(k,1.))
+ if k in ['wood','woodlight']:
+  uv=timber_uv(m,split_components=any(t in rec['name'] for t in ['pavilion_rafters','eave_exposed_rafter_tails','pavilion_fascia']))
+ if k in ['foliage','foliage2']:
+  # The authoritative leaf generator emits four ordered triangles per folded leaf.
+  assert len(v)%12==0,rec['name']
+  leaf_uv=np.array([[.5,0],[1.1,.48],[.5,.48],[1.1,.48],[.5,1],[.5,.48],[.5,1],[-.1,.48],[.5,.48],[-.1,.48],[.5,0],[.5,.48]])
+  uv=np.tile(leaf_uv,(len(v)//12,1))
  if k=='lotus':
   horizontal=int(np.argmax(ext[:2]));uv[:,0]=(v[:,horizontal]-v[:,horizontal].min())/max(ext[horizontal],1e-6);uv[:,1]=(v[:,2]-v[:,2].min())/max(ext[2],1e-6)
  mm=trimesh.Trimesh(vertices=v,faces=np.arange(len(v)).reshape(-1,3),process=False)
@@ -268,7 +281,7 @@ write_glb(P/'ming_review.glb',payload,P/'textures',b.COL)
 (P/'review/viewer-data.json.gz').write_bytes(gzip.compress(json.dumps(payload,separators=(',',':')).encode(),mtime=0))
 report={'status':'review_candidate_not_final','source_building':'adc0ebe5c8134af780ea7a','objects':len(b.records),'triangles':sum(len(m.faces) for m in b.S.geometry.values()),'material_triangles':stats,'removed_draft_parts':len(removed),'textures':{},'limitations':['Texture sources are AI-generated, not measured PBR scans.','Panel relief in source image is not reconstructed geometry.','No Blender executable available; native Cycles render pending.','Roof and vegetation remain draft quality.','Original structural shell preserved; not a structural engineering certification.']}
 for name in set(texture_files.values()):
- path=P/'textures'/name;im=Image.open(path);report['textures'][name]={'size':list(im.size),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'seamless_verified':False,'source':'built-in image generation; unmodified original pixels'}
+ path=P/'textures'/name;im=Image.open(path);report['textures'][name]={'size':list(im.size),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'seamless_verified':False,'source':('built-in image_gen; original RGBA pixels' if name=='leaf_albedo.png' else 'built-in image_gen, version 20260929; JPEG quality95 transport; no resizing or recoloring' if name in {'huanghuali.png','black_tile_wet.png','blue_limestone.png','blue_limestone_wet.png'} else 'built-in image generation; existing source'),'tiling':('clamp to transparent edge' if name=='leaf_albedo.png' else 'mirrored repeat; pixel-edge seamlessness not assumed' if name in {'huanghuali.png','black_tile_wet.png','blue_limestone.png','blue_limestone_wet.png'} else 'legacy repeat')}
 (P/'review/report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 (P/'review/scene_objects.json').write_text(json.dumps(b.records,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False))
