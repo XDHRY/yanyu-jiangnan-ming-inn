@@ -125,5 +125,32 @@ def build(b):
         lathe('stool_seat',(x,6.25,.665),[(0,0),(0,.23),(.045,.23),(.058,.21),(.058,0)],'woodlight')
         for a in np.arange(3)*math.tau/3:
             rod('stool_leg',(x+.18*math.cos(a),6.25+.18*math.sin(a),.24),(x+.145*math.cos(a),6.25+.145*math.sin(a),.67),.024)
-    lathe('tea_tray',(21.2,6.25,1.056),[(0,0),(0,.25),(.022,.25),(.03,.23),(.03,0)],'wood')
-    for x in [21.02,21.38]:lathe('tea_cup',(x,6.25,1.086),[(0,0),(.008,.03),(.065,.045),(.065,.035),(.013,.025)],'fabric')
+    lathe('tea_tray',(21.2,6.25,1.056),[(0,0),(0,.32),(.022,.32),(.03,.30),(.03,0)],'wood')
+    for x in [20.97,21.43]:lathe('tea_cup',(x,6.16,1.086),[(0,0),(.008,.03),(.065,.045),(.065,.035),(.013,.025)],'fabric')
+    # A complete small tea vessel: supported foot, belly, seated lid, curved
+    # hollow spout and loop handle. Existing celadon material is applied below.
+    c=np.array([21.2,6.34,1.086])
+    lathe('celadon_teapot_body',c,[(0,0),(0,.045),(.018,.060),(.065,.090),(.12,.075),(.145,.049)],'fabric',16)
+    lathe('celadon_teapot_lid',c,[(.14,0),(.14,.052),(.153,.056),(.172,.027),(.174,0)],'fabric',16)
+    b.sphere('pavilion_celadon_teapot_knob',c+[0,0,.18],(.016,.016,.014),'fabric',1)
+    def tube(points,radii,sections=8,cap_ends=False):
+        points=np.asarray(points)+c;vs=[];fs=[]
+        for j,p in enumerate(points):
+            tangent=points[min(j+1,len(points)-1)]-points[max(0,j-1)]
+            tangent/=np.linalg.norm(tangent)
+            u=np.array([0.,1.,0.]);v=np.cross(tangent,u)
+            for a in np.arange(sections)*math.tau/sections:vs.append(p+radii[j]*(u*math.cos(a)+v*math.sin(a)))
+        for j in range(len(points)-1):
+            for i in range(sections):
+                a=j*sections+i;d=j*sections+(i+1)%sections
+                fs.extend([(a,d,d+sections),(a,d+sections,a+sections)])
+        return trimesh.Trimesh(vertices=vs,faces=fs,process=False)
+    add('celadon_teapot_spout',tube([[.066,0,.055],[.115,0,.075],[.143,0,.12],[.159,0,.153]],[.028,.022,.018,.015]),'fabric')
+    # Dark recessed mouth provides actual depth instead of a painted circle.
+    add('teapot_spout_recess',tube([[.157,0,.149],[.159,0,.153]],[.011,.011]),'lacquer')
+    points=[[-.068-.075*math.sin(a),0,.075+.058*math.cos(a)] for a in np.linspace(0,math.pi,9)]
+    add('celadon_teapot_handle',tube(points,[.012]*9,6),'fabric')
+    # Restrained rectangular lattice inserts above the rear bench.
+    for x in np.linspace(19.75,22.65,5):
+        for z in [.70,.98]:box('north_lattice_horizontal',(x,7.7,z),(.30,.028,.022))
+        for dx in [-.139,.139]:box('north_lattice_vertical',(x+dx,7.7,.84),(.022,.028,.28))
