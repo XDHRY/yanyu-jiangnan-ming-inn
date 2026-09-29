@@ -52,17 +52,18 @@
       ]
     },
     {
-      "id": "04_moon_gate",
-      "priority": "P1",
+      "id": "04_east_pavilion",
+      "priority": "P0",
       "inspect": [
-        "moon-gate framing",
-        "garden depth",
-        "path alignment"
+        "subordinate pavilion massing",
+        "full roof silhouette",
+        "approach and south entrance",
+        "roof-tree clearance"
       ],
       "fail_if": [
-        "opening blocked",
-        "ring appears detached",
-        "view terminates on clutter"
+        "pavilion competes with main inn",
+        "path blocked",
+        "roof clips tree or main building"
       ]
     },
     {
@@ -95,18 +96,18 @@
       ]
     },
     {
-      "id": "07_upper_veranda",
-      "priority": "P1",
+      "id": "07_pavilion_joinery",
+      "priority": "P0",
       "inspect": [
-        "balustrade height",
-        "column spacing",
-        "eave coverage",
-        "second-floor circulation"
+        "column to beam contact",
+        "rafter support",
+        "seat orientation",
+        "entry headroom"
       ],
       "fail_if": [
-        "rail blocks circulation",
-        "columns lose rhythm",
-        "roof edge detaches from supports"
+        "knee bracket misses beam",
+        "furniture blocks entrance",
+        "roof lacks visible support"
       ]
     },
     {

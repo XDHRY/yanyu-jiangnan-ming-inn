@@ -1,0 +1,43 @@
+{
+  "id": "east-tea-pavilion",
+  "units": "metres",
+  "platform_bounds": [
+    [
+      19.1,
+      4.0,
+      0.0
+    ],
+    [
+      23.3,
+      8.0,
+      0.24
+    ]
+  ],
+  "roof_bounds": [
+    [
+      18.85,
+      3.75,
+      3.25
+    ],
+    [
+      23.55,
+      8.25,
+      4.35
+    ]
+  ],
+  "entry_reserve": [
+    [
+      20.25,
+      3.0,
+      0.25
+    ],
+    [
+      22.15,
+      5.1,
+      2.35
+    ]
+  ],
+  "circulation": "bridge landing to south steps; open south bay; seats face tea table",
+  "symmetry": "bilateral about x=21.2; north bench is intentional functional asymmetry",
+  "runtime_status": "diagnostic review, not navigable-runtime certified"
+}

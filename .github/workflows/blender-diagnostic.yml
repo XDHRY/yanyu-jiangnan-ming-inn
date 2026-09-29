@@ -72,6 +72,9 @@ jobs:
       - name: Validate landscape clearance and waterline
         run: python ci/validate_landscape.py
 
+      - name: Validate architectural support and detail budget
+        run: python ci/validate_architecture.py
+
       - name: Install Blender and virtual display
         run: |
           sudo apt-get update
@@ -101,6 +104,8 @@ jobs:
             .ci_work/review/validation.json
             .ci_work/review/ci-contract.json
             .ci_work/review/landscape-validation.json
+            .ci_work/review/architecture-validation.json
+            .ci_work/review/pavilion-layout.json
             .ci_work/ci-input-manifest.json
             ci/review_matrix.json
             ci/iteration_state.json
@@ -117,5 +122,7 @@ jobs:
             diagnostics/*.jpg
             diagnostics/*.json
             .ci_work/review/landscape-validation.json
+            .ci_work/review/architecture-validation.json
+            .ci_work/review/pavilion-layout.json
           if-no-files-found: warn
           retention-days: 14

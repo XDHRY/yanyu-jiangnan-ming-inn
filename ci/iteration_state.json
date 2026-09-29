@@ -1,6 +1,6 @@
 {
   "schema": "jiangnan.iteration-state.v1",
-  "current_phase": "diagnostic-round23-landscape-leaf-water-bank",
+  "current_phase": "diagnostic-20260929-ming-architecture-and-east-tea-pavilion",
   "gates": {
     "function": "approved",
     "form": "pending-native-render-review",
@@ -9,7 +9,10 @@
   "authoritative_sources": [
     "source/build_scene_roof_tree_revision.py",
     "source/refine_ming.py",
-    "source/component_factory.py"
+    "source/component_factory.py",
+    "source/architecture_detail.py",
+    "source/garden_pavilion.py",
+    "source/landscape_detail.py"
   ],
   "render_loop": {
     "workflow": ".github/workflows/blender-diagnostic.yml",
@@ -29,19 +32,19 @@
     ]
   },
   "next_review_order": [
-    "02_south_arrival",
-    "03_courtyard",
-    "06_tree_clearance",
+    "04_east_pavilion",
+    "07_pavilion_joinery",
     "08_eave_column_plinth",
     "09_roof_wall_plate",
     "01_overview",
-    "04_moon_gate",
+    "02_south_arrival",
+    "03_courtyard",
+    "06_tree_clearance",
     "05_bridge_waterfront",
-    "07_upper_veranda",
     "10_canal_arrival"
   ],
   "promotion_rule": "No expensive final render until two consecutive diagnostic rounds have no P0 failures.",
-  "known_blocker": "Resolved: repository is public; main run 25 produced the merged spatial-read diagnostic artifact.",
+  "known_blocker": "Diagnostic rendering is operational. Full Form/Runtime evidence and legacy 200k-triangle runtime budget remain unresolved.",
   "round3_focus": [
     "Wet black tile response: broad highlight, less plastic striping",
     "Wet blue limestone/paving response: cool blue-gray, controlled sheen",
@@ -148,5 +151,13 @@
     "Add seven bank-attached fern clumps and a 20mm peak-to-peak canal wave surface",
     "Retain all ten fixed spatial cameras; add clearances and lightweight preview artifacts",
     "Review candidate only; full Form and Runtime remain pending"
-  ]
+  ],
+  "architecture_20260929": {
+    "first_round_commit": "cd7b534a9949847dd9e87a5f929bbf2860833b19",
+    "first_round_run": 36456003270,
+    "first_round_triangles": 412244,
+    "second_round_scope": "closed four-slope pavilion, seating, clear entrance, smooth craft surfaces",
+    "diagnostic_triangle_ceiling": 450000,
+    "runtime_budget_approval": "unchanged/pending"
+  }
 }
