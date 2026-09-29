@@ -10,6 +10,8 @@ if WORK.exists():
 (WORK / "review").mkdir(parents=True)
 
 copies = {
+    "source/roof_sweep.py": "roof_sweep.py",
+    "source/courtyard_craft.py": "courtyard_craft.py",
     "source/build_scene_roof_tree_revision.py": "build_scene.py",
     "source/refine_ming.py": "refine_ming.py",
     "source/component_factory.py": "component_factory.py",

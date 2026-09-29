@@ -142,9 +142,9 @@ def world_bounds(obj):
             min(p.y for p in pts), max(p.y for p in pts),
             min(p.z for p in pts), max(p.z for p in pts))
 
-entry_steps = [o for o in mesh_objects if "entry_step" in o.name.lower() and "pavilion_" not in o.name.lower()]
-if len(entry_steps) < 2:
-    raise SystemExit("Coordinate-frame anchor missing: expected two entry steps")
+entry_steps = [o for o in mesh_objects if o.name.lower().startswith("ground/entry_step_")]
+if len(entry_steps) != 4:
+    raise SystemExit("Coordinate-frame anchor missing: expected two main-entry steps and two caps")
 entry_centers = []
 for obj in entry_steps:
     x0,x1,y0,y1,z0,z1 = world_bounds(obj)
@@ -270,7 +270,7 @@ views = [
     ("07_pavilion_joinery", (21.2, 3.10, 1.75), (21.2, 6.2, 1.95), 22, []),
     ("08_eave_column_plinth", (7.0, 7.5, 2.9), (13.3, 5.35, 2.6), 24, ["roof_substrate", "tile_roll", "veranda_roof", "veranda_tiles", "balcony_rail", "baluster", "tree"]),
     ("09_roof_wall_plate", (20.5, -2.8, 5.55), (15.8, 0.15, 5.18), 54, []),
-    ("10_canal_arrival", (3.5, -13, 3.5), (6.5, -2.2, 1.0), 52, []),
+    ("10_west_shelter", (-10.5, -4.5, 5.1), (-4.4, 2.5, 1.55), 34, []),
 ]
 
 selected = arg("--views")

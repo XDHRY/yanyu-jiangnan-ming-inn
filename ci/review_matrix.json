@@ -141,20 +141,18 @@
       ]
     },
     {
-      "id": "10_canal_arrival",
+      "id": "10_west_shelter",
       "priority": "P1",
       "inspect": [
-        "dock approach",
-        "rain-chain silhouette",
-        "quay wet material",
-        "arrival composition",
-        "wet blue-limestone response"
+        "column/beam support",
+        "roof silhouette",
+        "moon gate destination",
+        "bench and entry clearance"
       ],
       "fail_if": [
-        "dock lacks contact",
-        "rain chain intersects circulation",
-        "foreground overwhelms inn",
-        "wet paving reads uniformly glossy without material breakup"
+        "floating roof members",
+        "blocked east entrance",
+        "bench blocks circulation"
       ]
     }
   ],
